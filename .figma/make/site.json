@@ -1,0 +1,10 @@
+{
+  "description": "Offers an immersive, cinematic homepage showcasing the Putumayo territory to connect users with cultural memory, language preservation, and technology.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
