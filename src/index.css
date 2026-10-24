@@ -4,13 +4,27 @@
 @theme {
   --font-serif: 'Fraunces', Georgia, serif;
   --font-sans: 'Inter', system-ui, sans-serif;
-  --color-selva: #0f1f17;
-  --color-bosque: #24382b;
-  --color-crema: #f3ede1;
-  --color-arena: #e3d6bf;
-  --color-calido: #faf7f1;
-  --color-carbon: #1c1c1a;
-  --color-tierra: #9a5b34;
+  /* Paleta Huito y achiote */
+  /* Base (60%) */
+  --color-arena: #efe6d6;
+  --color-arena-clara: #f5efe3;
+  --color-tierra-suave: #d8c8ac;
+  /* Secundarios (30%) */
+  --color-huito: #1c2233;
+  --color-chagra: #4e6b3a;
+  --color-verde-hoja: #718b5a;
+  /* Acento (10%) */
+  --color-achiote: #9e3b22;
+  --color-ocre: #d9a21b;
+  --color-terracota: #c96a4a;
+
+  /* Alias de nombres previos -> nueva paleta */
+  --color-selva: var(--color-huito);
+  --color-bosque: var(--color-chagra);
+  --color-crema: var(--color-arena);
+  --color-calido: var(--color-arena-clara);
+  --color-carbon: var(--color-huito);
+  --color-tierra: var(--color-achiote);
 }
 
 @layer base {

@@ -1,18 +1,21 @@
 // ÉCOYAI — Home / Variante 02 / Inmersiva Territorial
 import { Hero } from './components/Hero'
 import { SideNav } from './components/SideNav'
-import { Colaborar, Explora, Footer, MisionVision, Proyecto, QueEs } from './components/Sections'
+import { Colaborar, Explora, Footer, Proyecto, QueEs } from './components/Sections'
+import { Nosotros } from './components/Nosotros'
+import { LangProvider, useLang } from './i18n'
 
-export default function App() {
+function Page() {
+  const { t } = useLang()
   return (
     <>
-      <a href="#que-es" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-calido focus:px-4 focus:py-2">Saltar al contenido</a>
+      <a href="#que-es" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-calido focus:px-4 focus:py-2">{t.skip}</a>
       <SideNav />
       <main>
         <Hero />
-        <div className="lg:pl-72">
+        <div>
           <QueEs />
-          <MisionVision />
+          <Nosotros />
           <Proyecto />
           <Explora />
           <Colaborar />
@@ -21,4 +24,8 @@ export default function App() {
       </main>
     </>
   )
+}
+
+export default function App() {
+  return <LangProvider><Page /></LangProvider>
 }
