@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Logo, useScrollY } from './ui'
+import { useEffect, useState, type CSSProperties } from 'react'
+import { useScrollY } from './ui'
 import { LangSwitch, useLang, useNav } from '../i18n'
 
 /** Top bar with a toggle button + retractable menu panel (same behaviour on desktop and mobile). */
@@ -8,6 +8,7 @@ export function SideNav() {
   const NAV = useNav()
   const y = useScrollY()
   const [open, setOpen] = useState(false)
+  const [titleFailed, setTitleFailed] = useState(false)
   const [active, setActive] = useState('')
 
   useEffect(() => {
@@ -35,7 +36,7 @@ export function SideNav() {
   return (
     <>
       <header className={`fixed inset-x-0 top-0 z-50 flex items-center justify-between px-5 py-3 transition-colors duration-500 lg:px-8 ${solid ? 'bg-selva/90 backdrop-blur-[6px]' : 'bg-transparent'}`}>
-        <div className="flex items-center gap-4 sm:gap-6">
+        <div className="intro-item flex items-center gap-4 sm:gap-6" style={{ '--i': 4 } as CSSProperties}>
           <button type="button" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="site-menu"
             aria-label={open ? t.sideNav.close : t.sideNav.menu}
             className="flex h-11 w-11 items-center justify-center border border-calido/40 text-calido transition-colors duration-500 hover:border-calido hover:bg-calido/10">
@@ -44,9 +45,14 @@ export function SideNav() {
               <span className={`absolute left-0 top-1/2 h-px w-full bg-calido transition-opacity duration-300 ${open ? 'opacity-0' : 'opacity-100'}`} />
               <span className={`absolute left-0 h-px w-full bg-calido transition-all duration-500 ${open ? 'top-1/2 -rotate-45' : 'top-full'}`} />
             </span>          </button>
-          <Logo />
         </div>
-        <LangSwitch />
+        {/* Título SVG (variante clara), centrado: public/branding/ecoyai_titulo_claro.svg (se oculta si no existe) */}
+        {!titleFailed && (
+          <a href="#inicio" aria-label={t.logoAria} className="intro-logo absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <img id="header-logo" src="/branding/ecoyai_titulo_claro.svg" alt="ÉCOYAI" onError={() => setTitleFailed(true)} className="h-8 w-auto sm:h-10" />
+          </a>
+        )}
+        <div className="intro-item" style={{ '--i': 5 } as CSSProperties}><LangSwitch /></div>
       </header>
 
       {/* Scrim: click outside the panel to close */}

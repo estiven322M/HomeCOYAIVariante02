@@ -1,10 +1,79 @@
-import type { ReactNode } from 'react'
+import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
 import { Button, Eyebrow, MediaPlaceholder, Reveal, TextLink, useScrollY, Logo } from './ui'
 import { useLang, useNav } from '../i18n'
 
 function Parallax({ children, speed = 0.04 }: { children: ReactNode; speed?: number }) {
   const y = useScrollY()
   return <div style={{ transform: `translateY(${(y % 4000) * -speed}px)` }} className="h-full will-change-transform">{children}</div>
+}
+
+const SLIDER_COUNT = 9
+const SLIDER_SRCS = Array.from({ length: SLIDER_COUNT }, (_, i) => `/slider/slider${i + 1}.webp`)
+
+/** Dirección del paneo Ken Burns por imagen (se alterna para dar variedad). */
+const KEN_BURNS_PANS = [['-1%', '-0.75%'], ['1%', '-0.75%'], ['-1%', '0.75%'], ['1%', '0.75%']]
+
+/** Slider de imágenes: toma /slider/slider1.webp … slider9.webp desde public/slider; ignora las que no existan. */
+function ImageSlider({ label }: { label: string }) {
+  const [missing, setMissing] = useState<Set<string>>(new Set())
+  const [index, setIndex] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const slides = SLIDER_SRCS.filter((s) => !missing.has(s))
+  const n = slides.length
+  const current = n ? index % n : 0
+
+  useEffect(() => {
+    if (n < 2 || paused) return
+    const id = setInterval(() => setIndex((i) => (i + 1) % n), 5000)
+    return () => clearInterval(id)
+  }, [n, paused])
+
+  // La imagen que sale conserva su movimiento mientras dura el fundido, para que no pegue un salto.
+  const [leaving, setLeaving] = useState<string | null>(null)
+  const [shown, setShown] = useState<string | undefined>(undefined)
+  const currentSrc = slides[current]
+  useEffect(() => {
+    if (shown && shown !== currentSrc) {
+      setLeaving(shown)
+      const t = setTimeout(() => setLeaving(null), 1100)
+      setShown(currentSrc)
+      return () => clearTimeout(t)
+    }
+    setShown(currentSrc)
+  }, [currentSrc])
+
+  const go = (d: number) => setIndex((current + d + n) % n)
+
+  return (
+    <div className="relative aspect-[4/5] overflow-hidden" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+      {n === 0 && <MediaPlaceholder label={label} className="h-full w-full" />}
+      {SLIDER_SRCS.map((src, i) => {
+        const pos = slides.indexOf(src)
+        const [kbX, kbY] = KEN_BURNS_PANS[i % KEN_BURNS_PANS.length]
+        return (
+          <img
+            key={src}
+            src={src}
+            alt=""
+            onError={() => setMissing((m) => new Set(m).add(src))}
+            style={{ '--kb-x': kbX, '--kb-y': kbY } as CSSProperties}
+            className={`${pos === current || src === leaving ? 'kenburns' : ''} absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-in-out ${pos === current ? 'opacity-100' : 'opacity-0'}`}
+          />
+        )
+      })}
+      {n > 1 && (
+        <>
+          <button type="button" aria-label="Anterior" onClick={() => go(-1)} className="absolute left-3 top-1/2 -translate-y-1/2 bg-selva/50 px-3 py-2 text-calido transition hover:bg-selva/80">‹</button>
+          <button type="button" aria-label="Siguiente" onClick={() => go(1)} className="absolute right-3 top-1/2 -translate-y-1/2 bg-selva/50 px-3 py-2 text-calido transition hover:bg-selva/80">›</button>
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+            {slides.map((s, i) => (
+              <button key={s} type="button" aria-label={`Imagen ${i + 1}`} onClick={() => setIndex(i)} className={`h-1.5 w-6 transition ${i === current ? 'bg-calido' : 'bg-calido/40'}`} />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  )
 }
 
 export function QueEs() {
@@ -16,14 +85,13 @@ export function QueEs() {
           <Eyebrow>{q.eyebrow}</Eyebrow>
           <h2 className="mt-6 font-serif text-5xl font-light leading-[1.05] lg:text-6xl">{q.title}</h2>
           <div className="mt-10 space-y-5 text-[17px] leading-relaxed text-carbon/80">
-            <p>{q.p1}</p>
+            <p className="font-serif text-2xl italic leading-snug text-bosque">{q.p1}</p>
             <p>{q.p2}</p>
-            <p className="text-sm text-carbon/50">{q.p3}</p>
           </div>
           <div className="mt-10"><TextLink href="#nosotros">{q.link}</TextLink></div>
         </Reveal>
         <Reveal delay={200} className="lg:col-span-6 lg:col-start-7">
-          <div className="aspect-[4/5] overflow-hidden"><Parallax><MediaPlaceholder label={q.media} className="h-[110%] w-full" /></Parallax></div>
+          <ImageSlider label={q.media} />
           <div className="mt-6 flex items-start justify-between gap-6 border-t border-carbon/15 pt-5">
             <p className="text-[11px] uppercase tracking-[0.3em] text-carbon/60">{q.caption}</p>
             <p className="max-w-[16rem] font-serif text-lg italic leading-snug text-bosque">{q.quote}</p>
@@ -96,7 +164,7 @@ export function Colaborar() {
       <Reveal className="relative mx-auto max-w-4xl px-6 py-28 text-center">
         <Eyebrow light>{c.eyebrow}</Eyebrow>
         <h2 className="mt-8 font-serif text-5xl font-light leading-[1.05] lg:text-7xl">{c.title} <em className="italic text-arena">{c.titleEm}</em></h2>
-        <p className="mx-auto mt-8 max-w-xl text-[17px] leading-relaxed text-calido/80">{c.text}</p>
+        <p className="mx-auto mt-8 max-w-xl text-center text-[17px] leading-relaxed text-calido/80">{c.text}</p>
         <div className="mt-12 flex flex-col justify-center gap-3 sm:flex-row">
           <Button href="#donaciones">{c.donate}</Button>
           <Button href="#alianzas" variant="ghost">{c.alliance}</Button>

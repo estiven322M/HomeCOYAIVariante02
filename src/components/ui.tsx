@@ -10,12 +10,14 @@ export function Logo({ light = true }: { light?: boolean }) {
   )
 }
 
-type BtnProps = { href: string; children: ReactNode; variant?: 'solid' | 'ghost' | 'dark' | 'outline' }
+type BtnProps = { href: string; children: ReactNode; variant?: 'solid' | 'ghost' | 'dark' | 'outline' | 'hero' | 'heroGhost' }
 export function Button({ href, children, variant = 'solid' }: BtnProps) {
   const styles = {
     solid: 'bg-calido text-selva hover:bg-arena',
     ghost: 'border border-calido/50 text-calido hover:bg-calido/10 hover:border-calido',
     dark: 'bg-selva text-calido hover:bg-bosque',
+    hero: 'hero-btn',
+    heroGhost: 'hero-btn-ghost',
     outline: 'border border-carbon/30 text-carbon hover:border-carbon hover:bg-carbon/5',
   }[variant]
   return (

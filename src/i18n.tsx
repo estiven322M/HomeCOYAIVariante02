@@ -25,12 +25,12 @@ const es = {
     keywords: 'Territorio · Identidad · Saberes · Lengua · Tecnología',
     explore: 'Explora',
   },
+  intro: { phrase: 'Desde el territorio, hacia el futuro.', loading: 'Cargando el territorio', skip: 'Saltar', aria: 'Pantalla de bienvenida', tigerAlt: 'Jaguar, isotipo de ÉCOYAI' },
   queEs: {
     eyebrow: 'Origen',
     title: '¿Qué es ÉCOYAI?',
-    p1: 'ÉCOYAI es una organización que nace del territorio y trabaja en torno a la identidad cultural, los saberes y la salvaguarda de la lengua Siona.',
-    p2: 'Su propósito es poner la tecnología —incluida la inteligencia artificial— al servicio de la memoria, para que aquello que merece permanecer pueda seguir transmitiéndose.',
-    p3: '[Texto institucional provisional — pendiente de validación por ÉCOYAI]',
+    p1: 'Un acto de compromiso cultural nacido en el corazón del Putumayo.',
+    p2: 'ÉCOYAI es una organización sin ánimo de lucro nacida en el Putumayo, en la Amazonía colombiana, dedicada a la salvaguarda y conservación de la medicina tradicional, los usos y costumbres, la lengua materna y la cosmovisión del pueblo Siona y los pueblos indígenas de Colombia. Guiados por el liderazgo de nuestros sabedores tradicionales, impulsamos proyectos de alto impacto que protegen el patrimonio cultural, el territorio y la dignidad humana.',
     link: 'Conoce nuestra historia',
     media: 'Fotografía documental — territorio y comunidad',
     caption: 'Nace en el Putumayo',
@@ -41,7 +41,6 @@ const es = {
     historia: {
       label: 'Historia',
       title: 'Historia de ÉCOYAI',
-      alias: '(Asëcoyai)',
       paragraphs: [
         'La Asociación ÉCOYAI (Asëcoyai) nació formalmente en marzo de 2024 en Mocoa, departamento del Putumayo, Colombia, como un acto de compromiso cultural y una respuesta urgente para proteger el patrimonio material, espiritual y lingüístico de los pueblos originarios de la Amazonía.',
         'Esta iniciativa surge desde el territorio, inspirada por la visión del Taita Victoriano Piaguaje Yaiguaje y un equipo de sabedores y líderes comunitarios del Pueblo Siona (Zio Bain) —la «Gente de la Chagra»— preocupados por la rápida pérdida paulatina de la lengua materna y el debilitamiento de los conocimientos ancestrales.',
@@ -50,8 +49,6 @@ const es = {
       ],
       media: 'Fotografía — ribera del río Putumayo, territorio Siona',
       facts: [
-        { k: 'Marzo 2024', v: 'Fundación formal' },
-        { k: 'Mocoa, Putumayo', v: 'Domicilio y origen' },
         { k: 'Zio Bain', v: 'Pueblo Siona · «Gente de la Chagra»' },
       ],
     },
@@ -81,7 +78,7 @@ const es = {
       label: 'Liderazgo ancestral',
       title: 'Liderazgo ancestral',
       name: 'Taita Victoriano Piaguaje Yaiguaje',
-      roles: ['Líder Espiritual', 'Director Ejecutivo de ÉCOYAI'],
+      roles: ['Director Ejecutivo de ÉCOYAI'],
       text: 'Taita y sabedor tradicional del pueblo Siona (Zio Bain). Como autoridad espiritual y comunitaria de la organización, guía el direccionamiento estratégico de ÉCOYAI, asegurando que cada proyecto y tecnología respete la sabiduría ancestral, la medicina sagrada y la soberanía cultural del territorio.',
       media: 'Retrato — Taita Victoriano Piaguaje Yaiguaje',
     },
@@ -95,8 +92,8 @@ const es = {
       pending: '[Documento por cargar]',
     },
     junta: {
-      label: 'Estructura de gobierno',
-      title: 'Estructura de gobierno e integrantes',
+      label: 'Nuestro equipo',
+      title: 'Nuestro equipo',
       subtitle: 'Junta directiva',
       mediaPrefix: 'Retrato',
       members: [
@@ -109,7 +106,7 @@ const es = {
   },
   proyecto: {
     eyebrow: 'Proyecto destacado',
-    title: 'Una lengua también guarda',
+    title: 'La lengua ancestral guarda',
     titleEm: 'una memoria.',
     text: 'El proyecto de salvaguarda de la lengua Siona explora cómo la inteligencia artificial puede ser una herramienta para contribuir a su preservación y transmisión: registrar, organizar y acompañar el aprendizaje, siempre desde la voz de la comunidad.',
     cta: 'Conoce el proyecto',
@@ -159,12 +156,12 @@ const en: typeof es = {
     keywords: 'Territory · Identity · Knowledge · Language · Technology',
     explore: 'Explore',
   },
+  intro: { phrase: 'From the territory, toward the future.', loading: 'Loading the territory', skip: 'Skip', aria: 'Welcome screen', tigerAlt: 'Jaguar, ÉCOYAI emblem' },
   queEs: {
     eyebrow: 'Origin',
     title: 'What is ÉCOYAI?',
-    p1: 'ÉCOYAI is an organization born from the territory that works around cultural identity, traditional knowledge and the safeguarding of the Siona language.',
-    p2: 'Its purpose is to put technology —including artificial intelligence— at the service of memory, so that what deserves to endure can continue to be passed on.',
-    p3: '[Provisional institutional text — pending validation by ÉCOYAI]',
+    p1: 'An act of cultural commitment born in the heart of Putumayo.',
+    p2: 'ÉCOYAI is a non-profit organization born in Putumayo, in the Colombian Amazon, dedicated to safeguarding and preserving the traditional medicine, customs, mother tongue and worldview of the Siona people and the Indigenous peoples of Colombia. Guided by the leadership of our traditional knowledge keepers, we drive high-impact projects that protect cultural heritage, the territory and human dignity.',
     link: 'Learn our story',
     media: 'Documentary photography — territory and community',
     caption: 'Born in Putumayo',
@@ -175,7 +172,6 @@ const en: typeof es = {
     historia: {
       label: 'History',
       title: 'The history of ÉCOYAI',
-      alias: '(Asëcoyai)',
       paragraphs: [
         'The ÉCOYAI Association (Asëcoyai) was formally founded in March 2024 in Mocoa, in the department of Putumayo, Colombia, as an act of cultural commitment and an urgent response to protect the material, spiritual and linguistic heritage of the Amazon’s native peoples.',
         'The initiative arises from the territory, inspired by the vision of Taita Victoriano Piaguaje Yaiguaje and a team of knowledge keepers and community leaders of the Siona People (Zio Bain) —the “People of the Chagra”— concerned by the rapid, gradual loss of the mother tongue and the weakening of ancestral knowledge.',
@@ -184,8 +180,6 @@ const en: typeof es = {
       ],
       media: 'Photography — Putumayo riverbank, Siona territory',
       facts: [
-        { k: 'March 2024', v: 'Formal founding' },
-        { k: 'Mocoa, Putumayo', v: 'Seat and origin' },
         { k: 'Zio Bain', v: 'Siona People · “People of the Chagra”' },
       ],
     },
@@ -215,7 +209,7 @@ const en: typeof es = {
       label: 'Ancestral leadership',
       title: 'Ancestral leadership',
       name: 'Taita Victoriano Piaguaje Yaiguaje',
-      roles: ['Spiritual Leader', 'Executive Director of ÉCOYAI'],
+      roles: ['Executive Director of ÉCOYAI'],
       text: 'Taita and traditional knowledge keeper of the Siona people (Zio Bain). As the organization’s spiritual and community authority, he guides ÉCOYAI’s strategic direction, ensuring that every project and technology respects ancestral wisdom, sacred medicine and the cultural sovereignty of the territory.',
       media: 'Portrait — Taita Victoriano Piaguaje Yaiguaje',
     },
@@ -229,8 +223,8 @@ const en: typeof es = {
       pending: '[Document to be uploaded]',
     },
     junta: {
-      label: 'Governance structure',
-      title: 'Governance structure and members',
+      label: 'Our Team',
+      title: 'Our Team',
       subtitle: 'Board of Directors',
       mediaPrefix: 'Portrait',
       members: [
@@ -243,7 +237,7 @@ const en: typeof es = {
   },
   proyecto: {
     eyebrow: 'Featured project',
-    title: 'A language also holds',
+    title: 'The ancestral language holds',
     titleEm: 'a memory.',
     text: 'The Siona language safeguarding project explores how artificial intelligence can be a tool to help preserve and transmit it: recording, organizing and supporting learning, always from the community’s own voice.',
     cta: 'Discover the project',
@@ -332,9 +326,9 @@ export function LangSwitch({ className = 'relative inline-flex' }: { className?:
     <button type="button" role="switch" aria-checked={isEn} aria-label={t.switchLabel}
       onClick={() => setLang(isEn ? 'es' : 'en')}
       className={`h-8 w-[4.5rem] shrink-0 items-center rounded-full border border-calido/40 bg-selva/50 text-[11px] font-medium tracking-[0.15em] backdrop-blur-[6px] transition-colors duration-500 hover:border-calido ${className}`}>
-      <span aria-hidden className={`absolute left-0.5 top-0.5 h-6 w-8 rounded-full bg-ocre transition-transform duration-500 ${isEn ? 'translate-x-[2.25rem]' : ''}`} />
-      <span aria-hidden className={`relative z-10 w-1/2 text-center transition-colors duration-500 ${isEn ? 'text-calido/70' : 'text-selva'}`}>ES</span>
-      <span aria-hidden className={`relative z-10 w-1/2 text-center transition-colors duration-500 ${isEn ? 'text-selva' : 'text-calido/70'}`}>EN</span>
+      <span aria-hidden className={`absolute left-0.5 top-0.5 h-6 w-8 rounded-full bg-(color:--ambar) transition-transform duration-500 ${isEn ? 'translate-x-[2.25rem]' : ''}`} />
+      <span aria-hidden className={`relative z-10 w-1/2 text-center transition-colors duration-500 ${isEn ? 'text-(color:--niebla)' : 'text-(color:--selva)'}`}>ES</span>
+      <span aria-hidden className={`relative z-10 w-1/2 text-center transition-colors duration-500 ${isEn ? 'text-(color:--selva)' : 'text-(color:--niebla)'}`}>EN</span>
     </button>
   )
 }

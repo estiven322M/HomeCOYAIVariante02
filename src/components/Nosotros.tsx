@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Eyebrow, MediaPlaceholder, Reveal } from './ui'
 import { useLang } from '../i18n'
 
@@ -8,6 +9,18 @@ function SubTitle({ label, light }: { label: string; light?: boolean }) {
     <div className="flex items-center gap-4">
       <span className="h-px w-10 bg-ocre" />
       <Eyebrow light={light}>{label}</Eyebrow>
+    </div>
+  )
+}
+
+/** Foto del Taita: archivo en public/taita/taita_victoriano.webp (4:3). Muestra el placeholder mientras no exista. */
+function TaitaPhoto({ label }: { label: string }) {
+  const [failed, setFailed] = useState(false)
+  return (
+    <div className="aspect-[4/3] overflow-hidden">
+      {failed
+        ? <MediaPlaceholder label={label} tone="earth" className="h-full w-full" />
+        : <img src="/taita/taita_victoriano.webp" alt={label} onError={() => setFailed(true)} className="h-full w-full object-cover" />}
     </div>
   )
 }
@@ -53,7 +66,7 @@ export function Nosotros() {
           <Reveal className="lg:col-span-7">
             <SubTitle label={h.label} />
             <h3 className="mt-8 font-serif text-4xl font-light leading-[1.08] lg:text-6xl">
-              {h.title} <em className="italic text-bosque">{h.alias}</em>
+              {h.title}
             </h3>
             <p className="mt-10 font-serif text-2xl font-light leading-snug text-carbon/90">{h.paragraphs[0]}</p>
             <div className="mt-8 space-y-6 text-[17px] leading-relaxed text-carbon/80">
@@ -65,11 +78,11 @@ export function Nosotros() {
           </Reveal>
         </div>
         <Reveal className="mx-auto mt-20 max-w-6xl">
-          <dl className="grid border-t border-carbon/20 sm:grid-cols-3">
-            {h.facts.map((f, i) => (
-              <div key={f.k} className={`py-8 sm:px-8 ${i > 0 ? 'sm:border-l sm:border-carbon/15' : 'sm:pl-0'}`}>
-                <dt className="font-serif text-3xl font-light text-bosque">{f.k}</dt>
-                <dd className="mt-2 text-[11px] uppercase tracking-[0.25em] text-carbon/60">{f.v}</dd>
+          <dl className="border-t border-carbon/20">
+            {h.facts.map((f) => (
+              <div key={f.k} className="py-10 text-center">
+                <dt className="font-serif text-4xl font-semibold text-bosque">{f.k}</dt>
+                <dd className="mt-3 text-xs font-semibold uppercase tracking-[0.25em] text-carbon/70">{f.v}</dd>
               </div>
             ))}
           </dl>
@@ -122,13 +135,13 @@ export function Nosotros() {
       {/* 03 · Liderazgo ancestral */}
       <section id="nosotros-liderazgo" className="scroll-mt-14 relative overflow-hidden bg-selva px-6 py-28 text-calido lg:py-36">
         <div className="mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-12">
-          <Reveal className="lg:col-span-4">
-            <div className="aspect-[3/4] overflow-hidden"><MediaPlaceholder label={l.media} tone="earth" className="h-full w-full" /></div>
+          <Reveal className="lg:col-span-7">
+            <TaitaPhoto label={l.media} />
           </Reveal>
-          <Reveal delay={200} className="lg:col-span-7 lg:col-start-6">
+          <Reveal delay={200} className="lg:col-span-5">
             <SubTitle label={l.label} light />
-            <h3 className="mt-8 font-serif text-5xl font-light leading-[1.05] lg:text-6xl">{l.name}</h3>
-            <ul className="mt-8 flex flex-wrap gap-3">
+            <h3 className="mt-8 font-serif text-4xl font-light leading-[1.05] lg:text-5xl">{l.name}</h3>
+            <ul className="mt-8 flex flex-wrap justify-center gap-3">
               {l.roles.map((r) => (
                 <li key={r} className="border border-ocre/60 px-4 py-1.5 text-[11px] uppercase tracking-[0.25em] text-ocre">{r}</li>
               ))}
@@ -177,18 +190,17 @@ export function Nosotros() {
       {/* 05 · Estructura de gobierno e integrantes */}
       <section id="nosotros-junta" className="scroll-mt-14 bg-calido px-6 py-28 lg:py-36">
         <div className="mx-auto max-w-6xl">
-          <Reveal>
-            <SubTitle label={j.label} />
+          <Reveal className="text-center">
+            <div className="flex justify-center"><SubTitle label={j.label} /></div>
             <h3 className="mt-8 font-serif text-4xl font-light leading-[1.08] lg:text-6xl">{j.title}</h3>
-            <p className="mt-6 text-[11px] uppercase tracking-[0.3em] text-carbon/60">{j.subtitle}</p>
+            <p className="mt-6 text-center text-[11px] uppercase tracking-[0.3em] text-carbon/60">{j.subtitle}</p>
           </Reveal>
           <ul className="mt-16 grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
             {j.members.map((m, i) => (
               <Reveal key={m.name} delay={i * 120}>
                 <li>
                   <div className="aspect-[4/5] overflow-hidden"><MediaPlaceholder label={`${j.mediaPrefix} — ${m.name}`} tone={TONES[i % TONES.length]} className="h-full w-full" /></div>
-                  <p className="mt-6 font-serif text-xs text-tierra">0{i + 1}</p>
-                  <h4 className="mt-1 font-serif text-2xl font-light leading-tight">{m.name}</h4>
+                  <h4 className="mt-6 font-serif text-2xl font-light leading-tight">{m.name}</h4>
                   <p className="mt-3 text-[11px] uppercase leading-5 tracking-[0.2em] text-bosque">{m.role}</p>
                   <p className="mt-4 border-t border-carbon/15 pt-4 text-sm leading-relaxed text-carbon/75">{m.profile}</p>
                 </li>
