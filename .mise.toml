@@ -1,3 +1,7 @@
+# La versión de Node vive en un único archivo: .node-version (lo usan también
+# Netlify y GitHub Actions). mise lo lee gracias a este ajuste.
+[settings]
+idiomatic_version_file_enable_tools = ["node"]
+
 [tools]
-node = "22"
 "npm:pnpm" = "10.34.3"

@@ -8,9 +8,6 @@
 command = "pnpm run build"
 publish = "dist"
 
-[build.environment]
-NODE_VERSION = "22"
-
 # Previsualizaciones (deploy previews y branch deploys): nunca indexables.
 # Netlify no admite cabeceras por contexto en [[headers]], así que se añade
 # una regla al archivo `_headers` generado tras el build.

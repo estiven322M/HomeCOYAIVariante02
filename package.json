@@ -1,5 +1,5 @@
 {
-  "name": "figma-make-app",
+  "name": "ecoyai-web",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -55,6 +55,9 @@
     "*.{css,json}": [
       "oxfmt"
     ]
+  },
+  "engines": {
+    "node": ">=22.22.0"
   },
   "packageManager": "pnpm@10.34.3"
 }
