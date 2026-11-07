@@ -1,0 +1,306 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Inter:wght@400;500&display=swap');
+@import 'tailwindcss';
+
+/* La documentación no es fuente de clases: evita que Tailwind la escanee. */
+@source not "../../../docs";
+@source not "../../../README.md";
+@source not "../../../AGENTS.md";
+@source not "../../../CLAUDE.md";
+
+@theme {
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-sans: 'Inter', system-ui, sans-serif; /* Paleta Huito y achiote */
+  /* Base (60%) */
+  --color-arena: #efe6d6;
+  --color-arena-clara: #f5efe3;
+  --color-tierra-suave: #d8c8ac;
+  /* Secundarios (30%) */
+  --color-huito: #1c2233;
+  --color-chagra: #4e6b3a;
+  --color-verde-hoja: #718b5a;
+  /* Acento (10%) */
+  --color-achiote: #9e3b22;
+  --color-ocre: #d9a21b;
+  --color-terracota: #c96a4a;
+
+  /* Alias de nombres previos -> nueva paleta */
+  --color-selva: var(--color-huito);
+  --color-bosque: var(--color-chagra);
+  --color-crema: var(--color-arena);
+  --color-calido: var(--color-arena-clara);
+  --color-carbon: var(--color-huito);
+  --color-tierra: var(--color-achiote);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-calido text-carbon font-sans antialiased;
+  }
+  p {
+    text-align: justify;
+    hyphens: auto;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-tierra);
+    outline-offset: 3px;
+  }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 1.4s ease,
+    transform 1.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+@keyframes drift {
+  from {
+    transform: scale(1.08) translate(0, 0);
+  }
+  to {
+    transform: scale(1.18) translate(-2%, -1.5%);
+  }
+}
+.drift {
+  animation: drift 40s ease-in-out infinite alternate;
+}
+@keyframes kenburns {
+  from {
+    transform: scale(1) translate(0, 0);
+  }
+  to {
+    transform: scale(1.08) translate(var(--kb-x, -1%), var(--kb-y, -0.75%));
+  }
+}
+.kenburns {
+  animation: kenburns 9s linear forwards;
+  will-change: transform;
+}
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
+  }
+}
+.bob {
+  animation: bob 2.4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .drift,
+  .bob,
+  .kenburns {
+    animation: none;
+  }
+}
+
+/* ---- Hero palette (solo hero + intro) ---- */
+:root {
+  --selva: #0f1b16;
+  --niebla: #f2ede3;
+  --ambar: #e3a93a;
+  --turquesa: #35b5ab;
+  --magenta: #e5254f;
+  --tinta: #1e2a24; /* frase del intro */
+  --niebla-92: color-mix(in srgb, var(--niebla) 92%, transparent);
+  --niebla-85: color-mix(in srgb, var(--niebla) 85%, transparent);
+  --niebla-60: color-mix(in srgb, var(--niebla) 60%, transparent);
+  --niebla-10: color-mix(in srgb, var(--niebla) 10%, transparent);
+  /* "memoria viva.": el ámbar no llega a 3:1 sobre el fotograma más claro; cambiar a var(--ambar) si se acepta */
+  --hero-em: var(--niebla);
+}
+
+@layer components {
+  .hero-scope :focus-visible {
+    outline: 2px solid var(--turquesa);
+    outline-offset: 3px;
+  }
+  .hero-eyebrow {
+    color: var(--niebla-85);
+  }
+  .hero-title {
+    color: var(--niebla);
+  }
+  .hero-title em {
+    color: var(--hero-em);
+  }
+  .hero-text {
+    color: var(--niebla-92);
+  }
+  .hero-meta {
+    color: var(--niebla-85);
+  }
+  .hero-link:hover {
+    color: var(--turquesa);
+  }
+  .hero-btn {
+    background: var(--niebla);
+    color: var(--selva);
+  }
+  .hero-btn:hover {
+    background: color-mix(in srgb, var(--niebla) 88%, var(--selva));
+  }
+  .hero-btn-ghost {
+    border: 1px solid var(--niebla-60);
+    color: var(--niebla);
+  }
+  .hero-btn-ghost:hover {
+    background: var(--niebla-10);
+    border-color: var(--niebla);
+  }
+  /* Legibilidad sobre el video (sin tocar la opacidad del video) */
+  .hero-grad-v {
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--selva) 45%, transparent) 0%,
+      color-mix(in srgb, var(--selva) 8%, transparent) 50%,
+      color-mix(in srgb, var(--selva) 85%, transparent) 100%
+    );
+  }
+  .hero-grad-h {
+    background: linear-gradient(to right, color-mix(in srgb, var(--selva) 85%, transparent) 0%, transparent 70%);
+  }
+  /* Transición hero -> sección siguiente (#origen, bg-crema). Altura: --hero-fade-h. Parada intermedia: --hero-fade-mid. */
+  .hero-fade {
+    --hero-fade-h: 120px;
+    --hero-fade-mid: 45%;
+    height: var(--hero-fade-h);
+    background: linear-gradient(
+      to bottom,
+      rgb(15 27 22 / 0) 0%,
+      rgb(58 72 63 / 0.85) var(--hero-fade-mid),
+      var(--color-crema) 100%
+    );
+  }
+  @media (min-width: 768px) {
+    .hero-fade {
+      --hero-fade-h: 200px;
+    }
+  }
+  @supports (background: linear-gradient(in oklch, red, blue)) {
+    .hero-fade {
+      background: linear-gradient(
+        in oklch to bottom,
+        rgb(15 27 22 / 0) 0%,
+        rgb(58 72 63 / 0.85) var(--hero-fade-mid),
+        var(--color-crema) 100%
+      );
+    }
+  }
+  .hero-grad-top {
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--selva) 55%, transparent) 0%, transparent 100%);
+  }
+}
+
+/* ---- Intro ---- */
+.intro-veil {
+  background: var(--niebla-92);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  transition: opacity 0.5s ease-out;
+}
+.intro-veil[data-leaving='true'] {
+  opacity: 0;
+}
+.intro-logo-travel {
+  transition:
+    transform 0.5s ease-out,
+    opacity 0.5s ease-out;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+.intro-fade {
+  transition: opacity 0.5s ease-out;
+}
+.intro-fade[data-leaving='true'] {
+  opacity: 0;
+}
+.intro-bar {
+  background: color-mix(in srgb, var(--selva) 15%, transparent);
+}
+.intro-bar > span {
+  background: var(--turquesa);
+  transform-origin: left;
+  animation: intro-fill 2500ms linear forwards;
+}
+@keyframes intro-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Logo del header: aparece en relevo con el del intro */
+[data-intro] .intro-logo {
+  transition: opacity 0.5s ease-out;
+}
+[data-intro='active'] .intro-logo {
+  opacity: 0;
+}
+/* Resto del hero: entra en orden (--i × 150 ms) tras el intro */
+[data-intro='active'] .intro-item,
+[data-intro='leaving'] .intro-item {
+  opacity: 0;
+  transform: translateY(10px);
+}
+[data-intro='reveal'] .intro-item {
+  transition:
+    opacity 0.5s ease-out calc(var(--i, 0) * 150ms),
+    transform 0.5s ease-out calc(var(--i, 0) * 150ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-intro] .intro-item {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  [data-intro] .intro-logo {
+    transition: none;
+  }
+  .intro-veil,
+  .intro-fade {
+    transition: opacity 0.2s linear;
+  }
+  .intro-logo-travel {
+    transition: opacity 0.2s linear;
+  }
+  .intro-bar > span {
+    animation: none;
+    transform: none;
+  }
+}
+.intro-logo-travel[data-leaving='true'] {
+  opacity: 0;
+}
+.intro-phrase {
+  color: var(--tinta);
+}
+.intro-label {
+  color: color-mix(in srgb, var(--selva) 70%, transparent);
+}
+.intro-skip {
+  color: color-mix(in srgb, var(--selva) 70%, transparent);
+}
+.intro-skip:hover {
+  color: var(--selva);
+}
+.intro-root :focus-visible {
+  outline: 2px solid var(--turquesa);
+  outline-offset: 3px;
+}

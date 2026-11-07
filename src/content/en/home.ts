@@ -1,0 +1,58 @@
+import type { home as esHome } from '@/content/es/home'
+
+// Contenido en inglés: debe satisfacer exactamente el tipo del español.
+export const home = {
+  hero: {
+    aria: 'Territory',
+    eyebrow: 'From the territory, toward the future',
+    title: 'The territory holds a',
+    titleEm: 'living memory.',
+    text: 'ÉCOYAI connects territory, knowledge and technology to help safeguard the Siona language and its memory.',
+    cta1: 'Discover ÉCOYAI',
+    cta2: 'Explore the project',
+    keywords: 'Territory · Identity · Knowledge · Language · Technology',
+    explore: 'Explore',
+  },
+  queEs: {
+    eyebrow: 'Origin',
+    title: 'What is ÉCOYAI?',
+    p1: 'An act of cultural commitment born in the heart of Putumayo.',
+    p2: 'ÉCOYAI is a non-profit organization born in Putumayo, in the Colombian Amazon, dedicated to safeguarding and preserving the traditional medicine, customs, mother tongue and worldview of the Siona people and the Indigenous peoples of Colombia. Guided by the leadership of our traditional knowledge keepers, we drive high-impact projects that protect cultural heritage, the territory and human dignity.',
+    link: 'Learn our story',
+    media: 'Documentary photography — territory and community',
+    caption: 'Born in Putumayo',
+    quote: 'Territory, memory and language as a single fabric.',
+    prev: 'Previous',
+    next: 'Next',
+    image: 'Image',
+    pause: 'Pause carousel',
+    play: 'Resume carousel',
+  },
+  proyecto: {
+    eyebrow: 'Featured project',
+    title: 'The ancestral language holds',
+    titleEm: 'a memory.',
+    text: 'The Siona language safeguarding project explores how artificial intelligence can be a tool to help preserve and transmit it: recording, organizing and supporting learning, always from the community’s own voice.',
+    cta: 'Discover the project',
+    media: 'Image — oral transmission, community and territory',
+    words: ['Language', 'Memory', 'Community', 'Transmission'],
+  },
+  explora: { eyebrow: 'Index', title: 'Explore ÉCOYAI' },
+  colaborar: {
+    eyebrow: 'Collaborate',
+    title: 'The future is also built by',
+    titleEm: 'walking alongside.',
+    text: 'Your support can help strengthen initiatives that connect technology, territory and cultural preservation.',
+    donate: 'Donate',
+    alliance: 'Create a partnership',
+    media: 'Photography — Putumayo territory at sunset',
+  },
+  footer: {
+    tagline: 'From the territory, toward the future.',
+    navAria: 'Footer',
+    social: 'Social media',
+    rights: 'All rights reserved.',
+    legal: 'Legal notice',
+    privacy: 'Privacy policy',
+  },
+} satisfies typeof esHome
