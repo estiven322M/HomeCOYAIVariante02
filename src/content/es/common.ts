@@ -18,4 +18,9 @@ export const common = {
     aria: 'Pantalla de bienvenida',
     tigerAlt: 'Jaguar, isotipo de ÉCOYAI',
   },
+  errorBoundary: {
+    title: 'Algo salió mal',
+    text: 'La página tuvo un problema inesperado. Puedes intentar cargarla de nuevo.',
+    reload: 'Recargar la página',
+  },
 }

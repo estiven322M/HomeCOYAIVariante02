@@ -23,4 +23,9 @@ export const common = {
     aria: 'Welcome screen',
     tigerAlt: 'Jaguar, ÉCOYAI emblem',
   },
+  errorBoundary: {
+    title: 'Something went wrong',
+    text: 'The page ran into an unexpected problem. You can try loading it again.',
+    reload: 'Reload the page',
+  },
 } satisfies typeof esCommon
