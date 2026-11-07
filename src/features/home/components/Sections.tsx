@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { Button } from '@/shared/ui/Button'
 import { Eyebrow } from '@/shared/ui/Eyebrow'
 import { Logo } from '@/shared/ui/Logo'
@@ -6,6 +6,7 @@ import { MediaPlaceholder } from '@/shared/ui/MediaPlaceholder'
 import { Reveal } from '@/shared/ui/Reveal'
 import { TextLink } from '@/shared/ui/TextLink'
 import { useScrollY } from '@/shared/hooks/useScrollY'
+import { prefersReducedMotion } from '@/shared/lib/reduced-motion'
 import { useLang, useNav } from '@/shared/i18n'
 
 function Parallax({ children, speed = 0.04 }: { children: ReactNode; speed?: number }) {
@@ -38,11 +39,33 @@ function ImageSlider({ label }: { label: string }) {
   const [missing, setMissing] = useState<Set<string>>(new Set())
   const [index, setIndex] = useState(0)
   const [hovered, setHovered] = useState(false)
-  // Con prefers-reduced-motion el avance automático arranca detenido.
-  const [userPaused, setUserPaused] = useState(
-    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-  )
-  const paused = hovered || userPaused
+  // Con prefers-reduced-motion el avance automático arranca detenido. Se decide en el cliente, antes de pintar
+  // (no durante el render: el prerender no tiene matchMedia y el HTML debe coincidir al hidratar).
+  const [userPaused, setUserPaused] = useState(false)
+  useLayoutEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- decisión solo de cliente tras hidratar
+    if (prefersReducedMotion()) setUserPaused(true)
+  }, [])
+  // El carrusel solo avanza y precarga cuando está cerca de la pantalla; así el autoplay no avanza fuera de
+  // vista sobre imágenes que aún no se descargaron (las diapositivas 2–9 son de carga diferida).
+  const rootRef = useRef<HTMLDivElement>(null)
+  const [near, setNear] = useState(false)
+  useEffect(() => {
+    const el = rootRef.current
+    if (!el) return
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e?.isIntersecting) {
+          setNear(true)
+          io.disconnect()
+        }
+      },
+      { rootMargin: '300px' },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+  const paused = hovered || userPaused || !near
   const slides = SLIDER_SRCS.filter((s) => !missing.has(s))
   const n = slides.length
   const current = n ? index % n : 0
@@ -67,10 +90,18 @@ function ImageSlider({ label }: { label: string }) {
     setShown(currentSrc)
   }, [currentSrc])
 
+  // Mientras se muestra una diapositiva, se precarga la siguiente: el fundido nunca llega a una imagen vacía.
+  const nextSrc = n > 1 ? slides[(current + 1) % n] : undefined
+  useEffect(() => {
+    if (!near || !nextSrc) return
+    new Image().src = nextSrc
+  }, [near, nextSrc])
+
   const go = (d: number) => setIndex((current + d + n) % n)
 
   return (
     <div
+      ref={rootRef}
       className="relative aspect-[4/5] overflow-hidden"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -84,6 +115,7 @@ function ImageSlider({ label }: { label: string }) {
             key={src}
             src={src}
             alt=""
+            loading={i === 0 ? undefined : 'lazy'}
             onError={() => setMissing((m) => new Set(m).add(src))}
             style={{ '--kb-x': kbX, '--kb-y': kbY } as CSSProperties}
             className={`${pos === current || src === leaving ? 'kenburns' : ''} absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-in-out ${pos === current ? 'opacity-100' : 'opacity-0'}`}

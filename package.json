@@ -1,28 +1,33 @@
 {
-  "name": "figma-make-app",
+  "name": "ecoyai-web",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
+    "dev": "react-router dev",
+    "build": "react-router build",
+    "preview": "node scripts/preview.mjs",
     "prepare": "husky",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "react-router typegen && tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "pnpm run typecheck && pnpm run lint && pnpm run format:check && pnpm run test && pnpm run build"
+    "verify:build": "vitest run --config vitest.build.config.ts",
+    "check": "pnpm run typecheck && pnpm run lint && pnpm run format:check && pnpm run test && pnpm run build && pnpm run verify:build"
   },
   "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "isbot": "^5.2.2",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router": "8.5.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
+    "@react-router/dev": "8.5.1",
+    "@react-router/node": "8.5.1",
     "@tailwindcss/vite": "^4.0.0",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^7.0.1",
@@ -40,6 +45,7 @@
     "jsdom": "^31.0.0",
     "lint-staged": "^17.6.0",
     "oxfmt": "^0.77.0",
+    "playwright": "^1.65.0",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.72.1",
@@ -54,6 +60,9 @@
     "*.{css,json}": [
       "oxfmt"
     ]
+  },
+  "engines": {
+    "node": ">=22.22.0"
   },
   "packageManager": "pnpm@10.34.3"
 }

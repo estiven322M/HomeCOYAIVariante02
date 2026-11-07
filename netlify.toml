@@ -1,24 +1,28 @@
-# Hosting estático en Netlify.
+# Hosting estático en Netlify. La versión de Node sale de .node-version.
 #
-# NOTA (Fase 2): hoy la salida del build es `dist`. Al adoptar React Router en
-# modo framework con prerender, la carpeta pasará a ser `build/client`; entonces
-# hay que actualizar `publish` aquí. Ver docs/ARCHITECTURE.md.
+# Salida del build: React Router (ssr: false + prerender) escribe el sitio estático en build/client
+# (`/` → index.html, `/en/` → en/index.html). build/server NO se publica.
 
 [build]
 command = "pnpm run build"
-publish = "dist"
-
-[build.environment]
-NODE_VERSION = "22"
+publish = "build/client"
 
 # Previsualizaciones (deploy previews y branch deploys): nunca indexables.
 # Netlify no admite cabeceras por contexto en [[headers]], así que se añade
 # una regla al archivo `_headers` generado tras el build.
 [context.deploy-preview]
-command = "pnpm run build && printf '/*\n  X-Robots-Tag: noindex\n' >> dist/_headers"
+command = "pnpm run build && printf '/*\\n  X-Robots-Tag: noindex\\n' >> build/client/_headers"
 
 [context.branch-deploy]
-command = "pnpm run build && printf '/*\n  X-Robots-Tag: noindex\n' >> dist/_headers"
+command = "pnpm run build && printf '/*\\n  X-Robots-Tag: noindex\\n' >> build/client/_headers"
+
+# URLs con barra final (política del proyecto, ver docs/ARCHITECTURE.md): cada página es `ruta/index.html`.
+# NO se añade ninguna regla /en → /en/ ni /* → __spa-fallback.html:
+#  - Se espera que Netlify redirija una carpeta sin barra final a la versión con barra (301) cuando existe
+#    ruta/index.html; una regla propia para lo mismo puede provocar un bucle. NO verificado desde fuera de
+#    Netlify: comprobar `curl -I <preview>/en` en la primera previsualización (ver docs/known-issues.md).
+#  - La 404 real (estado 404, sin JavaScript) será un archivo build/client/404.html, que Netlify sirve solo
+#    para las rutas que no existen. Se añade en la Fase 2B (ver docs/known-issues.md).
 
 # Archivos con hash en el nombre: inmutables, caché de 1 año.
 [[headers]]

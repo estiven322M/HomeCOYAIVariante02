@@ -22,3 +22,9 @@ logs/
 
 # Plantilla de variables de entorno: sí se versiona
 !.env.example
+
+# Capturas de línea base visual (scripts/capture.mjs)
+.baseline/
+
+# Tipos generados por React Router (react-router typegen)
+.react-router/

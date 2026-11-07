@@ -147,3 +147,4 @@
 
 # Los hooks de husky deben conservar LF (si no, fallan en shell al clonar en Windows)
 .husky/* text eol=lf
+.node-version text eol=lf

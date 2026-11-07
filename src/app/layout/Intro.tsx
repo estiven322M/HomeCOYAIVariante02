@@ -1,10 +1,11 @@
 import { useLayoutEffect, useRef } from 'react'
 import { useLang } from '@/shared/i18n'
-import { reducedMotion, useIntro } from '@/shared/intro/intro-context'
+import { useIntro } from '@/shared/intro/intro-context'
+import { prefersReducedMotion } from '@/shared/lib/reduced-motion'
 
 /** Brand screen over the (already loading) hero video. Only transform/opacity are animated. */
 export function Intro() {
-  const { phase, skip } = useIntro()
+  const { phase, ready, skip } = useIntro()
   const { t } = useLang()
   const i = t.intro
   const logoRef = useRef<HTMLImageElement>(null)
@@ -12,7 +13,7 @@ export function Intro() {
 
   // Fly the wordmark to the header logo: measured delta, applied as a single transform.
   useLayoutEffect(() => {
-    if (!leaving || reducedMotion()) return
+    if (!leaving || prefersReducedMotion()) return
     const from = logoRef.current
     const to = document.getElementById('header-logo')
     if (!from || !to) return
@@ -22,7 +23,9 @@ export function Intro() {
     from.style.transform = `translate(${b.left + b.width / 2 - (a.left + a.width / 2)}px, ${b.top + b.height / 2 - (a.top + a.height / 2)}px) scale(${s})`
   }, [leaving])
 
-  if (phase !== 'active' && phase !== 'leaving') return null
+  // Antes de decidir en el cliente (ready=false) el overlay SÍ está en el HTML —igual en servidor y cliente— y el CSS
+  // lo oculta salvo que data-intro sea active/leaving. Así no hay desajuste de hidratación ni parpadeo del hero.
+  if (ready && phase !== 'active' && phase !== 'leaving') return null
   return (
     <div
       role="region"
@@ -43,6 +46,7 @@ export function Intro() {
       <div className="relative flex flex-col items-center">
         <img
           src="/branding/tigre.png"
+          fetchPriority="high"
           alt={i.tigerAlt}
           data-leaving={leaving}
           className="intro-fade h-[140px] w-auto"
@@ -50,6 +54,7 @@ export function Intro() {
         <img
           ref={logoRef}
           src="/branding/ecoyai_titulo.svg"
+          fetchPriority="high"
           alt="ÉCOYAI"
           data-leaving={leaving}
           className="intro-logo-travel mt-8 w-[280px] max-w-[70vw]"

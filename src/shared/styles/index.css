@@ -206,6 +206,15 @@
 }
 
 /* ---- Intro ---- */
+/* El overlay viene en el HTML (también prerenderizado) pero oculto: solo se muestra mientras <html data-intro>
+   es active/leaving. Sin JavaScript nunca se muestra y la página se ve completa. */
+.intro-root {
+  display: none;
+}
+[data-intro='active'] .intro-root,
+[data-intro='leaving'] .intro-root {
+  display: flex;
+}
 .intro-veil {
   background: var(--niebla-92);
   -webkit-backdrop-filter: blur(14px);
