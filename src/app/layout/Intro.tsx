@@ -24,26 +24,52 @@ export function Intro() {
 
   if (phase !== 'active' && phase !== 'leaving') return null
   return (
-    <div role="region" aria-label={i.aria} className="intro-root fixed inset-0 z-[100] flex flex-col items-center justify-center px-6">
+    <div
+      role="region"
+      aria-label={i.aria}
+      className="intro-root fixed inset-0 z-[100] flex flex-col items-center justify-center px-6"
+    >
       <div className="intro-veil absolute inset-0" data-leaving={leaving} aria-hidden />
 
-      <button type="button" onClick={skip} data-leaving={leaving}
-        className="intro-skip intro-fade absolute right-5 top-5 z-10 px-2 py-1 text-[11px] uppercase tracking-[0.25em] underline-offset-4 hover:underline lg:right-8 lg:top-6">
+      <button
+        type="button"
+        onClick={skip}
+        data-leaving={leaving}
+        className="intro-skip intro-fade absolute right-5 top-5 z-10 px-2 py-1 text-[11px] uppercase tracking-[0.25em] underline-offset-4 hover:underline lg:right-8 lg:top-6"
+      >
         {i.skip}
       </button>
 
       <div className="relative flex flex-col items-center">
-        <img src="/branding/tigre.png" alt={i.tigerAlt} data-leaving={leaving} className="intro-fade h-[140px] w-auto" />
-        <img ref={logoRef} src="/branding/ecoyai_titulo.svg" alt="ÉCOYAI" data-leaving={leaving}
-          className="intro-logo-travel mt-8 w-[280px] max-w-[70vw]" />
-        <p data-leaving={leaving} className="intro-phrase intro-fade mt-6 text-center font-serif text-lg font-light italic" style={{ textAlign: 'center' }}>
+        <img
+          src="/branding/tigre.png"
+          alt={i.tigerAlt}
+          data-leaving={leaving}
+          className="intro-fade h-[140px] w-auto"
+        />
+        <img
+          ref={logoRef}
+          src="/branding/ecoyai_titulo.svg"
+          alt="ÉCOYAI"
+          data-leaving={leaving}
+          className="intro-logo-travel mt-8 w-[280px] max-w-[70vw]"
+        />
+        <p
+          data-leaving={leaving}
+          className="intro-phrase intro-fade mt-6 text-center font-serif text-lg font-light italic"
+          style={{ textAlign: 'center' }}
+        >
           {i.phrase}
         </p>
       </div>
 
       <div data-leaving={leaving} className="intro-fade absolute inset-x-0 bottom-10 flex flex-col items-center gap-3">
-        <div className="intro-bar h-0.5 w-40 overflow-hidden" role="progressbar" aria-label={i.loading}><span className="block h-full w-full" /></div>
-        <p className="intro-label text-[10px] uppercase tracking-[0.3em]" style={{ textAlign: 'center' }}>{i.loading}</p>
+        <div className="intro-bar h-0.5 w-40 overflow-hidden" role="progressbar" aria-label={i.loading}>
+          <span className="block h-full w-full" />
+        </div>
+        <p className="intro-label text-[10px] uppercase tracking-[0.3em]" style={{ textAlign: 'center' }}>
+          {i.loading}
+        </p>
       </div>
     </div>
   )

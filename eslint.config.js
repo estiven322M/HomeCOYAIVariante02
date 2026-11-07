@@ -19,10 +19,7 @@ function restrict(message = '', ...groups) {
   return [
     'error',
     {
-      patterns: [
-        NO_PARENT_RELATIVE,
-        ...groups.map((group) => ({ group, message })),
-      ],
+      patterns: [NO_PARENT_RELATIVE, ...groups.map((group) => ({ group, message }))],
     },
   ]
 }
@@ -83,10 +80,14 @@ export default tseslint.config(
   {
     files: ['src/shared/i18n/**/*.{ts,tsx}'],
     rules: {
-      'no-restricted-imports': restrict(
-        'shared no puede importar de app, pages ni features.',
-        ['@/app', '@/app/**', '@/pages', '@/pages/**', '@/features', '@/features/**'],
-      ),
+      'no-restricted-imports': restrict('shared no puede importar de app, pages ni features.', [
+        '@/app',
+        '@/app/**',
+        '@/pages',
+        '@/pages/**',
+        '@/features',
+        '@/features/**',
+      ]),
     },
   },
   // features: shared y content; nunca app, pages ni otra feature.

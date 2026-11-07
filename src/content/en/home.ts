@@ -54,5 +54,5 @@ export const home = {
     rights: 'All rights reserved.',
     legal: 'Legal notice',
     privacy: 'Privacy policy',
-  }
+  },
 } satisfies typeof esHome

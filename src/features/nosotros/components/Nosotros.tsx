@@ -20,9 +20,16 @@ function TaitaPhoto({ label }: { label: string }) {
   const [failed, setFailed] = useState(false)
   return (
     <div className="aspect-[4/3] overflow-hidden">
-      {failed
-        ? <MediaPlaceholder label={label} tone="earth" className="h-full w-full" />
-        : <img src="/taita/taita_victoriano.webp" alt={label} onError={() => setFailed(true)} className="h-full w-full object-cover" />}
+      {failed ? (
+        <MediaPlaceholder label={label} tone="earth" className="h-full w-full" />
+      ) : (
+        <img
+          src="/taita/taita_victoriano.webp"
+          alt={label}
+          onError={() => setFailed(true)}
+          className="h-full w-full object-cover"
+        />
+      )}
     </div>
   )
 }
@@ -52,7 +59,10 @@ export function Nosotros() {
             <ul className="mt-14 flex flex-wrap gap-3">
               {anchors.map((a) => (
                 <li key={a.id}>
-                  <a href={`#${a.id}`} className="group inline-flex min-h-11 items-center gap-3 border border-carbon/25 px-5 text-sm transition-colors duration-500 hover:border-selva hover:bg-selva hover:text-calido">
+                  <a
+                    href={`#${a.id}`}
+                    className="group inline-flex min-h-11 items-center gap-3 border border-carbon/25 px-5 text-sm transition-colors duration-500 hover:border-selva hover:bg-selva hover:text-calido"
+                  >
                     {a.label}
                   </a>
                 </li>
@@ -67,16 +77,18 @@ export function Nosotros() {
         <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-12">
           <Reveal className="lg:col-span-7">
             <SubTitle label={h.label} />
-            <h3 className="mt-8 font-serif text-4xl font-light leading-[1.08] lg:text-6xl">
-              {h.title}
-            </h3>
+            <h3 className="mt-8 font-serif text-4xl font-light leading-[1.08] lg:text-6xl">{h.title}</h3>
             <p className="mt-10 font-serif text-2xl font-light leading-snug text-carbon/90">{h.paragraphs[0]}</p>
             <div className="mt-8 space-y-6 text-[17px] leading-relaxed text-carbon/80">
-              {h.paragraphs.slice(1).map((p) => <p key={p.slice(0, 24)}>{p}</p>)}
+              {h.paragraphs.slice(1).map((p) => (
+                <p key={p.slice(0, 24)}>{p}</p>
+              ))}
             </div>
           </Reveal>
           <Reveal delay={200} className="lg:sticky lg:top-24 lg:col-span-5 lg:self-start">
-            <div className="aspect-[4/5] overflow-hidden"><MediaPlaceholder label={h.media} className="h-full w-full" /></div>
+            <div className="aspect-[4/5] overflow-hidden">
+              <MediaPlaceholder label={h.media} className="h-full w-full" />
+            </div>
           </Reveal>
         </div>
         <Reveal className="mx-auto mt-20 max-w-6xl">
@@ -135,7 +147,10 @@ export function Nosotros() {
       </section>
 
       {/* 03 · Liderazgo ancestral */}
-      <section id="nosotros-liderazgo" className="scroll-mt-14 relative overflow-hidden bg-selva px-6 py-28 text-calido lg:py-36">
+      <section
+        id="nosotros-liderazgo"
+        className="scroll-mt-14 relative overflow-hidden bg-selva px-6 py-28 text-calido lg:py-36"
+      >
         <div className="mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-12">
           <Reveal className="lg:col-span-7">
             <TaitaPhoto label={l.media} />
@@ -145,7 +160,12 @@ export function Nosotros() {
             <h3 className="mt-8 font-serif text-4xl font-light leading-[1.05] lg:text-5xl">{l.name}</h3>
             <ul className="mt-8 flex flex-wrap justify-center gap-3">
               {l.roles.map((r) => (
-                <li key={r} className="border border-ocre/60 px-4 py-1.5 text-[11px] uppercase tracking-[0.25em] text-ocre">{r}</li>
+                <li
+                  key={r}
+                  className="border border-ocre/60 px-4 py-1.5 text-[11px] uppercase tracking-[0.25em] text-ocre"
+                >
+                  {r}
+                </li>
               ))}
             </ul>
             <p className="mt-10 max-w-xl font-serif text-xl font-light leading-relaxed text-calido/85">{l.text}</p>
@@ -162,7 +182,12 @@ export function Nosotros() {
             <p className="mt-8 text-[17px] leading-relaxed text-carbon/80">{g.text}</p>
             <ul className="mt-8 flex flex-wrap gap-2">
               {g.badges.map((b) => (
-                <li key={b} className="border border-bosque/40 px-3 py-1.5 text-[11px] uppercase tracking-[0.2em] text-bosque">{b}</li>
+                <li
+                  key={b}
+                  className="border border-bosque/40 px-3 py-1.5 text-[11px] uppercase tracking-[0.2em] text-bosque"
+                >
+                  {b}
+                </li>
               ))}
             </ul>
           </Reveal>
@@ -172,13 +197,24 @@ export function Nosotros() {
               <ul className="mt-6 border-t border-carbon/20">
                 {g.docs.map((d) => (
                   <li key={d} className="border-b border-carbon/20">
-                    <a href="#nosotros-legal" className="group flex items-center justify-between gap-4 py-5 transition-all duration-500 hover:bg-selva hover:px-4 hover:text-calido">
+                    <a
+                      href="#nosotros-legal"
+                      className="group flex items-center justify-between gap-4 py-5 transition-all duration-500 hover:bg-selva hover:px-4 hover:text-calido"
+                    >
                       <span>
                         <span className="block text-[15px]">{d}</span>
-                        <span className="mt-1 block text-xs text-carbon/50 group-hover:text-calido/60">{g.pending}</span>
+                        <span className="mt-1 block text-xs text-carbon/50 group-hover:text-calido/60">
+                          {g.pending}
+                        </span>
                       </span>
                       <span className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-tierra group-hover:text-ocre">
-                        PDF <span aria-hidden className="text-lg transition-transform duration-500 group-hover:translate-y-0.5">↓</span>
+                        PDF{' '}
+                        <span
+                          aria-hidden
+                          className="text-lg transition-transform duration-500 group-hover:translate-y-0.5"
+                        >
+                          ↓
+                        </span>
                       </span>
                     </a>
                   </li>
@@ -193,7 +229,9 @@ export function Nosotros() {
       <section id="nosotros-junta" className="scroll-mt-14 bg-calido px-6 py-28 lg:py-36">
         <div className="mx-auto max-w-6xl">
           <Reveal className="text-center">
-            <div className="flex justify-center"><SubTitle label={j.label} /></div>
+            <div className="flex justify-center">
+              <SubTitle label={j.label} />
+            </div>
             <h3 className="mt-8 font-serif text-4xl font-light leading-[1.08] lg:text-6xl">{j.title}</h3>
             <p className="mt-6 text-center text-[11px] uppercase tracking-[0.3em] text-carbon/60">{j.subtitle}</p>
           </Reveal>
@@ -201,10 +239,18 @@ export function Nosotros() {
             {j.members.map((m, i) => (
               <Reveal key={m.name} delay={i * 120}>
                 <li>
-                  <div className="aspect-[4/5] overflow-hidden"><MediaPlaceholder label={`${j.mediaPrefix} — ${m.name}`} tone={TONES[i % TONES.length]} className="h-full w-full" /></div>
+                  <div className="aspect-[4/5] overflow-hidden">
+                    <MediaPlaceholder
+                      label={`${j.mediaPrefix} — ${m.name}`}
+                      tone={TONES[i % TONES.length]}
+                      className="h-full w-full"
+                    />
+                  </div>
                   <h4 className="mt-6 font-serif text-2xl font-light leading-tight">{m.name}</h4>
                   <p className="mt-3 text-[11px] uppercase leading-5 tracking-[0.2em] text-bosque">{m.role}</p>
-                  <p className="mt-4 border-t border-carbon/15 pt-4 text-sm leading-relaxed text-carbon/75">{m.profile}</p>
+                  <p className="mt-4 border-t border-carbon/15 pt-4 text-sm leading-relaxed text-carbon/75">
+                    {m.profile}
+                  </p>
                 </li>
               </Reveal>
             ))}

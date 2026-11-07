@@ -1,6 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
 
-
 /** active: intro visible · leaving: veil dissolves + logo travels · reveal: hero items enter in order · done */
 export type Phase = 'active' | 'leaving' | 'reveal' | 'done'
 
@@ -9,9 +8,14 @@ const MIN_MS = 2500
 const MAX_MS = 4000
 
 const seen = () => {
-  try { return sessionStorage.getItem(SEEN_KEY) === '1' } catch { return false }
+  try {
+    return sessionStorage.getItem(SEEN_KEY) === '1'
+  } catch {
+    return false
+  }
 }
-export const reducedMotion = () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+export const reducedMotion = () =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 type Ctx = { phase: Phase; skip: () => void; reportVideo: () => void }
 const IntroContext = createContext<Ctx | null>(null)
@@ -28,10 +32,16 @@ export function IntroProvider({ children }: { children: ReactNode }) {
   const [minDone, setMinDone] = useState(false)
   const [videoOk, setVideoOk] = useState(false)
 
-  useLayoutEffect(() => { document.documentElement.dataset.intro = phase }, [phase])
+  useLayoutEffect(() => {
+    document.documentElement.dataset.intro = phase
+  }, [phase])
 
   const leave = useCallback(() => {
-    try { sessionStorage.setItem(SEEN_KEY, '1') } catch { /* storage unavailable */ }
+    try {
+      sessionStorage.setItem(SEEN_KEY, '1')
+    } catch {
+      /* storage unavailable */
+    }
     setPhase((p) => (p === 'active' ? 'leaving' : p))
   }, [])
   const reportVideo = useCallback(() => setVideoOk(true), [])
@@ -40,11 +50,19 @@ export function IntroProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (phase !== 'active') return
     const a = setTimeout(() => setMinDone(true), MIN_MS)
-    const b = setTimeout(() => { setMinDone(true); setVideoOk(true) }, MAX_MS)
-    return () => { clearTimeout(a); clearTimeout(b) }
+    const b = setTimeout(() => {
+      setMinDone(true)
+      setVideoOk(true)
+    }, MAX_MS)
+    return () => {
+      clearTimeout(a)
+      clearTimeout(b)
+    }
   }, [phase])
 
-  useEffect(() => { if (phase === 'active' && minDone && videoOk) leave() }, [phase, minDone, videoOk, leave])
+  useEffect(() => {
+    if (phase === 'active' && minDone && videoOk) leave()
+  }, [phase, minDone, videoOk, leave])
 
   useEffect(() => {
     const reduced = reducedMotion()
@@ -60,4 +78,3 @@ export function IntroProvider({ children }: { children: ReactNode }) {
 
   return <IntroContext.Provider value={{ phase, skip: leave, reportVideo }}>{children}</IntroContext.Provider>
 }
-

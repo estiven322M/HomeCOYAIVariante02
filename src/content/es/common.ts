@@ -11,5 +11,11 @@ export const common = {
     { label: 'Contacto', desc: 'Escríbenos para conversar, colaborar o conocer más.' },
   ],
   sideNav: { aria: 'Principal', collaborate: 'Colaborar', menu: 'Menú', close: 'Cerrar', place: 'Putumayo · Colombia' },
-  intro: { phrase: 'Desde el territorio, hacia el futuro.', loading: 'Cargando el territorio', skip: 'Saltar', aria: 'Pantalla de bienvenida', tigerAlt: 'Jaguar, isotipo de ÉCOYAI' }
+  intro: {
+    phrase: 'Desde el territorio, hacia el futuro.',
+    loading: 'Cargando el territorio',
+    skip: 'Saltar',
+    aria: 'Pantalla de bienvenida',
+    tigerAlt: 'Jaguar, isotipo de ÉCOYAI',
+  },
 }

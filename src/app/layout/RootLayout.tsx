@@ -13,9 +13,14 @@ export function RootLayout({ children }: { children: ReactNode }) {
     <>
       <Intro />
       <div inert={introActive} aria-hidden={introActive || undefined}>
-      <a href="#origen" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-calido focus:px-4 focus:py-2">{t.skip}</a>
-      <SideNav />
-      {children}
+        <a
+          href="#origen"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-calido focus:px-4 focus:py-2"
+        >
+          {t.skip}
+        </a>
+        <SideNav />
+        {children}
       </div>
     </>
   )

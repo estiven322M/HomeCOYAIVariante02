@@ -52,5 +52,5 @@ export const home = {
     rights: 'Todos los derechos reservados.',
     legal: 'Aviso legal',
     privacy: 'Política de privacidad',
-  }
+  },
 }

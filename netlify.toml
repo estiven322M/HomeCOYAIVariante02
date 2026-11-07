@@ -5,40 +5,40 @@
 # hay que actualizar `publish` aquí. Ver docs/ARCHITECTURE.md.
 
 [build]
-  command = "pnpm run build"
-  publish = "dist"
+command = "pnpm run build"
+publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "22"
+NODE_VERSION = "22"
 
 # Previsualizaciones (deploy previews y branch deploys): nunca indexables.
 # Netlify no admite cabeceras por contexto en [[headers]], así que se añade
 # una regla al archivo `_headers` generado tras el build.
 [context.deploy-preview]
-  command = "pnpm run build && printf '/*\n  X-Robots-Tag: noindex\n' >> dist/_headers"
+command = "pnpm run build && printf '/*\n  X-Robots-Tag: noindex\n' >> dist/_headers"
 
 [context.branch-deploy]
-  command = "pnpm run build && printf '/*\n  X-Robots-Tag: noindex\n' >> dist/_headers"
+command = "pnpm run build && printf '/*\n  X-Robots-Tag: noindex\n' >> dist/_headers"
 
 # Archivos con hash en el nombre: inmutables, caché de 1 año.
 [[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+for = "/assets/*"
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
 
 # Medios sin hash en el nombre: caché larga (30 días). Si se reemplaza un
 # archivo, conviene renombrarlo para que no se sirva una copia antigua.
 [[headers]]
-  for = "/video/*"
-  [headers.values]
-    Cache-Control = "public, max-age=2592000"
+for = "/video/*"
+[headers.values]
+Cache-Control = "public, max-age=2592000"
 
 [[headers]]
-  for = "/slider/*"
-  [headers.values]
-    Cache-Control = "public, max-age=2592000"
+for = "/slider/*"
+[headers.values]
+Cache-Control = "public, max-age=2592000"
 
 [[headers]]
-  for = "/branding/*"
-  [headers.values]
-    Cache-Control = "public, max-age=2592000"
+for = "/branding/*"
+[headers.values]
+Cache-Control = "public, max-age=2592000"

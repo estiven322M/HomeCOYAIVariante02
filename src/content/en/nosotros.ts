@@ -14,9 +14,7 @@ export const nosotros = {
         'Founded in the heart of Putumayo, the organization works as a vehicle at the service of communities for the safeguarding of traditional medicine, customs and traditions, the revitalization of the Zio Bain language, comprehensive social development, and the defense of the territory and human dignity.',
       ],
       media: 'Photography — Putumayo riverbank, Siona territory',
-      facts: [
-        { k: 'Zio Bain', v: 'Siona People · “People of the Chagra”' },
-      ],
+      facts: [{ k: 'Zio Bain', v: 'Siona People · “People of the Chagra”' }],
     },
     estrategia: {
       label: 'Strategic direction',
@@ -31,13 +29,34 @@ export const nosotros = {
       },
       valuesTitle: 'Institutional values',
       values: [
-        { k: 'Solidarity', t: 'Commitment to the collective well-being of Indigenous peoples, promoting mutual support and cooperation to protect their culture and ancestral knowledge.' },
-        { k: 'Commitment', t: 'Unwavering dedication to safeguarding and conserving traditional medicine, the mother tongue, the worldview and the Indigenous life plan.' },
-        { k: 'Ethics', t: 'Acting with integrity, responsibility and respect for the ancestral principles and values of Indigenous peoples, ensuring consistency between words and practice.' },
-        { k: 'Transparency', t: 'Clear and honest management of processes and resources, ensuring the trust of the communities and actors involved in the association’s mission.' },
-        { k: 'Discipline', t: 'Perseverance and rigor in carrying out projects and actions that strengthen the identity and well-being of Indigenous peoples.' },
-        { k: 'Teamwork', t: 'Fostering collective participation, dialogue and joint construction with communities and strategic allies to reach institutional goals.' },
-        { k: 'Human dignity', t: 'Promoting respect for and appreciation of the fundamental rights of Indigenous peoples, ensuring their recognition and cultural autonomy.' },
+        {
+          k: 'Solidarity',
+          t: 'Commitment to the collective well-being of Indigenous peoples, promoting mutual support and cooperation to protect their culture and ancestral knowledge.',
+        },
+        {
+          k: 'Commitment',
+          t: 'Unwavering dedication to safeguarding and conserving traditional medicine, the mother tongue, the worldview and the Indigenous life plan.',
+        },
+        {
+          k: 'Ethics',
+          t: 'Acting with integrity, responsibility and respect for the ancestral principles and values of Indigenous peoples, ensuring consistency between words and practice.',
+        },
+        {
+          k: 'Transparency',
+          t: 'Clear and honest management of processes and resources, ensuring the trust of the communities and actors involved in the association’s mission.',
+        },
+        {
+          k: 'Discipline',
+          t: 'Perseverance and rigor in carrying out projects and actions that strengthen the identity and well-being of Indigenous peoples.',
+        },
+        {
+          k: 'Teamwork',
+          t: 'Fostering collective participation, dialogue and joint construction with communities and strategic allies to reach institutional goals.',
+        },
+        {
+          k: 'Human dignity',
+          t: 'Promoting respect for and appreciation of the fundamental rights of Indigenous peoples, ensuring their recognition and cultural autonomy.',
+        },
       ],
     },
     liderazgo: {
@@ -63,11 +82,29 @@ export const nosotros = {
       subtitle: 'Board of Directors',
       mediaPrefix: 'Portrait',
       members: [
-        { name: 'Victoriano Piaguaje Yaiguaje', role: 'Executive Director · Board member and Principal Knowledge Keeper', profile: 'Spiritual and strategic guide of ÉCOYAI, ensuring adherence to ancestral principles and worldview.' },
-        { name: 'Franco Ever Yaiguaje Payoguaje', role: 'Board member · Political leadership', profile: 'Political, social and territorial leadership and direction of ÉCOYAI.' },
-        { name: 'María Lidia Ron Papa', role: 'Board member', profile: 'Coordination of community projects, safeguarding of the grandmothers’ and the chagra’s knowledge, and strengthening of cultural and social autonomy.' },
-        { name: 'Juanita Mercedes Payoguaje Maniguaje', role: 'Board member', profile: 'Field liaison for recovering oral tradition and the pedagogical revitalization of the mother tongue (Zio Bain).' },
+        {
+          name: 'Victoriano Piaguaje Yaiguaje',
+          role: 'Executive Director · Board member and Principal Knowledge Keeper',
+          profile: 'Spiritual and strategic guide of ÉCOYAI, ensuring adherence to ancestral principles and worldview.',
+        },
+        {
+          name: 'Franco Ever Yaiguaje Payoguaje',
+          role: 'Board member · Political leadership',
+          profile: 'Political, social and territorial leadership and direction of ÉCOYAI.',
+        },
+        {
+          name: 'María Lidia Ron Papa',
+          role: 'Board member',
+          profile:
+            'Coordination of community projects, safeguarding of the grandmothers’ and the chagra’s knowledge, and strengthening of cultural and social autonomy.',
+        },
+        {
+          name: 'Juanita Mercedes Payoguaje Maniguaje',
+          role: 'Board member',
+          profile:
+            'Field liaison for recovering oral tradition and the pedagogical revitalization of the mother tongue (Zio Bain).',
+        },
       ],
     },
-  }
+  },
 } satisfies typeof esNosotros

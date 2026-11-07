@@ -12,9 +12,7 @@ export const nosotros = {
         'Fundada en el corazón del Putumayo, la organización trabaja como un vehículo al servicio de las comunidades para la salvaguarda de la medicina tradicional, los usos y costumbres, la revitalización del idioma Zio Bain, el desarrollo social integral y la defensa del territorio y la dignidad humana.',
       ],
       media: 'Fotografía — ribera del río Putumayo, territorio Siona',
-      facts: [
-        { k: 'Zio Bain', v: 'Pueblo Siona · «Gente de la Chagra»' },
-      ],
+      facts: [{ k: 'Zio Bain', v: 'Pueblo Siona · «Gente de la Chagra»' }],
     },
     estrategia: {
       label: 'Direccionamiento estratégico',
@@ -29,13 +27,34 @@ export const nosotros = {
       },
       valuesTitle: 'Valores institucionales',
       values: [
-        { k: 'Solidaridad', t: 'Compromiso con el bienestar colectivo de los pueblos indígenas, promoviendo el apoyo mutuo y la cooperación para la protección de su cultura y conocimientos ancestrales.' },
-        { k: 'Compromiso', t: 'Dedicación inquebrantable a la salvaguarda y conservación de la medicina tradicional, la lengua materna, la cosmovisión y el plan de vida indígena.' },
-        { k: 'Ética', t: 'Actuar con integridad, responsabilidad y respeto hacia los principios y valores ancestrales de los pueblos indígenas, garantizando la coherencia entre el discurso y la práctica.' },
-        { k: 'Transparencia', t: 'Gestión clara y honesta de los procesos y recursos, asegurando la confianza de las comunidades y actores involucrados en la misión de la asociación.' },
-        { k: 'Disciplina', t: 'Perseverancia y rigor en la ejecución de proyectos y acciones que fortalezcan la identidad y el bienestar de los pueblos indígenas.' },
-        { k: 'Trabajo en equipo', t: 'Fomentar la participación colectiva, el diálogo y la construcción conjunta con las comunidades y aliados estratégicos para alcanzar los objetivos institucionales.' },
-        { k: 'Dignidad humana', t: 'Promoción del respeto y la valoración de los derechos fundamentales de los pueblos indígenas, asegurando su reconocimiento y autonomía cultural.' },
+        {
+          k: 'Solidaridad',
+          t: 'Compromiso con el bienestar colectivo de los pueblos indígenas, promoviendo el apoyo mutuo y la cooperación para la protección de su cultura y conocimientos ancestrales.',
+        },
+        {
+          k: 'Compromiso',
+          t: 'Dedicación inquebrantable a la salvaguarda y conservación de la medicina tradicional, la lengua materna, la cosmovisión y el plan de vida indígena.',
+        },
+        {
+          k: 'Ética',
+          t: 'Actuar con integridad, responsabilidad y respeto hacia los principios y valores ancestrales de los pueblos indígenas, garantizando la coherencia entre el discurso y la práctica.',
+        },
+        {
+          k: 'Transparencia',
+          t: 'Gestión clara y honesta de los procesos y recursos, asegurando la confianza de las comunidades y actores involucrados en la misión de la asociación.',
+        },
+        {
+          k: 'Disciplina',
+          t: 'Perseverancia y rigor en la ejecución de proyectos y acciones que fortalezcan la identidad y el bienestar de los pueblos indígenas.',
+        },
+        {
+          k: 'Trabajo en equipo',
+          t: 'Fomentar la participación colectiva, el diálogo y la construcción conjunta con las comunidades y aliados estratégicos para alcanzar los objetivos institucionales.',
+        },
+        {
+          k: 'Dignidad humana',
+          t: 'Promoción del respeto y la valoración de los derechos fundamentales de los pueblos indígenas, asegurando su reconocimiento y autonomía cultural.',
+        },
       ],
     },
     liderazgo: {
@@ -61,11 +80,30 @@ export const nosotros = {
       subtitle: 'Junta directiva',
       mediaPrefix: 'Retrato',
       members: [
-        { name: 'Victoriano Piaguaje Yaiguaje', role: 'Director Ejecutivo · Miembro de junta directiva y Sabedor Principal', profile: 'Guía espiritual y estratégica de ÉCOYAI, garantizando el apego a los principios y la cosmovisión ancestral.' },
-        { name: 'Franco Ever Yaiguaje Payoguaje', role: 'Miembro de la Junta Directiva · Dirección política', profile: 'Liderazgo y dirección política, social y territorial de ÉCOYAI.' },
-        { name: 'María Lidia Ron Papa', role: 'Miembro de junta directiva', profile: 'Coordinación de proyectos comunitarios, salvaguarda de los saberes de las abuelas y de la chagra, y fortalecimiento de la autonomía cultural y social.' },
-        { name: 'Juanita Mercedes Payoguaje Maniguaje', role: 'Miembro de junta directiva', profile: 'Enlace en territorio para la recuperación de la tradición oral y la revitalización pedagógica de la lengua materna (Zio Bain).' },
+        {
+          name: 'Victoriano Piaguaje Yaiguaje',
+          role: 'Director Ejecutivo · Miembro de junta directiva y Sabedor Principal',
+          profile:
+            'Guía espiritual y estratégica de ÉCOYAI, garantizando el apego a los principios y la cosmovisión ancestral.',
+        },
+        {
+          name: 'Franco Ever Yaiguaje Payoguaje',
+          role: 'Miembro de la Junta Directiva · Dirección política',
+          profile: 'Liderazgo y dirección política, social y territorial de ÉCOYAI.',
+        },
+        {
+          name: 'María Lidia Ron Papa',
+          role: 'Miembro de junta directiva',
+          profile:
+            'Coordinación de proyectos comunitarios, salvaguarda de los saberes de las abuelas y de la chagra, y fortalecimiento de la autonomía cultural y social.',
+        },
+        {
+          name: 'Juanita Mercedes Payoguaje Maniguaje',
+          role: 'Miembro de junta directiva',
+          profile:
+            'Enlace en territorio para la recuperación de la tradición oral y la revitalización pedagógica de la lengua materna (Zio Bain).',
+        },
       ],
     },
-  }
+  },
 }
