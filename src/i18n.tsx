@@ -35,6 +35,11 @@ const es = {
     media: 'Fotografía documental — territorio y comunidad',
     caption: 'Nace en el Putumayo',
     quote: 'Territorio, memoria y lengua como un mismo tejido.',
+    prev: 'Anterior',
+    next: 'Siguiente',
+    image: 'Imagen',
+    pause: 'Pausar carrusel',
+    play: 'Reanudar carrusel',
   },
   nosotros: {
     eyebrow: 'Quiénes somos',
@@ -166,6 +171,11 @@ const en: typeof es = {
     media: 'Documentary photography — territory and community',
     caption: 'Born in Putumayo',
     quote: 'Territory, memory and language as a single fabric.',
+    prev: 'Previous',
+    next: 'Next',
+    image: 'Image',
+    pause: 'Pause carousel',
+    play: 'Resume carousel',
   },
   nosotros: {
     eyebrow: 'Who we are',

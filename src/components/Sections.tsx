@@ -13,11 +13,18 @@ const SLIDER_SRCS = Array.from({ length: SLIDER_COUNT }, (_, i) => `/slider/slid
 /** Dirección del paneo Ken Burns por imagen (se alterna para dar variedad). */
 const KEN_BURNS_PANS = [['-1%', '-0.75%'], ['1%', '-0.75%'], ['-1%', '0.75%'], ['1%', '0.75%']]
 
+/** Botón del carrusel: 44×44 mínimo, fondo sólido y foco claro sobre la foto. */
+const SLIDER_BTN = 'absolute flex h-11 w-11 items-center justify-center bg-selva text-2xl leading-none text-calido transition hover:bg-bosque focus-visible:outline-calido'
+
 /** Slider de imágenes: toma /slider/slider1.webp … slider9.webp desde public/slider; ignora las que no existan. */
 function ImageSlider({ label }: { label: string }) {
+  const q = useLang().t.queEs
   const [missing, setMissing] = useState<Set<string>>(new Set())
   const [index, setIndex] = useState(0)
-  const [paused, setPaused] = useState(false)
+  const [hovered, setHovered] = useState(false)
+  // Con prefers-reduced-motion el avance automático arranca detenido.
+  const [userPaused, setUserPaused] = useState(() => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  const paused = hovered || userPaused
   const slides = SLIDER_SRCS.filter((s) => !missing.has(s))
   const n = slides.length
   const current = n ? index % n : 0
@@ -45,7 +52,7 @@ function ImageSlider({ label }: { label: string }) {
   const go = (d: number) => setIndex((current + d + n) % n)
 
   return (
-    <div className="relative aspect-[4/5] overflow-hidden" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+    <div className="relative aspect-[4/5] overflow-hidden" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
       {n === 0 && <MediaPlaceholder label={label} className="h-full w-full" />}
       {SLIDER_SRCS.map((src, i) => {
         const pos = slides.indexOf(src)
@@ -63,11 +70,16 @@ function ImageSlider({ label }: { label: string }) {
       })}
       {n > 1 && (
         <>
-          <button type="button" aria-label="Anterior" onClick={() => go(-1)} className="absolute left-3 top-1/2 -translate-y-1/2 bg-selva/50 px-3 py-2 text-calido transition hover:bg-selva/80">‹</button>
-          <button type="button" aria-label="Siguiente" onClick={() => go(1)} className="absolute right-3 top-1/2 -translate-y-1/2 bg-selva/50 px-3 py-2 text-calido transition hover:bg-selva/80">›</button>
-          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+          <button type="button" aria-label={q.prev} onClick={() => go(-1)} className={`${SLIDER_BTN} left-3 top-1/2 -translate-y-1/2`}><span aria-hidden>‹</span></button>
+          <button type="button" aria-label={q.next} onClick={() => go(1)} className={`${SLIDER_BTN} right-3 top-1/2 -translate-y-1/2`}><span aria-hidden>›</span></button>
+          <button type="button" aria-label={userPaused ? q.play : q.pause} aria-pressed={userPaused} onClick={() => setUserPaused((v) => !v)} className={`${SLIDER_BTN} right-3 top-3`}>
+            <span aria-hidden className="text-base">{userPaused ? '▶' : '❚❚'}</span>
+          </button>
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center">
             {slides.map((s, i) => (
-              <button key={s} type="button" aria-label={`Imagen ${i + 1}`} onClick={() => setIndex(i)} className={`h-1.5 w-6 transition ${i === current ? 'bg-calido' : 'bg-calido/40'}`} />
+              <button key={s} type="button" aria-label={`${q.image} ${i + 1}`} aria-current={i === current} onClick={() => setIndex(i)} className="group flex h-11 w-8 items-center justify-center focus-visible:outline-calido">
+                <span className={`block h-1.5 w-6 transition ${i === current ? 'bg-calido' : 'bg-calido/40'}`} />
+              </button>
             ))}
           </div>
         </>
@@ -79,7 +91,7 @@ function ImageSlider({ label }: { label: string }) {
 export function QueEs() {
   const q = useLang().t.queEs
   return (
-    <section id="que-es" className="bg-crema px-6 py-28 lg:py-40">
+    <section id="origen" className="scroll-mt-14 bg-crema px-6 py-28 lg:py-40">
       <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-12">
         <Reveal className="lg:col-span-5">
           <Eyebrow>{q.eyebrow}</Eyebrow>

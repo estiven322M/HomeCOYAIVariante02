@@ -74,6 +74,17 @@
   /* Legibilidad sobre el video (sin tocar la opacidad del video) */
   .hero-grad-v { background: linear-gradient(to bottom, color-mix(in srgb, var(--selva) 45%, transparent) 0%, color-mix(in srgb, var(--selva) 8%, transparent) 50%, color-mix(in srgb, var(--selva) 85%, transparent) 100%); }
   .hero-grad-h { background: linear-gradient(to right, color-mix(in srgb, var(--selva) 85%, transparent) 0%, transparent 70%); }
+  /* Transición hero -> sección siguiente (#origen, bg-crema). Altura: --hero-fade-h. Parada intermedia: --hero-fade-mid. */
+  .hero-fade {
+    --hero-fade-h: 120px;
+    --hero-fade-mid: 45%;
+    height: var(--hero-fade-h);
+    background: linear-gradient(to bottom, rgb(15 27 22 / 0) 0%, rgb(58 72 63 / 0.85) var(--hero-fade-mid), var(--color-crema) 100%);
+  }
+  @media (min-width: 768px) { .hero-fade { --hero-fade-h: 200px; } }
+  @supports (background: linear-gradient(in oklch, red, blue)) {
+    .hero-fade { background: linear-gradient(in oklch to bottom, rgb(15 27 22 / 0) 0%, rgb(58 72 63 / 0.85) var(--hero-fade-mid), var(--color-crema) 100%); }
+  }
   .hero-grad-top { background: linear-gradient(to bottom, color-mix(in srgb, var(--selva) 55%, transparent) 0%, transparent 100%); }
 }
 

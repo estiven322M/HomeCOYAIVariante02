@@ -18,7 +18,7 @@ export function Hero() {
   const p = Math.min(y / vh, 1)
 
   return (
-    <section id="inicio" aria-label={h.aria} className="hero-scope relative h-[100svh] min-h-[600px] overflow-hidden bg-selva">
+    <section id="inicio" aria-label={h.aria} className="hero-scope relative -mb-px h-[100svh] min-h-[600px] overflow-hidden bg-selva">
       {/* Video layer: recedes gradually as the story begins */}
       <div className="absolute inset-0" style={{ transform: `scale(${1 + p * 0.06})`, opacity: 1 - p * 0.55 }}>
         {/* Fallback while the video loads (or if the file is missing) */}
@@ -39,9 +39,11 @@ export function Hero() {
       <div className="hero-grad-v absolute inset-0" aria-hidden />
       <div className="hero-grad-h absolute inset-0" aria-hidden />
       <div className="hero-grad-top absolute inset-x-0 top-0 h-40" aria-hidden />
+      {/* Transición al crema de #origen: solo CSS, sin eventos */}
+      <div className="hero-fade pointer-events-none absolute inset-x-0 bottom-0" aria-hidden="true" />
 
       {/* Editorial content */}
-      <div className="relative z-10 flex h-full flex-col justify-end px-6 pb-28 lg:px-16 lg:pb-24"
+      <div className="relative z-10 flex h-full flex-col justify-end px-6 pb-[17rem] lg:px-16 lg:pb-56"
         style={{ transform: `translateY(${p * -40}px)`, opacity: 1 - p * 1.2 }}>
         <div className="max-w-2xl lg:max-w-xl xl:max-w-2xl">
           <p className="intro-item hero-eyebrow text-[11px] uppercase tracking-[0.3em]" style={item(0)}>{h.eyebrow}</p>
@@ -52,20 +54,20 @@ export function Hero() {
             {h.text}
           </p>
           <div className="intro-item mt-9 flex flex-col gap-3 sm:flex-row" style={item(3)}>
-            <Button href="#que-es" variant="hero">{h.cta1}</Button>
+            <Button href="#origen" variant="hero">{h.cta1}</Button>
             <Button href="#proyecto" variant="heroGhost">{h.cta2}</Button>
           </div>
         </div>
       </div>
 
       {/* Context markers */}
-      <div className="intro-item hero-meta absolute bottom-8 right-6 z-10 hidden text-right text-[10px] uppercase leading-5 tracking-[0.3em] md:block lg:right-16" style={item(7)}>
+      <div className="intro-item hero-meta absolute bottom-[150px] right-6 z-10 hidden text-right text-[10px] uppercase leading-5 tracking-[0.3em] md:block lg:right-16" style={item(7)}>
         <p>Putumayo</p><p>Colombia</p>
       </div>
       <p className="intro-item text-calido/45 absolute right-6 top-1/2 z-10 hidden origin-right -translate-y-1/2 translate-x-[calc(50%-6px)] rotate-90 text-[10px] uppercase tracking-[0.4em] xl:block" style={item(7)}>
         {h.keywords}
       </p>
-      <a href="#que-es" className="intro-item hero-meta hero-link absolute bottom-7 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-[10px] uppercase tracking-[0.35em]" style={item(6)}>
+      <a href="#origen" className="intro-item hero-meta hero-link absolute bottom-[140px] left-1/2 z-10 flex min-h-14 min-w-14 -translate-x-1/2 flex-col items-center justify-center gap-1 px-3 text-[10px] uppercase tracking-[0.35em]" style={item(6)}>
         {h.explore} <span aria-hidden className="bob text-base">↓</span>
       </a>
     </section>
