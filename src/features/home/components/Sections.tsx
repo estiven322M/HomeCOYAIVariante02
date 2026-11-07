@@ -1,6 +1,12 @@
 import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
-import { Button, Eyebrow, MediaPlaceholder, Reveal, TextLink, useScrollY, Logo } from './ui'
-import { useLang, useNav } from '../i18n'
+import { Button } from '@/shared/ui/Button'
+import { Eyebrow } from '@/shared/ui/Eyebrow'
+import { Logo } from '@/shared/ui/Logo'
+import { MediaPlaceholder } from '@/shared/ui/MediaPlaceholder'
+import { Reveal } from '@/shared/ui/Reveal'
+import { TextLink } from '@/shared/ui/TextLink'
+import { useScrollY } from '@/shared/hooks/useScrollY'
+import { useLang, useNav } from '@/shared/i18n'
 
 function Parallax({ children, speed = 0.04 }: { children: ReactNode; speed?: number }) {
   const y = useScrollY()

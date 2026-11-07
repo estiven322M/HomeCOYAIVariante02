@@ -1,6 +1,6 @@
 import { useEffect, useState, type CSSProperties } from 'react'
-import { useScrollY } from './ui'
-import { LangSwitch, useLang, useNav } from '../i18n'
+import { useScrollY } from '@/shared/hooks/useScrollY'
+import { LangSwitch, useLang, useNav } from '@/shared/i18n'
 
 /** Top bar with a toggle button + retractable menu panel (same behaviour on desktop and mobile). */
 export function SideNav() {

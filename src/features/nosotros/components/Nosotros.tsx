@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { Eyebrow, MediaPlaceholder, Reveal } from './ui'
-import { useLang } from '../i18n'
+import { Eyebrow } from '@/shared/ui/Eyebrow'
+import { MediaPlaceholder } from '@/shared/ui/MediaPlaceholder'
+import { Reveal } from '@/shared/ui/Reveal'
+import { useLang } from '@/shared/i18n'
 
 const TONES = ['forest', 'earth', 'river', 'forest'] as const
 

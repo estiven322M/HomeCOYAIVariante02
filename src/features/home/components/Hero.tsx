@@ -1,7 +1,8 @@
 import type { CSSProperties } from 'react'
-import { Button, useScrollY } from './ui'
-import { useLang } from '../i18n'
-import { useIntro } from './Intro'
+import { Button } from '@/shared/ui/Button'
+import { useScrollY } from '@/shared/hooks/useScrollY'
+import { useLang } from '@/shared/i18n'
+import { useIntro } from '@/shared/intro/intro-context'
 
 /** Putumayo rainforest footage: file lives in public/video/. The gradient shows until it loads. */
 const VIDEO_SRC = '/video/video-hero.webm'
