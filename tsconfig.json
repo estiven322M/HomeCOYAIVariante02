@@ -21,5 +21,5 @@
     "noUnusedParameters": true,
     "noUncheckedIndexedAccess": true
   },
-  "include": ["src", "vite.config.ts", "config"]
+  "include": ["src", "vite.config.ts", "config", "test", "vitest.config.ts"]
 }
