@@ -14,7 +14,7 @@ export function Reveal({
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    const io = new IntersectionObserver(([e]) => e.isIntersecting && (setInView(true), io.disconnect()), {
+    const io = new IntersectionObserver(([e]) => e?.isIntersecting && (setInView(true), io.disconnect()), {
       threshold: 0.15,
     })
     io.observe(el)

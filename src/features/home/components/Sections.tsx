@@ -78,7 +78,7 @@ function ImageSlider({ label }: { label: string }) {
       {n === 0 && <MediaPlaceholder label={label} className="h-full w-full" />}
       {SLIDER_SRCS.map((src, i) => {
         const pos = slides.indexOf(src)
-        const [kbX, kbY] = KEN_BURNS_PANS[i % KEN_BURNS_PANS.length]
+        const [kbX, kbY] = KEN_BURNS_PANS[i % KEN_BURNS_PANS.length] ?? ['0%', '0%']
         return (
           <img
             key={src}

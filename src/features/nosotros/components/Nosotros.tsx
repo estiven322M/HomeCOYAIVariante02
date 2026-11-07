@@ -53,7 +53,7 @@ export function Nosotros() {
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <Eyebrow>{n.eyebrow}</Eyebrow>
-            <h2 className="mt-6 font-serif text-6xl font-light leading-[1.02] lg:text-8xl">{t.nav[0].label}</h2>
+            <h2 className="mt-6 font-serif text-6xl font-light leading-[1.02] lg:text-8xl">{t.nav[0]?.label}</h2>
           </Reveal>
           <Reveal delay={150}>
             <ul className="mt-14 flex flex-wrap gap-3">
