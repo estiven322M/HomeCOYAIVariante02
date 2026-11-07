@@ -19,3 +19,6 @@ logs/
 # beside it.
 /.plugins/
 /.opencode-skills/
+
+# Plantilla de variables de entorno: sí se versiona
+!.env.example
