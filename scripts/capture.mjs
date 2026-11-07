@@ -46,6 +46,8 @@ for (const [lang, url] of [
         v.pause()
         v.currentTime = 0
       })
+      // Las imágenes diferidas (loading=lazy) no cargan fuera de pantalla: se fuerzan para la captura completa.
+      document.querySelectorAll('img[loading=lazy]').forEach((i) => (i.loading = 'eager'))
       await document.fonts.ready
       await Promise.all(
         [...document.images].map((i) => (i.complete ? null : new Promise((r) => (i.onload = i.onerror = r)))),
