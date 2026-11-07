@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Un solo trabajo por rama: si llega un commit nuevo, cancela el anterior.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      HUSKY: '0' # no instalar hooks de git en CI
+    steps:
+      # Sin `lfs: true` a propósito: los medios de public/ están en Git LFS y para
+      # verificar tipos, lint, pruebas y build no hacen falta (ahorra cuota de LFS).
+      - uses: actions/checkout@v4
+
+      # La versión de pnpm sale del campo "packageManager" de package.json.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run typecheck
+      - run: pnpm run lint
+      - run: pnpm run format:check
+      - run: pnpm run test
+      - run: pnpm run build
