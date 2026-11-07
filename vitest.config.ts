@@ -5,7 +5,12 @@ import { defineConfig } from 'vitest/config'
 // Configuración de pruebas aparte de vite.config.ts: no carga los plugins del sitio ni los de Figma.
 export default defineConfig({
   plugins: [react()],
-  resolve: { alias: { '@': path.resolve(import.meta.dirname, './src') } },
+  resolve: {
+    alias: {
+      '@test': path.resolve(import.meta.dirname, './test'),
+      '@': path.resolve(import.meta.dirname, './src'),
+    },
+  },
   test: {
     environment: 'jsdom',
     setupFiles: ['./test/setup.ts'],

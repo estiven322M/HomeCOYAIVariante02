@@ -33,8 +33,6 @@ window.HTMLMediaElement.prototype.load = () => {}
 window.scrollTo = () => {}
 
 beforeEach(() => {
-  // Idioma inicial fijo (jsdom reporta en-US) y intro ya visto, para que las pruebas sean deterministas.
-  localStorage.setItem('ecoyai-lang', 'es')
   sessionStorage.setItem('ecoyai-intro-seen', '1')
 })
 

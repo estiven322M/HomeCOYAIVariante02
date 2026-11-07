@@ -1,12 +1,13 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { reactRouter } from '@react-router/dev/vite'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'node:path'
 
 import { figmaPlugins, isFigmaEnvironment } from './config/vite-plugins/figma.ts'
-import { siteHead } from './config/vite-plugins/site-head.ts'
+import { robotsTxt } from './config/vite-plugins/robots-txt.ts'
 
 // Vite config — https://vitejs.dev/config/
+// El plugin de React Router sustituye a @vitejs/plugin-react en la app (este último solo queda en vitest.config.ts).
 export default defineConfig(({ mode }) => {
   // .figma/make/deploy-preview passes `--mode development` for cached-preview builds.
   const emitSourcemaps = mode === 'development'
@@ -18,7 +19,7 @@ export default defineConfig(({ mode }) => {
       sourcemap: emitSourcemaps ? 'inline' : false,
       minify: !emitSourcemaps,
     },
-    plugins: [react(), tailwindcss(), siteHead(), ...(figma ? figmaPlugins() : [])],
+    plugins: [tailwindcss(), reactRouter(), robotsTxt(), ...(figma ? figmaPlugins() : [])],
     resolve: {
       alias: {
         '@': path.resolve(import.meta.dirname, './src'),

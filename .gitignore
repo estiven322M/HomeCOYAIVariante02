@@ -25,3 +25,6 @@ logs/
 
 # Capturas de línea base visual (scripts/capture.mjs)
 .baseline/
+
+# Tipos generados por React Router (react-router typegen)
+.react-router/
