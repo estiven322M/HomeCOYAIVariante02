@@ -27,16 +27,26 @@ function restrict(message = '', ...groups) {
 const layer = (name) => [`@/${name}`, `@/${name}/**`]
 
 export default tseslint.config(
-  { ignores: ['dist/**', 'build/**', 'node_modules/**', '.figma/**', 'public/**', 'coverage/**'] },
+  { ignores: ['dist/**', 'build/**', '.react-router/**', 'node_modules/**', '.figma/**', 'public/**', 'coverage/**'] },
 
   js.configs.recommended,
   ...tseslint.configs.recommended,
   jsxA11y.flatConfigs.recommended,
   reactHooks.configs.flat.recommended,
 
+  // Globals: en src y test solo las del navegador; Node únicamente en los archivos de configuración y scripts.
   {
-    files: ['**/*.{ts,tsx,js,mjs}'],
-    languageOptions: { globals: { ...globals.browser, ...globals.node } },
+    files: ['src/**/*.{ts,tsx}', 'test/**/*.{ts,tsx}'],
+    languageOptions: { globals: globals.browser },
+  },
+  {
+    files: ['config/**/*.ts', 'scripts/**/*.mjs', '*.config.{js,ts}'],
+    languageOptions: { globals: globals.node },
+  },
+  {
+    // La captura visual ejecuta funciones dentro de la página (document, sessionStorage…).
+    files: ['scripts/capture.mjs'],
+    languageOptions: { globals: { ...globals.node, ...globals.browser } },
   },
 
   // Reglas de React Compiler que marcan lógica existente (carrusel, intro).

@@ -38,3 +38,5 @@ jobs:
       - run: pnpm run format:check
       - run: pnpm run test
       - run: pnpm run build
+      # Comprueba el HTML estático generado (lang, h1, title, hreflang...).
+      - run: pnpm run verify:build
