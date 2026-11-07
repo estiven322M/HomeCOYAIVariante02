@@ -25,6 +25,7 @@ function TaitaPhoto({ label }: { label: string }) {
       ) : (
         <img
           src="/taita/taita_victoriano.webp"
+          loading="lazy"
           alt={label}
           onError={() => setFailed(true)}
           className="h-full w-full object-cover"

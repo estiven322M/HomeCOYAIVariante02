@@ -1,6 +1,8 @@
-import type { CSSProperties } from 'react'
+import { useEffect, useRef, type CSSProperties } from 'react'
+import { preload } from 'react-dom'
 import { Button } from '@/shared/ui/Button'
 import { useScrollY } from '@/shared/hooks/useScrollY'
+import { useViewportHeight } from '@/shared/hooks/useViewportHeight'
 import { useLang } from '@/shared/i18n'
 import { useIntro } from '@/shared/intro/intro-context'
 
@@ -15,7 +17,14 @@ export function Hero() {
   const h = useLang().t.hero
   const y = useScrollY()
   const { reportVideo } = useIntro()
-  const vh = typeof window !== 'undefined' ? window.innerHeight : 800
+  const vh = useViewportHeight()
+  const videoRef = useRef<HTMLVideoElement>(null)
+  // El póster es lo primero que se ve: prioridad alta (también en el <head> prerenderizado).
+  if (POSTER_SRC) preload(POSTER_SRC, { as: 'image', fetchPriority: 'high' })
+  // Si el video ya estaba listo antes de hidratar, el evento canplay se perdió: se comprueba al montar.
+  useEffect(() => {
+    if (videoRef.current && videoRef.current.readyState >= 3) reportVideo()
+  }, [reportVideo])
   const p = Math.min(y / vh, 1)
 
   return (
@@ -49,6 +58,7 @@ export function Hero() {
         </div>
         {VIDEO_SRC && (
           <video
+            ref={videoRef}
             className="absolute inset-0 h-full w-full object-cover"
             src={VIDEO_SRC}
             poster={POSTER_SRC || undefined}
