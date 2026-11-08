@@ -35,7 +35,7 @@ const SLIDER_BTN =
 
 /** Slider de imágenes: toma /slider/slider1.webp … slider9.webp desde public/slider; ignora las que no existan. */
 function ImageSlider({ label }: { label: string }) {
-  const q = useLang().t.queEs
+  const q = useLang().t.home.queEs
   const [missing, setMissing] = useState<Set<string>>(new Set())
   const [index, setIndex] = useState(0)
   const [hovered, setHovered] = useState(false)
@@ -172,7 +172,7 @@ function ImageSlider({ label }: { label: string }) {
 }
 
 export function QueEs() {
-  const q = useLang().t.queEs
+  const q = useLang().t.home.queEs
   return (
     <section id="origen" className="scroll-mt-14 bg-crema px-6 py-28 lg:py-40">
       <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-12">
@@ -200,7 +200,7 @@ export function QueEs() {
 }
 
 export function Proyecto() {
-  const p = useLang().t.proyecto
+  const p = useLang().t.home.proyecto
   return (
     <section id="proyecto" className="relative overflow-hidden bg-selva text-calido">
       <div className="absolute inset-0 opacity-60">
@@ -236,7 +236,7 @@ export function Proyecto() {
 }
 
 export function Explora() {
-  const e = useLang().t.explora
+  const e = useLang().t.home.explora
   const NAV = useNav()
   return (
     <section id="explora" className="bg-arena/60 px-6 py-28 lg:py-40">
@@ -276,7 +276,7 @@ export function Explora() {
 }
 
 export function Colaborar() {
-  const c = useLang().t.colaborar
+  const c = useLang().t.home.colaborar
   return (
     <section id="colaborar" className="relative flex min-h-[90vh] items-center overflow-hidden bg-bosque text-calido">
       <div className="absolute inset-0">
@@ -303,7 +303,7 @@ export function Colaborar() {
 }
 
 export function Footer() {
-  const f = useLang().t.footer
+  const f = useLang().t.common.footer
   const NAV = useNav()
   return (
     <footer id="contacto" className="bg-selva px-6 pb-10 pt-20 text-calido/70">

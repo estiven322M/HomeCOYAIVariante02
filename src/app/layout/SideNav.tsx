@@ -44,7 +44,7 @@ export function SideNav() {
             onClick={() => setOpen(!open)}
             aria-expanded={open}
             aria-controls="site-menu"
-            aria-label={open ? t.sideNav.close : t.sideNav.menu}
+            aria-label={open ? t.common.sideNav.close : t.common.sideNav.menu}
             className="flex h-11 w-11 items-center justify-center border border-calido/40 text-calido transition-colors duration-500 hover:border-calido hover:bg-calido/10"
           >
             <span aria-hidden className="relative block h-3 w-5">
@@ -64,7 +64,7 @@ export function SideNav() {
         {!titleFailed && (
           <a
             href="#inicio"
-            aria-label={t.logoAria}
+            aria-label={t.common.logoAria}
             className="intro-logo absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
           >
             <img
@@ -90,7 +90,7 @@ export function SideNav() {
 
       <nav
         id="site-menu"
-        aria-label={t.sideNav.aria}
+        aria-label={t.common.sideNav.aria}
         inert={!open}
         className={`fixed inset-y-0 left-0 z-40 flex w-full max-w-md flex-col justify-between bg-selva px-8 pb-10 pt-28 transition-transform duration-500 ease-[cubic-bezier(.2,.7,.2,1)] ${open ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}`}
       >
@@ -122,12 +122,12 @@ export function SideNav() {
             onClick={() => setOpen(false)}
             className="group inline-flex min-h-12 items-center justify-between border border-calido/40 px-5 text-sm text-calido transition-colors duration-500 hover:border-calido hover:bg-calido hover:text-selva"
           >
-            {t.sideNav.collaborate}{' '}
+            {t.common.sideNav.collaborate}{' '}
             <span aria-hidden className="transition-transform duration-500 group-hover:translate-x-1">
               →
             </span>
           </a>
-          <p className="text-[10px] uppercase tracking-[0.3em] text-calido/45">{t.sideNav.place}</p>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-calido/45">{t.common.sideNav.place}</p>
         </div>
       </nav>
     </>

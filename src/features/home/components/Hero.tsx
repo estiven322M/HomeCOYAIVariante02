@@ -14,7 +14,7 @@ const POSTER_SRC = '/video/video-poster.jpg'
 const item = (i: number) => ({ '--i': i }) as CSSProperties
 
 export function Hero() {
-  const h = useLang().t.hero
+  const h = useLang().t.home.hero
   const y = useScrollY()
   const { reportVideo } = useIntro()
   const vh = useViewportHeight()

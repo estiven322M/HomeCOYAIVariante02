@@ -6,8 +6,8 @@ import { dict } from '@/content'
 import { LangSwitch } from '@/shared/i18n'
 import { Nosotros } from './components/Nosotros'
 
-const esTitle = dict.es.nav[0]?.label ?? ''
-const enTitle = dict.en.nav[0]?.label ?? ''
+const esTitle = dict.es.common.nav[0]?.label ?? ''
+const enTitle = dict.en.common.nav[0]?.label ?? ''
 
 function renderNosotros(path: string) {
   return renderAt(
@@ -28,7 +28,7 @@ describe('feature nosotros', () => {
 
   it('cambia a inglés al seguir el enlace del selector de idioma', async () => {
     renderNosotros('/')
-    await userEvent.click(screen.getByRole('link', { name: dict.es.switchLabel }))
+    await userEvent.click(screen.getByRole('link', { name: dict.es.common.switchLabel }))
     expect(screen.getByRole('heading', { level: 2, name: enTitle })).toBeInTheDocument()
   })
 })

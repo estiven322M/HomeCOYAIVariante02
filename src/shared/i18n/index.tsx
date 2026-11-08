@@ -36,7 +36,7 @@ const NAV_META = [
 
 export function useNav() {
   const { t } = useLang()
-  return NAV_META.map((m, i) => ({ ...m, ...t.nav[i] }))
+  return NAV_META.map((m, i) => ({ ...m, ...t.common.nav[i] }))
 }
 
 /**
@@ -55,7 +55,7 @@ export function LangSwitch({ className = 'relative inline-flex' }: { className?:
       lang={other}
       hrefLang={other}
       preventScrollReset
-      aria-label={t.switchLabel}
+      aria-label={t.common.switchLabel}
       className={`h-8 w-[4.5rem] shrink-0 items-center rounded-full border border-calido/40 bg-selva/50 text-[11px] font-medium tracking-[0.15em] backdrop-blur-[6px] transition-colors duration-500 hover:border-calido ${className}`}
     >
       <span

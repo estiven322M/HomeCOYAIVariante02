@@ -41,7 +41,7 @@ describe('build/client', () => {
 
     it('h1 del hero', () => {
       expect(doc.querySelectorAll('h1')).toHaveLength(1)
-      expect(doc.querySelector('h1')?.textContent).toContain(c.hero.title)
+      expect(doc.querySelector('h1')?.textContent).toContain(c.home.hero.title)
     })
 
     it('canonical y hreflang usan exactamente la URL que se sirve', () => {

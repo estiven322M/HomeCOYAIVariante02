@@ -17,7 +17,7 @@ export function RootLayout({ children }: { children: ReactNode }) {
           href="#origen"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-calido focus:px-4 focus:py-2"
         >
-          {t.skip}
+          {t.common.skip}
         </a>
         <SideNav />
         {children}

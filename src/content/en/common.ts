@@ -23,6 +23,14 @@ export const common = {
     aria: 'Welcome screen',
     tigerAlt: 'Jaguar, ÉCOYAI emblem',
   },
+  footer: {
+    tagline: 'From the territory, toward the future.',
+    navAria: 'Footer',
+    social: 'Social media',
+    rights: 'All rights reserved.',
+    legal: 'Legal notice',
+    privacy: 'Privacy policy',
+  },
   errorBoundary: {
     title: 'Something went wrong',
     text: 'The page ran into an unexpected problem. You can try loading it again.',

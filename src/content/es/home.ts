@@ -45,12 +45,4 @@ export const home = {
     alliance: 'Crear una alianza',
     media: 'Fotografía — territorio del Putumayo al atardecer',
   },
-  footer: {
-    tagline: 'Desde el territorio, hacia el futuro.',
-    navAria: 'Pie de página',
-    social: 'Redes sociales',
-    rights: 'Todos los derechos reservados.',
-    legal: 'Aviso legal',
-    privacy: 'Política de privacidad',
-  },
 }
