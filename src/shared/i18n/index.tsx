@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, type ReactNode } from 'react'
 import { Link, useLocation } from 'react-router'
 import { dict, type Content, type Lang } from '@/content'
-import { alternatePath, langFromPath } from './routes'
+import { alternatePath, langFromPath, NAV_KEYS, pathFor, type RouteKey } from './routes'
 
 export type { Lang }
 
@@ -26,17 +26,16 @@ export function useLang() {
   return ctx
 }
 
-const NAV_META = [
-  { href: '#nosotros' },
-  { href: '#proyectos' },
-  { href: '#transparencia' },
-  { href: '#colaborar' },
-  { href: '#contacto' },
-]
+/** URL de una página en el idioma actual (siempre sale de la tabla de rutas). */
+export function usePathFor() {
+  const { lang } = useLang()
+  return (key: RouteKey) => pathFor(key, lang)
+}
 
+/** Páginas del menú, de «Explora» y del pie: clave, URL en el idioma actual y textos. */
 export function useNav() {
-  const { t } = useLang()
-  return NAV_META.map((m, i) => ({ ...m, ...t.common.nav[i] }))
+  const { lang, t } = useLang()
+  return NAV_KEYS.map((key, i) => ({ key, href: pathFor(key, lang), ...t.common.nav[i] }))
 }
 
 /**
@@ -46,12 +45,12 @@ export function useNav() {
  */
 export function LangSwitch({ className = 'relative inline-flex' }: { className?: string }) {
   const { lang, t } = useLang()
-  const { pathname } = useLocation()
+  const { pathname, hash } = useLocation()
   const isEn = lang === 'en'
   const other: Lang = isEn ? 'es' : 'en'
   return (
     <Link
-      to={alternatePath(pathname, other)}
+      to={alternatePath(pathname, other, hash)}
       lang={other}
       hrefLang={other}
       preventScrollReset

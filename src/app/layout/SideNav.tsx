@@ -1,6 +1,8 @@
 import { useEffect, useState, type CSSProperties } from 'react'
+import { Link, useLocation } from 'react-router'
 import { useScrollY } from '@/shared/hooks/useScrollY'
-import { LangSwitch, useLang, useNav } from '@/shared/i18n'
+import { LangSwitch, useLang, useNav, usePathFor } from '@/shared/i18n'
+import { isHomePath, resolveRoute } from '@/shared/i18n/routes'
 
 /** Top bar with a toggle button + retractable menu panel (same behaviour on desktop and mobile). */
 export function SideNav() {
@@ -9,14 +11,9 @@ export function SideNav() {
   const y = useScrollY()
   const [open, setOpen] = useState(false)
   const [titleFailed, setTitleFailed] = useState(false)
-  const [active, setActive] = useState('')
-
-  useEffect(() => {
-    const on = () => setActive(window.location.hash)
-    on()
-    window.addEventListener('hashchange', on)
-    return () => window.removeEventListener('hashchange', on)
-  }, [])
+  const pathFor = usePathFor()
+  const { pathname } = useLocation()
+  const current = resolveRoute(pathname)?.key
 
   // Escape closes the menu; page scroll is locked while it is open.
   useEffect(() => {
@@ -31,7 +28,9 @@ export function SideNav() {
     }
   }, [open])
 
-  const solid = y > 40 && !open
+  // Transparente solo sobre el hero de la portada; en las demás páginas, el mismo fondo sólido que aparece al
+  // hacer scroll. Con el menú abierto, siempre transparente (lo cubre el panel).
+  const solid = (!isHomePath(pathname) || y > 40) && !open
 
   return (
     <>
@@ -62,8 +61,8 @@ export function SideNav() {
         </div>
         {/* Título SVG (variante clara), centrado: public/branding/ecoyai_titulo_claro.svg (se oculta si no existe) */}
         {!titleFailed && (
-          <a
-            href="#inicio"
+          <Link
+            to={pathFor('home')}
             aria-label={t.common.logoAria}
             className="intro-logo absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
           >
@@ -74,7 +73,7 @@ export function SideNav() {
               onError={() => setTitleFailed(true)}
               className="h-8 w-auto sm:h-10"
             />
-          </a>
+          </Link>
         )}
         <div className="intro-item" style={{ '--i': 5 } as CSSProperties}>
           <LangSwitch />
@@ -96,11 +95,11 @@ export function SideNav() {
       >
         <ul className="flex flex-col gap-1">
           {NAV.map((i) => {
-            const isActive = active === i.href
+            const isActive = current === i.key
             return (
-              <li key={i.href}>
-                <a
-                  href={i.href}
+              <li key={i.key}>
+                <Link
+                  to={i.href}
                   onClick={() => setOpen(false)}
                   aria-current={isActive ? 'page' : undefined}
                   className={`group flex items-baseline py-3 font-serif text-2xl font-light transition-colors duration-500 ${isActive ? 'text-calido' : 'text-calido/70 hover:text-calido'}`}
@@ -111,14 +110,15 @@ export function SideNav() {
                       className={`absolute -bottom-1 left-0 h-px bg-ocre transition-all duration-500 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`}
                     />
                   </span>
-                </a>
+                </Link>
               </li>
             )
           })}
         </ul>
         <div className="flex flex-col gap-6">
-          <a
-            href="#colaborar"
+          <Link
+            to={pathFor('colaborar')}
+            aria-current={current === 'colaborar' ? 'page' : undefined}
             onClick={() => setOpen(false)}
             className="group inline-flex min-h-12 items-center justify-between border border-calido/40 px-5 text-sm text-calido transition-colors duration-500 hover:border-calido hover:bg-calido hover:text-selva"
           >
@@ -126,7 +126,7 @@ export function SideNav() {
             <span aria-hidden className="transition-transform duration-500 group-hover:translate-x-1">
               →
             </span>
-          </a>
+          </Link>
           <p className="text-[10px] uppercase tracking-[0.3em] text-calido/45">{t.common.sideNav.place}</p>
         </div>
       </nav>

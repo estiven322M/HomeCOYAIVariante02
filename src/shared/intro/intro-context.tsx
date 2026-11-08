@@ -1,4 +1,6 @@
+import { isHomePath } from '@/shared/i18n/routes'
 import { prefersReducedMotion } from '@/shared/lib/reduced-motion'
+import { useLocation } from 'react-router'
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
 
 /** active: intro visible · leaving: veil dissolves + logo travels · reveal: hero items enter in order · done */
@@ -15,6 +17,15 @@ const seen = () => {
     return false
   }
 }
+/** Marca el intro como visto en esta sesión (también si la sesión empieza fuera de la portada). */
+const markSeen = () => {
+  try {
+    sessionStorage.setItem(SEEN_KEY, '1')
+  } catch {
+    /* storage unavailable */
+  }
+}
+
 type Ctx = {
   phase: Phase
   /** false hasta que el cliente decide si hay intro (en el servidor y en el primer render siempre es false). */
@@ -42,15 +53,19 @@ export function IntroProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false)
   const [minDone, setMinDone] = useState(false)
   const [videoOk, setVideoOk] = useState(false)
+  // Solo cuenta la página con la que EMPIEZA la sesión: la URL del primer render del cliente.
+  const startPath = useLocation().pathname
 
   // Una sola vez, en el cliente y antes de pintar: ¿hay intro? (visitante nuevo y sin movimiento reducido)
   useLayoutEffect(() => {
     // Decisión solo de cliente, tras hidratar: el servidor no tiene sessionStorage ni matchMedia.
     /* eslint-disable react-hooks/set-state-in-effect */
-    if (!seen() && !prefersReducedMotion()) setPhase('active')
+    if (!isHomePath(startPath)) markSeen()
+    else if (!seen() && !prefersReducedMotion()) setPhase('active')
     setReady(true)
     /* eslint-enable react-hooks/set-state-in-effect */
     ;(window as unknown as { __introReady?: boolean }).__introReady = true
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo la URL de entrada (primer render)
   }, [])
 
   useLayoutEffect(() => {
@@ -59,11 +74,7 @@ export function IntroProvider({ children }: { children: ReactNode }) {
   }, [phase, ready])
 
   const leave = useCallback(() => {
-    try {
-      sessionStorage.setItem(SEEN_KEY, '1')
-    } catch {
-      /* storage unavailable */
-    }
+    markSeen()
     setPhase((p) => (p === 'active' ? 'leaving' : p))
   }, [])
   const reportVideo = useCallback(() => setVideoOk(true), [])

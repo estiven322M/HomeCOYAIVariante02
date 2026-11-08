@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { Link } from 'react-router'
 
 type BtnProps = {
   href: string
@@ -15,14 +16,14 @@ export function Button({ href, children, variant = 'solid' }: BtnProps) {
     outline: 'border border-carbon/30 text-carbon hover:border-carbon hover:bg-carbon/5',
   }[variant]
   return (
-    <a
-      href={href}
+    <Link
+      to={href}
       className={`group inline-flex min-h-12 items-center justify-center gap-3 px-6 text-sm tracking-wide transition-colors duration-500 ${styles}`}
     >
       {children}
       <span aria-hidden className="transition-transform duration-500 group-hover:translate-x-1">
         →
       </span>
-    </a>
+    </Link>
   )
 }

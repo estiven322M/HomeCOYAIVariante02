@@ -1,13 +1,13 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { Link } from 'react-router'
 import { Button } from '@/shared/ui/Button'
 import { Eyebrow } from '@/shared/ui/Eyebrow'
-import { Logo } from '@/shared/ui/Logo'
 import { MediaPlaceholder } from '@/shared/ui/MediaPlaceholder'
 import { Reveal } from '@/shared/ui/Reveal'
 import { TextLink } from '@/shared/ui/TextLink'
 import { useScrollY } from '@/shared/hooks/useScrollY'
 import { prefersReducedMotion } from '@/shared/lib/reduced-motion'
-import { useLang, useNav } from '@/shared/i18n'
+import { useLang, useNav, usePathFor } from '@/shared/i18n'
 
 function Parallax({ children, speed = 0.04 }: { children: ReactNode; speed?: number }) {
   const y = useScrollY()
@@ -173,6 +173,7 @@ function ImageSlider({ label }: { label: string }) {
 
 export function QueEs() {
   const q = useLang().t.home.queEs
+  const pathFor = usePathFor()
   return (
     <section id="origen" className="scroll-mt-14 bg-crema px-6 py-28 lg:py-40">
       <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-12">
@@ -184,7 +185,7 @@ export function QueEs() {
             <p>{q.p2}</p>
           </div>
           <div className="mt-10">
-            <TextLink href="#nosotros">{q.link}</TextLink>
+            <TextLink href={`${pathFor('nosotros')}#historia`}>{q.link}</TextLink>
           </div>
         </Reveal>
         <Reveal delay={200} className="lg:col-span-6 lg:col-start-7">
@@ -199,8 +200,11 @@ export function QueEs() {
   )
 }
 
-export function Proyecto() {
+/** `asPage`: la misma sección como contenido de /proyectos/ (su título es el h1 y no enlaza a la página en la que está). */
+export function Proyecto({ asPage = false }: { asPage?: boolean }) {
   const p = useLang().t.home.proyecto
+  const pathFor = usePathFor()
+  const Title = asPage ? 'h1' : 'h2'
   return (
     <section id="proyecto" className="relative overflow-hidden bg-selva text-calido">
       <div className="absolute inset-0 opacity-60">
@@ -212,13 +216,15 @@ export function Proyecto() {
       <div className="relative mx-auto grid min-h-[90vh] max-w-6xl items-center gap-12 px-6 py-28 lg:grid-cols-12">
         <Reveal className="lg:col-span-7">
           <Eyebrow light>{p.eyebrow}</Eyebrow>
-          <h2 className="mt-6 font-serif text-5xl font-light leading-[1.05] lg:text-7xl">
+          <Title className="mt-6 font-serif text-5xl font-light leading-[1.05] lg:text-7xl">
             {p.title} <em className="italic text-arena">{p.titleEm}</em>
-          </h2>
+          </Title>
           <p className="mt-8 max-w-lg text-[17px] leading-relaxed text-calido/80">{p.text}</p>
-          <div className="mt-10">
-            <Button href="#proyectos">{p.cta}</Button>
-          </div>
+          {!asPage && (
+            <div className="mt-10">
+              <Button href={pathFor('proyectos')}>{p.cta}</Button>
+            </div>
+          )}
         </Reveal>
         <Reveal delay={250} className="lg:col-span-4 lg:col-start-9">
           <ol className="space-y-5 border-l border-calido/20 pl-6 text-sm text-calido/75">
@@ -247,13 +253,10 @@ export function Explora() {
         </Reveal>
         <ul className="mt-16 border-t border-carbon/20">
           {NAV.map((i, idx) => (
-            <Reveal key={i.href} delay={idx * 80}>
-              <li
-                id={i.href === '#nosotros' ? undefined : i.href.slice(1)}
-                className="scroll-mt-24 border-b border-carbon/20"
-              >
-                <a
-                  href={i.href}
+            <Reveal key={i.key} delay={idx * 80}>
+              <li className="border-b border-carbon/20">
+                <Link
+                  to={i.href}
                   className="group grid grid-cols-[1fr_auto] items-center gap-4 py-8 transition-all duration-700 hover:bg-selva hover:px-6 hover:text-calido md:grid-cols-[1.2fr_1fr_auto] md:py-10"
                 >
                   <span className="font-serif text-3xl font-light transition-transform duration-700 group-hover:translate-x-2 md:text-4xl">
@@ -265,7 +268,7 @@ export function Explora() {
                   <span aria-hidden className="text-2xl transition-transform duration-700 group-hover:translate-x-2">
                     →
                   </span>
-                </a>
+                </Link>
               </li>
             </Reveal>
           ))}
@@ -275,8 +278,11 @@ export function Explora() {
   )
 }
 
-export function Colaborar() {
+/** `asPage`: la misma sección como contenido de /colaborar/ (su título es el h1 y sin botones que apunten a sí misma). */
+export function Colaborar({ asPage = false }: { asPage?: boolean }) {
   const c = useLang().t.home.colaborar
+  const pathFor = usePathFor()
+  const Title = asPage ? 'h1' : 'h2'
   return (
     <section id="colaborar" className="relative flex min-h-[90vh] items-center overflow-hidden bg-bosque text-calido">
       <div className="absolute inset-0">
@@ -287,62 +293,19 @@ export function Colaborar() {
       <div className="absolute inset-0 bg-selva/55" />
       <Reveal className="relative mx-auto max-w-4xl px-6 py-28 text-center">
         <Eyebrow light>{c.eyebrow}</Eyebrow>
-        <h2 className="mt-8 font-serif text-5xl font-light leading-[1.05] lg:text-7xl">
+        <Title className="mt-8 font-serif text-5xl font-light leading-[1.05] lg:text-7xl">
           {c.title} <em className="italic text-arena">{c.titleEm}</em>
-        </h2>
+        </Title>
         <p className="mx-auto mt-8 max-w-xl text-center text-[17px] leading-relaxed text-calido/80">{c.text}</p>
-        <div className="mt-12 flex flex-col justify-center gap-3 sm:flex-row">
-          <Button href="#donaciones">{c.donate}</Button>
-          <Button href="#alianzas" variant="ghost">
-            {c.alliance}
-          </Button>
-        </div>
+        {!asPage && (
+          <div className="mt-12 flex flex-col justify-center gap-3 sm:flex-row">
+            <Button href={pathFor('colaborar')}>{c.donate}</Button>
+            <Button href={pathFor('colaborar')} variant="ghost">
+              {c.alliance}
+            </Button>
+          </div>
+        )}
       </Reveal>
     </section>
-  )
-}
-
-export function Footer() {
-  const f = useLang().t.common.footer
-  const NAV = useNav()
-  return (
-    <footer id="contacto" className="bg-selva px-6 pb-10 pt-20 text-calido/70">
-      <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-4">
-        <div className="md:col-span-2">
-          <Logo />
-          <p className="mt-5 max-w-xs font-serif text-lg font-light italic text-calido/60">{f.tagline}</p>
-        </div>
-        <nav aria-label={f.navAria}>
-          <ul className="space-y-3 text-sm">
-            {NAV.map((i) => (
-              <li key={i.href}>
-                <a href={i.href} className="hover:text-calido">
-                  {i.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <div className="space-y-3 text-sm">
-          <p className="text-[11px] uppercase tracking-[0.3em] text-calido/45">{f.social}</p>
-          <p>[Instagram]</p>
-          <p>[Facebook]</p>
-          <p>[YouTube]</p>
-        </div>
-      </div>
-      <div className="mx-auto mt-16 flex max-w-6xl flex-col justify-between gap-4 border-t border-calido/10 pt-6 text-xs text-calido/45 md:flex-row">
-        <p>
-          © {new Date().getFullYear()} ÉCOYAI. {f.rights}
-        </p>
-        <div className="flex gap-6">
-          <a href="#legal" className="hover:text-calido">
-            {f.legal}
-          </a>
-          <a href="#privacidad" className="hover:text-calido">
-            {f.privacy}
-          </a>
-        </div>
-      </div>
-    </footer>
   )
 }
