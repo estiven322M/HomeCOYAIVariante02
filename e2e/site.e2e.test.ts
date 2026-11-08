@@ -179,6 +179,98 @@ describe('intro: solo si la sesión empieza en la portada', () => {
     await page.context().close()
   })
 
+  /** Marca en qué instante (performance.now) cada fase de <html data-intro> aparece por primera vez. */
+  const trackIntro = (ctx: BrowserContext) =>
+    ctx.addInitScript(() => {
+      const w = window as unknown as { __t: Record<string, number> }
+      w.__t = {}
+      const mark = () => {
+        const v = document.documentElement.dataset.intro
+        if (v && !(v in w.__t)) w.__t[v] = Math.round(performance.now())
+      }
+      new MutationObserver(mark).observe(document, { attributes: true, subtree: true, attributeFilter: ['data-intro'] })
+      document.addEventListener('DOMContentLoaded', mark)
+    })
+  const phases = (page: import('playwright').Page) =>
+    page.evaluate(() => (window as unknown as { __t: Record<string, number> }).__t)
+
+  // El velo no puede pasar de 4 s desde el primer pintado, ni con la red limitada (tolerancia de 150 ms por los
+  // temporizadores del navegador). Se fuerza effectiveType «4g» para que la conexión simulada no desactive el intro.
+  const LIMIT_MS = 4000 + 150
+  const connection4g = (ctx: BrowserContext) =>
+    ctx.addInitScript(() =>
+      Object.defineProperty(navigator, 'connection', {
+        value: { effectiveType: '4g', saveData: false },
+        configurable: true,
+      }),
+    )
+
+  it('con Slow 4G (1,6 Mbps, 150 ms) el velo dura como máximo 4 s desde el primer pintado', async () => {
+    const ctx = await context({ seen: false })
+    await connection4g(ctx)
+    await trackIntro(ctx)
+    const page = await ctx.newPage()
+    const cdp = await ctx.newCDPSession(page)
+    await cdp.send('Network.emulateNetworkConditions', {
+      offline: false,
+      latency: 150,
+      downloadThroughput: (1.6 * 1024 * 1024) / 8,
+      uploadThroughput: (750 * 1024) / 8,
+    })
+    await page.goto(BASE + '/', { waitUntil: 'commit' })
+    await page.waitForFunction(() => (window as unknown as { __t?: Record<string, number> }).__t?.done, null, {
+      timeout: 40_000,
+    })
+    const t = await phases(page)
+    expect(t.leaving! - t.active!).toBeLessThanOrEqual(LIMIT_MS)
+    expect(await page.evaluate(() => sessionStorage.getItem('ecoyai-intro-seen'))).toBe('1')
+    await ctx.close()
+  }, 60_000)
+
+  it('si el JavaScript tarda en llegar (React no hidrata), el script de <head> cierra el intro a los 4 s sin parpadeos', async () => {
+    const ctx = await context({ seen: false })
+    await trackIntro(ctx)
+    const page = await ctx.newPage()
+    // Los scripts del bundle se retienen 9 s: durante ese tiempo solo trabaja el script de <head>.
+    await page.route(/\/assets\/.*\.js$/, async (route) => {
+      await new Promise((r) => setTimeout(r, 9000))
+      await route.continue()
+    })
+    await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' })
+    await page.waitForFunction(() => (window as unknown as { __t?: Record<string, number> }).__t?.done, null, {
+      timeout: 20_000,
+    })
+    const t = await phases(page)
+    expect(t.leaving! - t.active!).toBeLessThanOrEqual(LIMIT_MS)
+    expect(t.done! - t.leaving!).toBeGreaterThanOrEqual(1900) // leaving 0,5 s + reveal 1,5 s
+    // Tras hidratar (llegan los scripts retenidos) no vuelve a aparecer: el estado final es «done».
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.dataset.intro), { timeout: 20_000 })
+      .toBe('done')
+    await page.waitForTimeout(1500)
+    const after = await phases(page)
+    expect(Object.keys(after)).toEqual(['active', 'leaving', 'reveal', 'done'])
+    expect(await overlayVisible(page)).toBe(false)
+    await ctx.close()
+  }, 60_000)
+
+  it.each([
+    ['ahorro de datos', { saveData: true, effectiveType: '4g' }],
+    ['conexión 3g', { saveData: false, effectiveType: '3g' }],
+    ['conexión 2g', { saveData: false, effectiveType: '2g' }],
+  ])('con %s no hay intro', async (_name, conn) => {
+    const ctx = await context({ seen: false })
+    await ctx.addInitScript(
+      (c) => Object.defineProperty(navigator, 'connection', { value: c, configurable: true }),
+      conn,
+    )
+    const page = await ctx.newPage()
+    await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' })
+    expect(await page.evaluate(() => document.documentElement.dataset.intro)).not.toBe('active')
+    expect(await overlayVisible(page)).toBe(false)
+    await ctx.close()
+  })
+
   it('empezar en una 404 tampoco lo muestra', async () => {
     const page = await (await context({ seen: false })).newPage()
     await page.goto(BASE + '/no-existe/', { waitUntil: 'domcontentloaded' })

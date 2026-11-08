@@ -2,7 +2,7 @@
 // entrada del hero. Sirve build/client como Netlify. Uso: pnpm run build && node scripts/measure-intro.mjs [--runs 5]
 //
 // Fases (src/shared/intro/intro-context.tsx), reflejadas en <html data-intro>:
-//   active  → el velo está en pantalla (mínimo 2,5 s; máximo 4 s aunque el video no esté listo)
+//   active  → el velo está en pantalla (mínimo 2,5 s; máximo 4 s DESDE EL PRIMER PINTADO, lo garantiza el script de <head>)
 //   leaving → el velo se disuelve y el logo viaja (0,5 s)
 //   reveal  → entran los elementos del hero escalonados (1,5 s)
 //   done    → intro terminado
@@ -35,7 +35,10 @@ const PROFILES = {
 const browser = await chromium.launch()
 const fmt = (ms) => (ms / 1000).toFixed(2) + ' s'
 
+// --profile <texto>: solo los perfiles cuyo nombre lo contenga (p. ej. «local», «4G (», «Slow»).
+const only = process.argv.includes('--profile') ? process.argv[process.argv.indexOf('--profile') + 1] : ''
 for (const [name, net] of Object.entries(PROFILES)) {
+  if (only && !name.includes(only)) continue
   const rows = []
   for (let i = 0; i < runs; i++) {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
@@ -44,7 +47,12 @@ for (const [name, net] of Object.entries(PROFILES)) {
       const cdp = await ctx.newCDPSession(page)
       await cdp.send('Network.emulateNetworkConditions', { offline: false, ...net })
     }
+    // Se fuerza effectiveType «4g»: aquí se mide el intro, no la decisión de saltarlo con conexiones lentas.
     await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'connection', {
+        value: { effectiveType: '4g', saveData: false },
+        configurable: true,
+      })
       window.__t = {}
       const mark = () => {
         const v = document.documentElement.dataset.intro
@@ -61,11 +69,14 @@ for (const [name, net] of Object.entries(PROFILES)) {
     await ctx.close()
   }
   console.log(`\n${name}`)
+  let worst = 0
   for (const t of rows) {
+    worst = Math.max(worst, t.leaving - t.active)
     console.log(
       `  velo ${fmt(t.leaving - t.active)} · disolución ${fmt(t.reveal - t.leaving)} · entrada del hero ${fmt(t.done - t.reveal)} · total ${fmt(t.done - t.active)} (activo desde ${fmt(t.active)})`,
     )
   }
+  console.log(`  → velo máximo ${fmt(worst)}: ${worst <= 4150 ? 'CUMPLE el tope de 4 s' : 'EXCEDE el tope de 4 s'}`)
 }
 
 await browser.close()
