@@ -31,6 +31,8 @@
     "config",
     "test",
     "vitest.config.ts",
-    "vitest.build.config.ts"
+    "vitest.build.config.ts",
+    "vitest.e2e.config.ts",
+    "e2e"
   ]
 }

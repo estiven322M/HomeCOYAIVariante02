@@ -2,18 +2,10 @@ import { useState } from 'react'
 import { Eyebrow } from '@/shared/ui/Eyebrow'
 import { MediaPlaceholder } from '@/shared/ui/MediaPlaceholder'
 import { Reveal } from '@/shared/ui/Reveal'
+import { SubTitle } from '@/shared/ui/SubTitle'
 import { useLang } from '@/shared/i18n'
 
 const TONES = ['forest', 'earth', 'river', 'forest'] as const
-
-function SubTitle({ label, light }: { label: string; light?: boolean }) {
-  return (
-    <div className="flex items-center gap-4">
-      <span className="h-px w-10 bg-ocre" />
-      <Eyebrow light={light}>{label}</Eyebrow>
-    </div>
-  )
-}
 
 /** Foto del Taita: archivo en public/taita/taita_victoriano.webp (4:3). Muestra el placeholder mientras no exista. */
 function TaitaPhoto({ label }: { label: string }) {
@@ -38,23 +30,22 @@ function TaitaPhoto({ label }: { label: string }) {
 export function Nosotros() {
   const { t } = useLang()
   const n = t.nosotros
-  const { historia: h, estrategia: e, liderazgo: l, legal: g, junta: j } = n
+  const { historia: h, estrategia: e, liderazgo: l, junta: j } = n
   const anchors = [
-    { id: 'nosotros-historia', label: h.label },
-    { id: 'nosotros-estrategia', label: e.label },
-    { id: 'nosotros-liderazgo', label: l.label },
-    { id: 'nosotros-legal', label: g.label },
-    { id: 'nosotros-junta', label: j.label },
+    { id: 'historia', label: h.label },
+    { id: 'direccionamiento', label: e.label },
+    { id: 'liderazgo', label: l.label },
+    { id: 'equipo', label: j.label },
   ]
 
   return (
-    <div id="nosotros">
+    <>
       {/* Encabezado + índice interno */}
       <section className="bg-calido px-6 pb-16 pt-28 lg:pt-40">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <Eyebrow>{n.eyebrow}</Eyebrow>
-            <h2 className="mt-6 font-serif text-6xl font-light leading-[1.02] lg:text-8xl">{t.nav[0]?.label}</h2>
+            <h1 className="mt-6 font-serif text-6xl font-light leading-[1.02] lg:text-8xl">{t.common.nav[0]?.label}</h1>
           </Reveal>
           <Reveal delay={150}>
             <ul className="mt-14 flex flex-wrap gap-3">
@@ -74,7 +65,7 @@ export function Nosotros() {
       </section>
 
       {/* 01 · Historia */}
-      <section id="nosotros-historia" className="scroll-mt-14 bg-crema px-6 py-28 lg:py-36">
+      <section id="historia" className="scroll-mt-20 bg-crema px-6 py-28 lg:py-36">
         <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-12">
           <Reveal className="lg:col-span-7">
             <SubTitle label={h.label} />
@@ -105,7 +96,7 @@ export function Nosotros() {
       </section>
 
       {/* 02 · Direccionamiento estratégico */}
-      <section id="nosotros-estrategia" className="scroll-mt-14 bg-calido px-6 py-28 lg:py-36">
+      <section id="direccionamiento" className="scroll-mt-20 bg-calido px-6 py-28 lg:py-36">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <SubTitle label={e.label} />
@@ -149,8 +140,8 @@ export function Nosotros() {
 
       {/* 03 · Liderazgo ancestral */}
       <section
-        id="nosotros-liderazgo"
-        className="scroll-mt-14 relative overflow-hidden bg-selva px-6 py-28 text-calido lg:py-36"
+        id="liderazgo"
+        className="scroll-mt-20 relative overflow-hidden bg-selva px-6 py-28 text-calido lg:py-36"
       >
         <div className="mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-12">
           <Reveal className="lg:col-span-7">
@@ -174,60 +165,8 @@ export function Nosotros() {
         </div>
       </section>
 
-      {/* 04 · Marco legal y estatutos */}
-      <section id="nosotros-legal" className="scroll-mt-14 bg-crema px-6 py-28 lg:py-36">
-        <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-12">
-          <Reveal className="lg:col-span-6">
-            <SubTitle label={g.label} />
-            <h3 className="mt-8 font-serif text-4xl font-light leading-[1.08] lg:text-5xl">{g.title}</h3>
-            <p className="mt-8 text-[17px] leading-relaxed text-carbon/80">{g.text}</p>
-            <ul className="mt-8 flex flex-wrap gap-2">
-              {g.badges.map((b) => (
-                <li
-                  key={b}
-                  className="border border-bosque/40 px-3 py-1.5 text-[11px] uppercase tracking-[0.2em] text-bosque"
-                >
-                  {b}
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-          <Reveal delay={200} className="lg:col-span-5 lg:col-start-8">
-            <div className="bg-calido p-8 lg:p-10">
-              <h4 className="font-serif text-2xl font-light">{g.docsTitle}</h4>
-              <ul className="mt-6 border-t border-carbon/20">
-                {g.docs.map((d) => (
-                  <li key={d} className="border-b border-carbon/20">
-                    <a
-                      href="#nosotros-legal"
-                      className="group flex items-center justify-between gap-4 py-5 transition-all duration-500 hover:bg-selva hover:px-4 hover:text-calido"
-                    >
-                      <span>
-                        <span className="block text-[15px]">{d}</span>
-                        <span className="mt-1 block text-xs text-carbon/50 group-hover:text-calido/60">
-                          {g.pending}
-                        </span>
-                      </span>
-                      <span className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-tierra group-hover:text-ocre">
-                        PDF{' '}
-                        <span
-                          aria-hidden
-                          className="text-lg transition-transform duration-500 group-hover:translate-y-0.5"
-                        >
-                          ↓
-                        </span>
-                      </span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
       {/* 05 · Estructura de gobierno e integrantes */}
-      <section id="nosotros-junta" className="scroll-mt-14 bg-calido px-6 py-28 lg:py-36">
+      <section id="equipo" className="scroll-mt-20 bg-calido px-6 py-28 lg:py-36">
         <div className="mx-auto max-w-6xl">
           <Reveal className="text-center">
             <div className="flex justify-center">
@@ -258,6 +197,6 @@ export function Nosotros() {
           </ul>
         </div>
       </section>
-    </div>
+    </>
   )
 }

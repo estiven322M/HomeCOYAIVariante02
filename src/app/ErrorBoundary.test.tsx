@@ -32,8 +32,8 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>,
     )
     expect(screen.getByRole('alert')).toBeInTheDocument()
-    expect(screen.getByRole('heading', { level: 1, name: dict.es.errorBoundary.title })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: dict.es.errorBoundary.reload })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: dict.es.common.errorBoundary.title })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: dict.es.common.errorBoundary.reload })).toBeInTheDocument()
   })
 
   it('usa el inglés si el documento está en inglés y recarga al pulsar el botón', async () => {
@@ -46,7 +46,7 @@ describe('ErrorBoundary', () => {
         <Boom />
       </ErrorBoundary>,
     )
-    await userEvent.click(screen.getByRole('button', { name: dict.en.errorBoundary.reload }))
+    await userEvent.click(screen.getByRole('button', { name: dict.en.common.errorBoundary.reload }))
     expect(reload).toHaveBeenCalledOnce()
     vi.unstubAllGlobals()
   })

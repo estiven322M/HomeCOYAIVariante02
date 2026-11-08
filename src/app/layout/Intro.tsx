@@ -7,7 +7,7 @@ import { prefersReducedMotion } from '@/shared/lib/reduced-motion'
 export function Intro() {
   const { phase, ready, skip } = useIntro()
   const { t } = useLang()
-  const i = t.intro
+  const i = t.common.intro
   const logoRef = useRef<HTMLImageElement>(null)
   const leaving = phase === 'leaving'
 

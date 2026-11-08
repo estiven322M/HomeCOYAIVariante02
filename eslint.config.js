@@ -1,5 +1,6 @@
 // ESLint (configuración flat). Reglas de calidad, accesibilidad y límites entre capas.
 // Las capas y sus reglas de dependencia están documentadas en docs/ARCHITECTURE.md.
+import { readdirSync } from 'node:fs'
 import js from '@eslint/js'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
@@ -12,7 +13,10 @@ const NO_PARENT_RELATIVE = {
   message: 'No uses imports relativos que suben de carpeta (../). Usa el alias @ (p. ej. @/shared/ui/Button).',
 }
 
-const FEATURES = ['home', 'nosotros']
+// Una feature = una carpeta de src/features: se lee del disco para no olvidarla al añadir una.
+const FEATURES = readdirSync(new URL('./src/features', import.meta.url), { withFileTypes: true })
+  .filter((d) => d.isDirectory())
+  .map((d) => d.name)
 
 /** Construye la regla no-restricted-imports de un bloque (la regla no se fusiona entre bloques). */
 function restrict(message = '', ...groups) {
@@ -44,8 +48,8 @@ export default tseslint.config(
     languageOptions: { globals: globals.node },
   },
   {
-    // La captura visual ejecuta funciones dentro de la página (document, sessionStorage…).
-    files: ['scripts/capture.mjs'],
+    // La captura visual y la medición del intro ejecutan funciones dentro de la página (document, sessionStorage…).
+    files: ['scripts/capture.mjs', 'scripts/measure-intro.mjs'],
     languageOptions: { globals: { ...globals.node, ...globals.browser } },
   },
 

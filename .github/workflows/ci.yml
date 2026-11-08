@@ -40,3 +40,6 @@ jobs:
       - run: pnpm run build
       # Comprueba el HTML estático generado (lang, h1, title, hreflang...).
       - run: pnpm run verify:build
+      # Extremo a extremo (Playwright + Chromium) contra build/client servido como Netlify.
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm run test:e2e

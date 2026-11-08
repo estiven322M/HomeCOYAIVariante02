@@ -3,7 +3,7 @@ import { preload } from 'react-dom'
 import { Button } from '@/shared/ui/Button'
 import { useScrollY } from '@/shared/hooks/useScrollY'
 import { useViewportHeight } from '@/shared/hooks/useViewportHeight'
-import { useLang } from '@/shared/i18n'
+import { useLang, usePathFor } from '@/shared/i18n'
 import { useIntro } from '@/shared/intro/intro-context'
 
 /** Putumayo rainforest footage: file lives in public/video/. The gradient shows until it loads. */
@@ -14,7 +14,8 @@ const POSTER_SRC = '/video/video-poster.jpg'
 const item = (i: number) => ({ '--i': i }) as CSSProperties
 
 export function Hero() {
-  const h = useLang().t.hero
+  const h = useLang().t.home.hero
+  const pathFor = usePathFor()
   const y = useScrollY()
   const { reportVideo } = useIntro()
   const vh = useViewportHeight()
@@ -99,10 +100,10 @@ export function Hero() {
             {h.text}
           </p>
           <div className="intro-item mt-9 flex flex-col gap-3 sm:flex-row" style={item(3)}>
-            <Button href="#origen" variant="hero">
+            <Button href={pathFor('nosotros')} variant="hero">
               {h.cta1}
             </Button>
-            <Button href="#proyecto" variant="heroGhost">
+            <Button href={pathFor('proyectos')} variant="heroGhost">
               {h.cta2}
             </Button>
           </div>

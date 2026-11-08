@@ -23,7 +23,7 @@ export class ErrorBoundary extends Component<Props, State> {
   render() {
     if (!this.state.failed) return this.props.children
     const lang = document.documentElement.lang.startsWith('en') ? 'en' : 'es'
-    const t = dict[lang].errorBoundary
+    const t = dict[lang].common.errorBoundary
     return (
       <main className="flex min-h-[100svh] items-center justify-center bg-calido px-6 text-carbon">
         <div role="alert" className="max-w-xl text-center">

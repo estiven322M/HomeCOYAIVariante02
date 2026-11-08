@@ -47,12 +47,4 @@ export const home = {
     alliance: 'Create a partnership',
     media: 'Photography — Putumayo territory at sunset',
   },
-  footer: {
-    tagline: 'From the territory, toward the future.',
-    navAria: 'Footer',
-    social: 'Social media',
-    rights: 'All rights reserved.',
-    legal: 'Legal notice',
-    privacy: 'Privacy policy',
-  },
 } satisfies typeof esHome
