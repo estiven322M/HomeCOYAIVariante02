@@ -13,8 +13,9 @@ export function DocumentHead({ pathname }: { pathname: string }) {
   const lang = langFromPath(pathname)
   const route = resolveRoute(pathname)
   const c = dict[lang].meta
+  // Una URL que no es una página del sitio es la 404: título propio, sin descripción y siempre noindex.
   const page = route ? c.pages[route.key] : null
-  const title = page?.title ?? c.siteName
+  const title = page?.title ?? c.notFound.title
   const description = page?.description
   const abs = (path: string) => `${env.SITE_URL}${path}`
   const otherLang = LANGS.find((l) => l !== lang) ?? lang
@@ -23,7 +24,7 @@ export function DocumentHead({ pathname }: { pathname: string }) {
     <>
       <title>{title}</title>
       {description && <meta name="description" content={description} />}
-      {!env.SITE_INDEXABLE && <meta name="robots" content="noindex, nofollow" />}
+      {(!env.SITE_INDEXABLE || !route) && <meta name="robots" content="noindex, nofollow" />}
       <link rel="icon" href="/favicon.svg" />
       {route && (
         <>

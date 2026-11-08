@@ -1,20 +1,17 @@
 import { Hero } from '@/features/home/components/Hero'
-import { Colaborar, Explora, Footer, Proyecto, QueEs } from '@/features/home/components/Sections'
-import { Nosotros } from '@/features/nosotros/components/Nosotros'
+import { Colaborar, Explora, Proyecto, QueEs } from '@/features/home/components/Sections'
 
-/** Página de inicio: solo ensambla secciones. */
+/** Portada: puerta de entrada al sitio. Solo ensambla secciones (el <main> y el pie los pone app/layout). */
 export function HomePage() {
   return (
-    <main>
+    <>
       <Hero />
       <div>
         <QueEs />
-        <Nosotros />
         <Proyecto />
         <Explora />
         <Colaborar />
-        <Footer />
       </div>
-    </main>
+    </>
   )
 }
