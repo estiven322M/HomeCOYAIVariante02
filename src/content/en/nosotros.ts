@@ -66,15 +66,6 @@ export const nosotros = {
     text: 'Taita and traditional knowledge keeper of the Siona people (Zio Bain). As the organization’s spiritual and community authority, he guides ÉCOYAI’s strategic direction, ensuring that every project and technology respects ancestral wisdom, sacred medicine and the cultural sovereignty of the territory.',
     media: 'Portrait — Taita Victoriano Piaguaje Yaiguaje',
   },
-  legal: {
-    label: 'Legal framework and bylaws',
-    title: 'Legal framework and bylaws',
-    text: 'The ÉCOYAI Association is a non-profit entity (ESAL) legally incorporated under Colombian law, with legal personality, official standing since March 2024 and its seat in Mocoa, Putumayo. It is strictly governed by its bylaws and current regulations to guarantee transparency, self-control and the proper execution of agreements and national and international cooperation projects.',
-    badges: ['ESAL', 'Legal personality', 'Since March 2024', 'Mocoa, Putumayo'],
-    docsTitle: 'Legal documents',
-    docs: ['Bylaws', 'Certificate of existence and legal representation', 'Other legal documents'],
-    pending: '[Document to be uploaded]',
-  },
   junta: {
     label: 'Our Team',
     title: 'Our Team',

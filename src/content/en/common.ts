@@ -1,4 +1,4 @@
-import type { common as esCommon } from '@/content/es/common'
+import type { common as esCommon, Social } from '@/content/es/common'
 
 // Contenido en inglés: debe satisfacer exactamente el tipo del español.
 export const common = {
@@ -28,8 +28,16 @@ export const common = {
     navAria: 'Footer',
     social: 'Social media',
     rights: 'All rights reserved.',
-    legal: 'Legal notice',
-    privacy: 'Privacy policy',
+    // Redes: {name, url}. Mientras la lista esté vacía el bloque no se muestra (sin marcadores entre corchetes).
+    socials: [] as Social[],
+  },
+  soon: 'This section will be available soon',
+  backHome: 'Back to home',
+  notFound: {
+    title: 'Page not found',
+    text: 'The address does not exist or has moved.',
+    otherLang: 'Leer en español',
+    pages: 'Main pages',
   },
   errorBoundary: {
     title: 'Something went wrong',

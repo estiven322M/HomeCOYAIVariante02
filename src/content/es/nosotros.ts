@@ -64,15 +64,6 @@ export const nosotros = {
     text: 'Taita y sabedor tradicional del pueblo Siona (Zio Bain). Como autoridad espiritual y comunitaria de la organización, guía el direccionamiento estratégico de ÉCOYAI, asegurando que cada proyecto y tecnología respete la sabiduría ancestral, la medicina sagrada y la soberanía cultural del territorio.',
     media: 'Retrato — Taita Victoriano Piaguaje Yaiguaje',
   },
-  legal: {
-    label: 'Marco legal y estatutos',
-    title: 'Marco legal y estatutos',
-    text: 'La Asociación ÉCOYAI es una Entidad Sin Ánimo de Lucro (ESAL) legalmente constituida bajo la legislación colombiana, con personería jurídica, vigencia oficial desde marzo de 2024 y domicilio en Mocoa, Putumayo. Se rige estrictamente por sus estatutos sociales y la normatividad vigente para garantizar la transparencia, el autocontrol y la correcta ejecución de convenios y proyectos de cooperación nacional e internacional.',
-    badges: ['ESAL', 'Personería jurídica', 'Desde marzo de 2024', 'Mocoa, Putumayo'],
-    docsTitle: 'Documentos legales',
-    docs: ['Estatutos sociales', 'Certificado de existencia y representación legal', 'Otros documentos legales'],
-    pending: '[Documento por cargar]',
-  },
   junta: {
     label: 'Nuestro equipo',
     title: 'Nuestro equipo',

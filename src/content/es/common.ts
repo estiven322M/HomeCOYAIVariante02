@@ -1,4 +1,7 @@
 // Contenido en español (fuente de verdad: define el tipo que debe cumplir el inglés).
+/** Una red social del pie. Sin URL real no se agrega a la lista. */
+export type Social = { name: string; url: string }
+
 export const common = {
   skip: 'Saltar al contenido',
   switchLabel: 'Cambiar idioma a inglés',
@@ -23,8 +26,16 @@ export const common = {
     navAria: 'Pie de página',
     social: 'Redes sociales',
     rights: 'Todos los derechos reservados.',
-    legal: 'Aviso legal',
-    privacy: 'Política de privacidad',
+    // Redes: {name, url}. Mientras la lista esté vacía el bloque no se muestra (sin marcadores entre corchetes).
+    socials: [] as Social[],
+  },
+  soon: 'Esta sección estará disponible pronto',
+  backHome: 'Volver al inicio',
+  notFound: {
+    title: 'Página no encontrada',
+    text: 'La dirección no existe o fue movida.',
+    otherLang: 'Read in English',
+    pages: 'Páginas principales',
   },
   errorBoundary: {
     title: 'Algo salió mal',
