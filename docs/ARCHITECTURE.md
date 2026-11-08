@@ -113,7 +113,7 @@ cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">
   `content/{es,en}/meta.ts`. Las URL son absolutas si se define `VITE_SITE_URL` y relativas a la raíz si no.
 - **Selector de idioma.** `LangSwitch` es un enlace (`<a hreflang>`) a la misma página en el otro idioma, **conservando
   el hash** (`alternatePath`). Conserva el aspecto del interruptor ES | EN y el punto de lectura (`preventScrollReset`).
-  Navega en cliente, sin recargar. En una URL que no es una página (la 404) lleva a la 404 del otro idioma.
+  Navega en cliente, sin recargar. En una URL que no es una página (la 404) lleva a la **portada** del otro idioma (igual que el enlace «Read in English» de la 404).
 - **Netlify y la barra final.** Se espera que Netlify redirija `/en` a `/en/` (301) cuando existe `en/index.html`.
   No se añade una regla propia (puede provocar un bucle). **No verificado:** comprobar `curl -I <previsualización>/en`
   en el primer despliegue y, si no redirige, añadir la regla entonces.

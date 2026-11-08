@@ -125,6 +125,20 @@ describe('404', () => {
     expect(redirect.headers.get('location')).toBe('/en/')
   })
 
+  it('en la 404, el enlace al otro idioma y el selector ES/EN llevan a la portada del otro idioma', async () => {
+    const page = await (await context()).newPage()
+    await page.goto(BASE + '/no-existe/')
+    await page.getByRole('link', { name: T.es.common.notFound.otherLang }).click()
+    await page.waitForURL(BASE + '/en/')
+    await page.goto(BASE + '/no-existe/')
+    await page.getByRole('link', { name: T.es.common.switchLabel }).click()
+    await page.waitForURL(BASE + '/en/')
+    await page.goto(BASE + '/en/no-existe/')
+    await page.getByRole('link', { name: T.en.common.switchLabel }).click()
+    await page.waitForURL(BASE + '/')
+    await page.context().close()
+  })
+
   it('desde una 404 se llega a la portada (cliente)', async () => {
     const page = await (await context()).newPage()
     await page.goto(BASE + '/no-existe/')

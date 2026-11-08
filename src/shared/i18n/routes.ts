@@ -79,9 +79,9 @@ export function isHomePath(pathname: string): boolean {
 
 /**
  * URL de la misma página en otro idioma, conservando el hash. Si la URL actual no es una ruta del sitio (404),
- * la 404 del otro idioma.
+ * la portada del otro idioma (sin hash): la 404 del otro idioma no le sirve a nadie.
  */
 export function alternatePath(pathname: string, lang: Lang, hash = ''): string {
   const route = resolveRoute(pathname)
-  return (route ? pathFor(route.key, lang) : NOT_FOUND[lang]) + hash
+  return route ? pathFor(route.key, lang) + hash : pathFor('home', lang)
 }

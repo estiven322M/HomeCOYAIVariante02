@@ -41,8 +41,9 @@ describe('tabla de rutas', () => {
     expect(resolveRoute('/no-existe/')).toBeNull()
     expect(alternatePath('/', 'en')).toBe('/en/')
     expect(alternatePath('/en/', 'es')).toBe('/')
-    // Una URL fuera de la tabla es la 404: su alternativa es la 404 del otro idioma.
-    expect(alternatePath('/no-existe/', 'en')).toBe(NOT_FOUND.en)
+    // Una URL fuera de la tabla es la 404: su alternativa es la portada del otro idioma (sin hash).
+    expect(alternatePath('/no-existe/', 'en')).toBe('/en/')
+    expect(alternatePath(NOT_FOUND.en, 'es', '#x')).toBe('/')
   })
 
   it('el selector de idioma conserva la página y el hash', () => {
