@@ -23,12 +23,12 @@ describe('feature nosotros', () => {
   it('se renderiza sin errores en español', () => {
     renderNosotros('/')
     expect(esTitle).not.toBe('')
-    expect(screen.getByRole('heading', { level: 2, name: esTitle })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: esTitle })).toBeInTheDocument()
   })
 
   it('cambia a inglés al seguir el enlace del selector de idioma', async () => {
     renderNosotros('/')
     await userEvent.click(screen.getByRole('link', { name: dict.es.common.switchLabel }))
-    expect(screen.getByRole('heading', { level: 2, name: enTitle })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: enTitle })).toBeInTheDocument()
   })
 })

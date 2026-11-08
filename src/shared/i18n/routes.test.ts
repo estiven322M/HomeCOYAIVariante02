@@ -1,5 +1,16 @@
 import { describe, expect, it } from 'vitest'
-import { ALL_PATHS, ROUTES, alternatePath, langFromPath, pathFor, resolveRoute } from './routes'
+import { dict } from '@/content'
+import {
+  ALL_PATHS,
+  NAV_KEYS,
+  NOT_FOUND,
+  ROUTES,
+  alternatePath,
+  isHomePath,
+  langFromPath,
+  pathFor,
+  resolveRoute,
+} from './routes'
 
 describe('tabla de rutas', () => {
   it('el español no lleva prefijo y el inglés usa /en/', () => {
@@ -15,7 +26,7 @@ describe('tabla de rutas', () => {
 
   it('no hay dos rutas con la misma URL', () => {
     expect(new Set(ALL_PATHS).size).toBe(ALL_PATHS.length)
-    expect(ALL_PATHS).toHaveLength(Object.keys(ROUTES).length * 2)
+    expect(ALL_PATHS).toHaveLength(Object.keys(ROUTES).length * 2 + 2) // + la 404 en cada idioma
   })
 
   it('el idioma sale solo de la URL, con o sin barra final', () => {
@@ -30,6 +41,24 @@ describe('tabla de rutas', () => {
     expect(resolveRoute('/no-existe/')).toBeNull()
     expect(alternatePath('/', 'en')).toBe('/en/')
     expect(alternatePath('/en/', 'es')).toBe('/')
-    expect(alternatePath('/no-existe/', 'en')).toBe('/en/')
+    // Una URL fuera de la tabla es la 404: su alternativa es la 404 del otro idioma.
+    expect(alternatePath('/no-existe/', 'en')).toBe(NOT_FOUND.en)
+  })
+
+  it('el selector de idioma conserva la página y el hash', () => {
+    expect(alternatePath('/nosotros/', 'en', '#historia')).toBe('/en/about/#historia')
+    expect(alternatePath('/en/about/', 'es', '#historia')).toBe('/nosotros/#historia')
+  })
+
+  it('cada página del menú tiene sus textos (NAV_KEYS y common.nav, mismo número)', () => {
+    expect(dict.es.common.nav).toHaveLength(NAV_KEYS.length)
+    expect(dict.en.common.nav).toHaveLength(NAV_KEYS.length)
+  })
+
+  it('solo la portada es portada', () => {
+    expect(isHomePath('/')).toBe(true)
+    expect(isHomePath('/en')).toBe(true)
+    expect(isHomePath('/nosotros/')).toBe(false)
+    expect(isHomePath('/404/')).toBe(false)
   })
 })

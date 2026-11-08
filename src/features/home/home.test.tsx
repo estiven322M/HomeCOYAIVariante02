@@ -6,7 +6,7 @@ import { dict } from '@/content'
 import { LangSwitch } from '@/shared/i18n'
 import { IntroProvider } from '@/shared/intro/intro-context'
 import { Hero } from './components/Hero'
-import { Colaborar, Explora, Footer, Proyecto, QueEs } from './components/Sections'
+import { Colaborar, Explora, Proyecto, QueEs } from './components/Sections'
 
 function renderHome(path: string) {
   return renderAt(
@@ -17,7 +17,6 @@ function renderHome(path: string) {
       <Proyecto />
       <Explora />
       <Colaborar />
-      <Footer />
     </IntroProvider>,
     path,
   )
