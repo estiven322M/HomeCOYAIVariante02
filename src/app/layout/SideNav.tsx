@@ -118,7 +118,6 @@ export function SideNav() {
         <div className="flex flex-col gap-6">
           <Link
             to={pathFor('colaborar')}
-            aria-current={current === 'colaborar' ? 'page' : undefined}
             onClick={() => setOpen(false)}
             className="group inline-flex min-h-12 items-center justify-between border border-calido/40 px-5 text-sm text-calido transition-colors duration-500 hover:border-calido hover:bg-calido hover:text-selva"
           >

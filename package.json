@@ -16,7 +16,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "verify:build": "vitest run --config vitest.build.config.ts",
-    "check": "pnpm run typecheck && pnpm run lint && pnpm run format:check && pnpm run test && pnpm run build && pnpm run verify:build"
+    "check": "pnpm run typecheck && pnpm run lint && pnpm run format:check && pnpm run test && pnpm run build && pnpm run verify:build && pnpm run test:e2e",
+    "test:e2e": "vitest run --config vitest.e2e.config.ts"
   },
   "dependencies": {
     "isbot": "^5.2.2",
