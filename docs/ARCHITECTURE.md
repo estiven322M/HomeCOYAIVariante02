@@ -196,9 +196,11 @@ Requisitos y cómo se cumplen:
 | Sin advertencias de hidratación                                       | Servidor y primer render del cliente son idénticos; la decisión (`sessionStorage`, `matchMedia`) se toma en un `useLayoutEffect`, antes de pintar. `<html suppressHydrationWarning>` cubre el atributo `data-intro` que añade el script.    |
 
 Elegí un script en `<head>` y no solo un efecto de React porque el efecto corre después de hidratar, cuando el
-visitante ya vio el hero: es la única forma de decidir antes del primer pintado con HTML estático. Red de
-seguridad: si a los 10 s el cliente no hidrató, el script retira `data-intro` para no dejar al visitante bajo el
-overlay.
+visitante ya vio el hero: es la única forma de decidir antes del primer pintado con HTML estático. Límite: el
+script también garantiza el tope de 4 s del velo, contado desde el primer pintado (`window.__introT0`): si React aún no
+hidrató, el propio script marca el intro como visto y recorre `leaving` → `reveal` → `done` con los mismos tiempos. Al
+hidratar, `IntroProvider` lee la fase de `data-intro` y continúa desde ahí, sin volver a mostrarlo. Sin intro también
+con `navigator.connection.saveData` o `effectiveType` `slow-2g`/`2g`/`3g` (mismas condiciones en ambos).
 
 ## Variables de entorno
 

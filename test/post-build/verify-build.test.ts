@@ -121,7 +121,8 @@ describe('build/client', () => {
       const other = lang === 'es' ? 'en' : 'es'
       expect(hrefs).toContain(pathFor('home', lang))
       expect(hrefs).toContain(pathFor('nosotros', lang))
-      expect(hrefs).toContain(NOT_FOUND[other])
+      // El enlace al otro idioma lleva a su portada, no a su 404.
+      expect(hrefs).toContain(pathFor('home', other))
     })
   })
 

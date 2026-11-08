@@ -79,12 +79,12 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
   completa está en el pie (enlaces reales), que basta para recorrer todo el sitio.
 - **Con movimiento reducido ya no hay intro** (antes mostraba una versión corta). Es un cambio de comportamiento
   pedido en la Fase 2A.
-- **Duración del intro (medida en la 2B, `node scripts/measure-intro.mjs`).** El velo permanece ~3,1 s sin límite de red
-  y ~3,6–3,8 s en 4G (9 Mbps, 170 ms): cumple el máximo de 4 s, con poco margen. **En una conexión lenta (Slow 4G,
-  1,6 Mbps) llega a ~9,2 s y NO cumple:** el temporizador de 2,5–4 s empieza cuando React hidrata, no cuando aparece el
-  velo (que el script de `<head>` muestra de inmediato), así que la descarga del JavaScript se suma. Disolución del
-  velo: 0,5 s; entrada del hero: 1,5 s. **No se cambió la lógica** (pendiente de decisión): una opción es contar los 4 s
-  desde el primer pintado (el script de `<head>` iniciaría el límite), otra acortar el mínimo de 2,5 s.
+- **Duración del intro (`node scripts/measure-intro.mjs [--profile <texto>]`).** El tope de 4 s del velo se cuenta desde el
+  primer pintado y lo garantiza el script de `<head>`, sin depender de React (decisión tras la 2B; antes contaba desde
+  hidratar y en Slow 4G llegaba a ~9,2 s). Medido: local ~3,2–4,0 s, 4G (9 Mbps, 170 ms) ~3,7 s, Slow 4G (1,6 Mbps,
+  150 ms) ~4,0 s; disolución 0,5 s y entrada del hero 1,5 s. Con ahorro de datos (`saveData`) o `effectiveType`
+  `slow-2g`/`2g`/`3g` no hay intro. Lo comprueban tests unitarios y e2e (Slow 4G, JavaScript retenido, conexión lenta).
+  Pendiente: ver el intro a ojo en un navegador real.
 - **Intro que depende del CSS.** El overlay existe siempre en el HTML y se muestra por `[data-intro='active']`;
   el script de `<head>` y `IntroProvider` deben seguir tomando la misma decisión (ambos usan la misma clave
   `ecoyai-intro-seen`, `prefers-reduced-motion` y la lista de rutas de la portada). Cualquier cambio en una condición debe
