@@ -1,6 +1,6 @@
 // Sirve build/client como lo haría Netlify con un sitio estático, para probar el build en local:
 //  - `/en` (carpeta sin barra final) -> 301 a `/en/`, que sirve en/index.html;
-//  - archivos inexistentes -> 404.html si existe (Fase 2B) o un 404 simple. SIN fallback SPA.
+//  - archivos inexistentes -> 404.html (en/404.html bajo /en/), con estado 404. SIN fallback SPA.
 // Uso: pnpm run build && pnpm run preview   (puerto: variable PORT, 4173 por defecto)
 import { createReadStream, existsSync, statSync } from 'node:fs'
 import { createServer } from 'node:http'
@@ -41,6 +41,9 @@ createServer((req, res) => {
     return send(res, 200, file)
   }
 
+  // Como netlify.toml: /en/* inexistente -> en/404.html; el resto -> 404.html (ambos con estado 404).
+  const enNotFound = join(root, 'en', '404.html')
+  if (pathname.startsWith('/en/') && existsSync(enNotFound)) return send(res, 404, enNotFound)
   const notFound = join(root, '404.html')
   if (existsSync(notFound)) return send(res, 404, notFound)
   res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }).end('404 Not Found')

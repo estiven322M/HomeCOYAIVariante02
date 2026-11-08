@@ -21,8 +21,16 @@ command = "pnpm run build && printf '/*\\n  X-Robots-Tag: noindex\\n' >> build/c
 #  - Se espera que Netlify redirija una carpeta sin barra final a la versión con barra (301) cuando existe
 #    ruta/index.html; una regla propia para lo mismo puede provocar un bucle. NO verificado desde fuera de
 #    Netlify: comprobar `curl -I <preview>/en` en la primera previsualización (ver docs/known-issues.md).
-#  - La 404 real (estado 404, sin JavaScript) será un archivo build/client/404.html, que Netlify sirve solo
-#    para las rutas que no existen. Se añade en la Fase 2B (ver docs/known-issues.md).
+#  - La 404 real (estado 404, sin JavaScript) es build/client/404.html (y en/404.html), que Netlify sirve solo
+#    para las rutas que no existen. La genera scripts/finalize-build.mjs. Ver la regla /en/* más abajo.
+
+# 404 en inglés: las rutas inexistentes bajo /en/ muestran en/404.html (con estado 404). Según la documentación de
+# Netlify, un archivo existente tiene prioridad ("shadowing"), así que /en/, /en/about/, etc. no se ven afectadas.
+# NO verificado desde fuera de Netlify: comprobar en la primera previsualización (ver docs/known-issues.md).
+[[redirects]]
+from = "/en/*"
+to = "/en/404.html"
+status = 404
 
 # Archivos con hash en el nombre: inmutables, caché de 1 año.
 [[headers]]

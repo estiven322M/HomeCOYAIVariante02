@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "react-router dev",
-    "build": "react-router build",
+    "build": "react-router build && node scripts/finalize-build.mjs",
     "preview": "node scripts/preview.mjs",
     "prepare": "husky",
     "typecheck": "react-router typegen && tsc --noEmit",
