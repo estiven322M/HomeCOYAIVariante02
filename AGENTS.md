@@ -13,18 +13,19 @@ Node >= 22.22 (`.node-version`) and pnpm 10 (`packageManager`). If `pnpm` is not
 
 - `pnpm dev` — `react-router dev` on `$PORT` (default 8443). It does not prerender.
 - `pnpm build` — static output in `build/client` (one `index.html` per route and language). `pnpm preview` serves it.
-- `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm test`, `pnpm verify:build` (after a build), `pnpm check` (all).
+- `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm test`, `pnpm verify:build` and `pnpm test:e2e` (both after a build; e2e needs Chromium), `pnpm check` (all).
 - Conventional Commits; husky + lint-staged run oxfmt and ESLint on staged files.
 
 ## Project structure
 
 - `react-router.config.ts` — `appDirectory: 'src/app'`, `ssr: false`, `prerender` (paths come from the route table).
-- `src/app/` — `root.tsx` (HTML document + providers), `routes.ts` (generated from the route table), `routes/` (one module
-  per page), `DocumentHead.tsx` (title, description, robots, canonical, hreflang, Open Graph), `ErrorBoundary.tsx`, `layout/`.
+- `src/app/` — `root.tsx` (HTML document + providers), `routes.ts` (generated from the route table, plus the `*` 404 route), `routes/` (one
+  module per page), `DocumentHead.tsx` (title, description, robots, canonical, hreflang, Open Graph), `ErrorBoundary.tsx`,
+  `layout/` (`RootLayout` with `<main id="contenido">`, `SideNav`, global `Footer`, `FocusOnNavigate`, `Intro`).
 - `src/pages/` — one component per page; only assembles sections.
-- `src/features/<domain>/components/` — domain code (`home`, `nosotros`). A feature never imports another feature.
-- `src/shared/` — `ui/`, `hooks/`, `lib/`, `i18n/` (language context, `LangSwitch`, **route table `routes.ts`**), `intro/`, `styles/`.
-- `src/content/{es,en}/<domain>.ts` — typed copy; `es` defines the type, `en` must `satisfies` it. Leaf layer.
+- `src/features/<domain>/components/` — domain code (`home`, `nosotros`, `transparencia`). ESLint reads the folders to enforce layer rules. A feature never imports another feature.
+- `src/shared/` — `ui/`, `hooks/`, `lib/`, `i18n/` (language context, `LangSwitch`, **route table `routes.ts`**: pages, `NAV_KEYS`, 404), `intro/`, `styles/`.
+- `src/content/{es,en}/<domain>.ts` — typed copy, namespaced (`t.common`, `t.home`, `t.nosotros`, `t.transparencia`, `t.meta`); `es` defines the type, `en` must `satisfies` it. Leaf layer.
 - `src/env.ts` — typed `VITE_*` variables (`VITE_SITE_INDEXABLE`, `VITE_SITE_URL`).
 - `config/vite-plugins/` — `robots-txt.ts` and the Figma-only plugins (loaded only in a Figma environment).
 - `vite.config.ts` — Tailwind, React Router and robots plugins, plus the `@` alias for `src`.
@@ -37,6 +38,10 @@ Layer rules are enforced by ESLint (`no-restricted-imports`): use the `@` alias 
   `localStorage`, `navigator` or `matchMedia` during render; only inside effects or handlers. The first client render
   must match the server HTML. See "Prerender" in `docs/ARCHITECTURE.md`.
 - **Language comes from the URL only** (`/` Spanish, `/en/` English; all URLs end with a trailing slash). No `localStorage`.
+- **Every internal link comes from the route table** (`pathFor`, `useNav`, `usePathFor`) and uses `<Link>`; no `#anchor` without a target
+  (`src/app/site.test.tsx` fails otherwise). Anchor ids are the same in ES and EN (`#historia`, `#equipo`…) because the language switch keeps the hash. A page never links to itself from its content.
+- **Adding a page:** see "Cómo añadir una página" in `docs/ARCHITECTURE.md` (table row, route module, page, meta, tests).
+- **The intro belongs to the home page only** and only if the session starts there; `boot-script.ts` and `IntroProvider` must decide the same.
 - **The static HTML must work without JavaScript**: no `inert`/`aria-hidden` on page content.
 - Page metadata comes from `content/{es,en}/meta.ts` through `DocumentHead`; it is not in `index.html` (there is none).
 

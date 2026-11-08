@@ -26,8 +26,9 @@ pnpm format           # formatea con oxfmt
 pnpm format:check     # comprueba el formato sin escribir
 pnpm build            # build de producción: HTML estático por ruta e idioma en build/client
 pnpm verify:build     # revisa el HTML generado (lang, title, h1, hreflang…); requiere haber hecho build
+pnpm test:e2e         # extremo a extremo con Playwright (menú, idioma, 404, intro); requiere build y Chromium
 pnpm preview          # sirve build/client como Netlify (puerto 4173 por defecto)
-pnpm check            # typecheck + lint + format:check + test + build + verify:build (lo mismo que CI)
+pnpm check            # typecheck + lint + format:check + test + build + verify:build + test:e2e (lo mismo que CI)
 ```
 
 `pnpm dev` no prerenderiza: para ver el HTML estático real usa `pnpm build && pnpm preview`.
@@ -37,7 +38,7 @@ Variables de entorno opcionales: ver [`.env.example`](./.env.example).
 ## Cómo está organizado
 
 El código vive en `src/` por capas (`app`, `pages`, `features`, `shared`, `content`) con reglas de dependencia
-que ESLint hace cumplir. Las rutas e idiomas (`/` en español, `/en/` en inglés), cómo añadir una página o una
+que ESLint hace cumplir. Las rutas e idiomas (`/` en español, `/en/` en inglés, y `/nosotros/`, `/proyectos/`… con su equivalente en `/en/…`), cómo añadir una página o una
 feature, y las reglas para el prerenderizado están en [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md).
 
 - [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) — estructura, reglas y guías.
