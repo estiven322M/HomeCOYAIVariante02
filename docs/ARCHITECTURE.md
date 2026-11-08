@@ -79,18 +79,19 @@ Si una feature necesita algo de otra, ese algo es `shared` (súbelo) o se compon
   De ella salen el registro de rutas (`app/routes.ts`), la lista de prerender (`react-router.config.ts`), el
   selector de idioma, la cabecera del documento y **todos los enlaces internos** (`pathFor`, `useNav`, `usePathFor`):
 
-| Clave           | Español           | Inglés              |
-| --------------- | ----------------- | ------------------- |
-| `home`          | `/`               | `/en/`              |
-| `nosotros`      | `/nosotros/`      | `/en/about/`        |
-| `proyectos`     | `/proyectos/`     | `/en/projects/`     |
-| `transparencia` | `/transparencia/` | `/en/transparency/` |
-| `colaborar`     | `/colaborar/`     | `/en/collaborate/`  |
-| `contacto`      | `/contacto/`      | `/en/contact/`      |
+| Clave             | Español              | Inglés                     |
+| ----------------- | -------------------- | -------------------------- |
+| `home`            | `/`                  | `/en/`                     |
+| `nosotros`        | `/nosotros/`         | `/en/about/`               |
+| `proyectos`       | `/proyectos/`        | `/en/projects/`            |
+| `transparencia`   | `/transparencia/`    | `/en/transparency/`        |
+| `colaborar`       | `/colaborar/`        | `/en/collaborate/`         |
+| `contacto`        | `/contacto/`         | `/en/contact/`             |
 | 404 (`NOT_FOUND`) | `/404/` → `404.html` | `/en/404/` → `en/404.html` |
 
-  `NAV_KEYS` fija las páginas del menú, de «Explora» y del pie (en ese orden, igual que `common.nav`). «Colaborar»
-  cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">` sin destino: un test los recorre todos.
+`NAV_KEYS` fija las páginas del menú, de «Explora» y del pie (en ese orden, igual que `common.nav`). «Colaborar»
+cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">` sin destino: un test los recorre todos.
+
 - **Anclas.** Los `id` de las anclas son **los mismos en español e inglés** (`#historia`, `#direccionamiento`,
   `#liderazgo`, `#equipo`, `#marco-legal`) porque el selector de idioma conserva el hash
   (`/nosotros/#historia` ↔ `/en/about/#historia`). Al añadir un ancla, el `id` no se traduce.
@@ -124,8 +125,7 @@ Si una feature necesita algo de otra, ese algo es `shared` (súbelo) o se compon
   diccionarios tipados.
 - **Un espacio de nombres por dominio:** `t.common.*`, `t.home.*`, `t.nosotros.*`, `t.transparencia.*`, `t.meta.*`
   (`content/{es,en}/index.ts`). Una clave repetida entre dominios no se sobrescribe en silencio.
-- `content/{es,en}/meta.ts` contiene los metadatos del documento por página (`meta.pages.<clave>`) y el título de la
-  404. Las descripciones **se derivan de textos que ya existen** (mismas claves, sin copiarlos); las dos que se recortan
+- `content/{es,en}/meta.ts` contiene los metadatos del documento por página (`meta.pages.<clave>`) y el título de la 404. Las descripciones **se derivan de textos que ya existen** (mismas claves, sin copiarlos); las dos que se recortan
   para no pasar de 160 caracteres usan `cut`. `DocumentHead` indexa con `RouteKey`: añadir una ruta sin sus metadatos
   rompe el typecheck. Una URL que no es una página es la 404: `noindex`, sin canonical ni hreflang.
 - Documentos legales: `{ name, url? }`. Sin `url` se muestran como texto («Documento por cargar»), sin enlace ni icono;
@@ -157,12 +157,12 @@ Ejemplo real: la página **Contacto** (`/contacto/` · `/en/contact/`).
 
 No hace falta librería de estado global.
 
-| Estado                       | Dónde vive                                                   |
-| ---------------------------- | ------------------------------------------------------------ |
-| Idioma                       | La URL; `LangFromUrl` lo entrega por contexto                |
-| Intro (fase, saltar)         | `IntroProvider` en `shared/intro`, montado en `app/root.tsx` |
-| Menú abierto                 | Estado local de `SideNav` (la página activa sale de la URL)  |
-| Carrusel (índice, pausa)     | Estado local del carrusel                                    |
+| Estado                   | Dónde vive                                                   |
+| ------------------------ | ------------------------------------------------------------ |
+| Idioma                   | La URL; `LangFromUrl` lo entrega por contexto                |
+| Intro (fase, saltar)     | `IntroProvider` en `shared/intro`, montado en `app/root.tsx` |
+| Menú abierto             | Estado local de `SideNav` (la página activa sale de la URL)  |
+| Carrusel (índice, pausa) | Estado local del carrusel                                    |
 
 ## Estilos
 
@@ -187,13 +187,13 @@ React Router renderiza `root.tsx` y cada ruta **en Node al construir**, donde no
 
 Requisitos y cómo se cumplen:
 
-| Requisito                                               | Solución                                                                                                                                                                                                                                    |
-| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Requisito                                                             | Solución                                                                                                                                                                                                                                    |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Visitante nuevo **en la portada**: intro sin parpadeo previo del hero | Un script mínimo y bloqueante en `<head>` (`shared/intro/boot-script.ts`) marca `<html data-intro="active">` **antes del primer pintado**. El CSS oculta los elementos del hero y muestra el overlay (`[data-intro='active'] .intro-root`). |
-| Solo si la sesión **empieza** en la portada (`/` o `/en/`) | Si la primera página es otra (`/nosotros/`, una 404…), el script y `IntroProvider` marcan el intro como visto: al llegar luego a la portada no se muestra. Ambos usan `isHomePath` / la misma lista de rutas. |
-| Ya visto en la sesión, o movimiento reducido: sin intro | El script no marca nada; el CSS no muestra el overlay. Tras hidratar, `IntroProvider` confirma la misma decisión y retira el overlay del DOM.                                                                                               |
-| El HTML estático no es `inert` ni `aria-hidden`         | En el servidor y en el primer render del cliente la fase es `done` y `ready` es `false`. El overlay va en el HTML, pero con `display: none` por defecto.                                                                                    |
-| Sin advertencias de hidratación                         | Servidor y primer render del cliente son idénticos; la decisión (`sessionStorage`, `matchMedia`) se toma en un `useLayoutEffect`, antes de pintar. `<html suppressHydrationWarning>` cubre el atributo `data-intro` que añade el script.    |
+| Solo si la sesión **empieza** en la portada (`/` o `/en/`)            | Si la primera página es otra (`/nosotros/`, una 404…), el script y `IntroProvider` marcan el intro como visto: al llegar luego a la portada no se muestra. Ambos usan `isHomePath` / la misma lista de rutas.                               |
+| Ya visto en la sesión, o movimiento reducido: sin intro               | El script no marca nada; el CSS no muestra el overlay. Tras hidratar, `IntroProvider` confirma la misma decisión y retira el overlay del DOM.                                                                                               |
+| El HTML estático no es `inert` ni `aria-hidden`                       | En el servidor y en el primer render del cliente la fase es `done` y `ready` es `false`. El overlay va en el HTML, pero con `display: none` por defecto.                                                                                    |
+| Sin advertencias de hidratación                                       | Servidor y primer render del cliente son idénticos; la decisión (`sessionStorage`, `matchMedia`) se toma en un `useLayoutEffect`, antes de pintar. `<html suppressHydrationWarning>` cubre el atributo `data-intro` que añade el script.    |
 
 Elegí un script en `<head>` y no solo un efecto de React porque el efecto corre después de hidratar, cuando el
 visitante ya vio el hero: es la única forma de decidir antes del primer pintado con HTML estático. Red de
