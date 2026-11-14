@@ -1,21 +1,10 @@
-import type { LinkDescriptor } from 'react-router'
-import { HERO_SIZES, HERO_SRC, HERO_SRCSET } from '@/features/nosotros/hero-image'
 import { NosotrosPage } from '@/pages/NosotrosPage'
 
-/** La foto del hero es la imagen principal: se precarga con los mismos srcset y sizes que el <img> (una sola descarga). */
-export const links = (): LinkDescriptor[] => [
-  // fetchPriority no figura en el tipo del descriptor, pero React lo escribe en el <link>.
-  {
-    rel: 'preload',
-    as: 'image',
-    href: HERO_SRC,
-    imageSrcSet: HERO_SRCSET,
-    imageSizes: HERO_SIZES,
-    fetchPriority: 'high',
-  } as LinkDescriptor,
-]
-
-/** Módulo de ruta: se registra una vez por idioma (el idioma lo determina la URL). */
+/**
+ * Módulo de ruta: se registra una vez por idioma (el idioma lo determina la URL).
+ * El preload de la foto del hero no se declara aquí: React lo emite en el <head> a partir del propio <img> del hero
+ * (`fetchPriority="high"` + `srcSet` + `sizes`), así que el preload y la imagen no pueden diverger.
+ */
 export default function NosotrosRoute() {
   return <NosotrosPage />
 }
