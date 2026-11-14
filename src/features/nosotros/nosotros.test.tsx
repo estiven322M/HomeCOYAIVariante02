@@ -68,18 +68,27 @@ describe('feature nosotros', () => {
     expect(screen.getByText(dict[lang].home.queEs.quote)).toBeInTheDocument()
   })
 
-  it.each(['es', 'en'] as const)('el cierre enlaza a Transparencia y la junta usa iniciales sin alt (%s)', (lang) => {
-    const { container } = renderNosotros(lang === 'es' ? '/' : '/en/')
-    const href = pathFor('transparencia', lang) + '#marco-legal'
-    expect(screen.getByRole('link', { name: new RegExp(dict[lang].nosotros.cierre.link) })).toHaveAttribute(
-      'href',
-      href,
-    )
-    for (const m of dict[lang].nosotros.equipo.junta.members) {
-      const initials = screen.getByText(m.initials)
-      expect(initials.parentElement).toHaveAttribute('aria-hidden', 'true')
-      expect(screen.getByRole('heading', { level: 4, name: m.name })).toBeInTheDocument()
-    }
-    expect(container.querySelectorAll('section#mision figure blockquote')).toHaveLength(1)
-  })
+  it.each(['es', 'en'] as const)(
+    'el cierre enlaza a Transparencia y la junta usa foto o iniciales según haya retrato (%s)',
+    (lang) => {
+      const { container } = renderNosotros(lang === 'es' ? '/' : '/en/')
+      const href = pathFor('transparencia', lang) + '#marco-legal'
+      expect(screen.getByRole('link', { name: new RegExp(dict[lang].nosotros.cierre.link) })).toHaveAttribute(
+        'href',
+        href,
+      )
+      for (const m of dict[lang].nosotros.equipo.junta.members) {
+        expect(screen.getByRole('heading', { level: 4, name: m.name })).toBeInTheDocument()
+        if (m.photoAlt) {
+          // Con foto: imagen con su alt, sin marcador de iniciales.
+          expect(screen.getByRole('img', { name: m.photoAlt })).toBeInTheDocument()
+          expect(screen.queryByText(m.initials)).toBeNull()
+        } else {
+          // Sin foto: iniciales decorativas (el nombre ya está en el encabezado).
+          expect(screen.getByText(m.initials).parentElement).toHaveAttribute('aria-hidden', 'true')
+        }
+      }
+      expect(container.querySelectorAll('section#mision figure blockquote')).toHaveLength(1)
+    },
+  )
 })

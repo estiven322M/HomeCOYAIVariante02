@@ -111,6 +111,7 @@ export const nosotros = {
         {
           name: 'Victoriano Piaguaje Yaiguaje',
           initials: 'VP',
+          photoAlt: 'Retrato de Victoriano Piaguaje Yaiguaje, con corona de plumas y collares tradicionales',
           role: 'Director Ejecutivo · Miembro de junta directiva y Sabedor Principal',
           profile:
             'Guía espiritual y estratégica de ÉCOYAI, garantizando el apego a los principios y la cosmovisión ancestral.',

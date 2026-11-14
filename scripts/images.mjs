@@ -12,7 +12,7 @@ import { dirname } from 'node:path'
 import { stat } from 'node:fs/promises'
 import sharp from 'sharp'
 
-/** @type {{ name: string, src: string, out: string, widths: number[], quality?: number, rotate?: number }[]} */
+/** @type {{ name: string, src: string, out: string, widths: number[], quality?: number, rotate?: number, crop?: { left: number, top: number, width: number, height: number } }[]} */
 const JOBS = [
   {
     name: 'hero-selva',
@@ -38,6 +38,15 @@ const JOBS = [
     widths: [480, 960],
     quality: 78,
   },
+  // Retrato 4:3 recortado alrededor del Taita (cara y busto) para la tarjeta de la junta directiva.
+  {
+    name: 'taita-junta',
+    src: 'public/taita/taita_victoriano.webp',
+    out: 'public/nosotros/taita-junta',
+    widths: [256, 512],
+    quality: 80,
+    crop: { left: 256, top: 0, width: 768, height: 576 },
+  },
   {
     name: 'taita',
     src: 'public/taita/taita_victoriano.webp',
@@ -56,6 +65,7 @@ for (const job of JOBS.filter((j) => !only || j.name.includes(only))) {
     const file = `${job.out}-${width}.webp`
     mkdirSync(dirname(file), { recursive: true })
     let img = sharp(job.src).rotate(job.rotate) // sin argumento: según EXIF; con `rotate`: grados explícitos
+    if (job.crop) img = img.extract(job.crop) // recorte (píxeles del original ya orientado) antes de escalar
     img = img.resize({ width, withoutEnlargement: true }).webp({ quality: job.quality ?? 78, effort: 5 })
     const info = await img.toFile(file)
     console.log(`${file}  ${info.width}×${info.height}  ${await kb(file)}  (origen ${meta.width}×${meta.height})`)

@@ -108,6 +108,7 @@ export const nosotros = {
         {
           name: 'Victoriano Piaguaje Yaiguaje',
           initials: 'VP',
+          photoAlt: 'Portrait of Victoriano Piaguaje Yaiguaje, wearing a feather crown and traditional necklaces',
           role: 'Executive Director · Board member and Principal Knowledge Keeper',
           profile: 'Spiritual and strategic guide of ÉCOYAI, ensuring adherence to ancestral principles and worldview.',
         },

@@ -1,21 +1,45 @@
 import { useLang } from '@/shared/i18n'
-import { Diamond } from '@/shared/ui/Diamond'
 import { SubTitle } from '@/shared/ui/SubTitle'
 
-/** Marcador del retrato mientras no hay foto: iniciales sobre un fondo de la paleta (el nombre va justo debajo). */
-function Initials({ initials, tone }: { initials: string; tone: string }) {
+/** Retratos disponibles de la junta, por iniciales. Derivados de `pnpm images`; las demás personas usan iniciales. */
+const PHOTOS: Record<string, { src: string; srcSet: string }> = {
+  VP: {
+    src: '/nosotros/taita-junta-512.webp',
+    srcSet: '/nosotros/taita-junta-256.webp 256w, /nosotros/taita-junta-512.webp 512w',
+  },
+}
+
+/**
+ * Retrato de la tarjeta: la foto si existe; si no, las iniciales en un tono neutro y suave (discreto, para no competir
+ * con las fotos reales; decorativas: el nombre va justo al lado). En móvil es un avatar pequeño a la izquierda.
+ */
+function Portrait({ initials, photoAlt }: { initials: string; photoAlt?: string }) {
+  const box =
+    'size-[4.5rem] flex-none overflow-hidden min-[520px]:aspect-[3/2] min-[520px]:size-auto min-[520px]:w-full'
+  const photo = PHOTOS[initials]
+  if (photo && photoAlt) {
+    return (
+      <img
+        src={photo.src}
+        srcSet={photo.srcSet}
+        sizes="(min-width: 1024px) 258px, (min-width: 520px) 50vw, 72px"
+        width={512}
+        height={384}
+        alt={photoAlt}
+        loading="lazy"
+        decoding="async"
+        className={`${box} object-cover object-[50%_15%]`}
+      />
+    )
+  }
   return (
-    <div
-      aria-hidden
-      className={`relative flex aspect-[3/2] items-center min-[520px]:aspect-[4/5] justify-center overflow-hidden ${tone}`}
-    >
-      <Diamond className="absolute aspect-square h-3/4 bg-arena-clara/10" />
-      <span className="relative font-serif text-[4.5rem] font-light tracking-wide text-arena-clara">{initials}</span>
+    <div aria-hidden className={`flex items-center justify-center bg-tierra-suave/15 ${box}`}>
+      <span className="font-serif text-lead font-light tracking-wide text-tierra-suave min-[520px]:text-subtitle">
+        {initials}
+      </span>
     </div>
   )
 }
-
-const TONES = ['bg-chagra', 'bg-achiote', 'bg-chagra', 'bg-achiote']
 
 /** 04 · Nuestro equipo: el Taita (liderazgo ancestral) y la junta directiva. */
 export function Equipo() {
@@ -54,13 +78,17 @@ export function Equipo() {
           <span aria-hidden className="h-px w-10 bg-ocre" />
           <h3 className="text-caption uppercase tracking-[0.3em] text-arena-clara/75">{e.junta.title}</h3>
         </div>
-        <ul className="mt-10 grid gap-x-6 gap-y-12 min-[520px]:grid-cols-2 lg:grid-cols-4">
-          {e.junta.members.map((m, i) => (
-            <li key={m.name}>
-              <Initials initials={m.initials} tone={TONES[i % TONES.length] ?? 'bg-chagra'} />
-              <h4 className="mt-6 font-serif text-lead leading-tight">{m.name}</h4>
-              <p className="mt-3 text-caption uppercase leading-5 tracking-[0.2em] text-ocre">{m.role}</p>
-              <p className="mt-4 border-t border-arena-clara/15 pt-4 text-ui text-arena-clara/80">{m.profile}</p>
+        <ul className="mt-10 grid gap-x-6 gap-y-8 min-[520px]:grid-cols-2 min-[520px]:gap-y-12 lg:grid-cols-4">
+          {e.junta.members.map((m) => (
+            <li key={m.name} className="flex gap-4 min-[520px]:block">
+              <Portrait initials={m.initials} photoAlt={m.photoAlt} />
+              <div className="min-w-0 min-[520px]:mt-6">
+                <h4 className="font-serif text-lead leading-tight">{m.name}</h4>
+                <p className="mt-2 text-ui leading-snug text-ocre">{m.role}</p>
+                <p className="mt-3 border-t border-arena-clara/15 pt-3 text-ui text-arena-clara/80 min-[520px]:mt-4 min-[520px]:pt-4">
+                  {m.profile}
+                </p>
+              </div>
             </li>
           ))}
         </ul>

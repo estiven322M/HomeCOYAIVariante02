@@ -14,16 +14,16 @@ export function Valores() {
         {/* `gap-px` sobre un fondo tenue dibuja los filetes entre celdas. */}
         <ul className="mt-14 grid gap-px bg-huito/20 p-px min-[520px]:grid-cols-2 lg:grid-cols-4">
           {v.items.map((item, i) => (
-            <li key={item.k} className="flex min-h-[18.75rem] flex-col bg-arena-clara p-8">
+            <li key={item.k} className="flex flex-col bg-arena-clara p-8 min-[520px]:min-h-[18.75rem]">
               <div className="flex items-center gap-3">
                 <Diamond className="size-2.5 bg-ocre" />
                 <span className="font-serif text-ui text-achiote">{String(i + 1).padStart(2, '0')}</span>
               </div>
-              <h3 className="mt-12 font-serif text-heading text-chagra">{item.k}</h3>
+              <h3 className="mt-4 font-serif text-heading text-chagra min-[520px]:mt-10">{item.k}</h3>
               <p className="mt-4 text-body-sm text-huito/80">{item.t}</p>
             </li>
           ))}
-          <li className="relative min-h-[18.75rem] bg-huito">
+          <li className="relative aspect-[4/3] bg-huito min-[520px]:aspect-auto min-[520px]:min-h-[18.75rem]">
             <img
               src="/nosotros/valores-480.webp"
               srcSet="/nosotros/valores-480.webp 480w, /nosotros/valores-960.webp 960w"
