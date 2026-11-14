@@ -5,8 +5,11 @@ import { SubTitle } from '@/shared/ui/SubTitle'
 /** Marcador del retrato mientras no hay foto: iniciales sobre un fondo de la paleta (el nombre va justo debajo). */
 function Initials({ initials, tone }: { initials: string; tone: string }) {
   return (
-    <div aria-hidden className={`relative flex aspect-[4/5] items-center justify-center overflow-hidden ${tone}`}>
-      <Diamond className="absolute size-3/4 bg-arena-clara/10" />
+    <div
+      aria-hidden
+      className={`relative flex aspect-[3/2] items-center min-[520px]:aspect-[4/5] justify-center overflow-hidden ${tone}`}
+    >
+      <Diamond className="absolute aspect-square h-3/4 bg-arena-clara/10" />
       <span className="relative font-serif text-[4.5rem] font-light tracking-wide text-arena-clara">{initials}</span>
     </div>
   )
