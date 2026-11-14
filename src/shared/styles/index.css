@@ -71,10 +71,6 @@
   body {
     @apply bg-calido text-carbon font-sans antialiased;
   }
-  p {
-    text-align: justify;
-    hyphens: auto;
-  }
   :focus-visible {
     outline: 2px solid var(--color-tierra);
     outline-offset: 3px;
