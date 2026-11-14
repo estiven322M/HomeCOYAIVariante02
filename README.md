@@ -55,6 +55,14 @@ proyectos…): copia el original a `assets-src/<página>/`, añade una entrada a
 derivados con `srcset` y `sizes`. `pnpm images hero` regenera solo los trabajos cuyo nombre contiene «hero». Los
 `.webp` van por Git LFS (ver `.gitattributes`). Si una foto sale girada y no trae EXIF, el trabajo admite `rotate` (grados).
 
+### Git LFS y husky
+
+Husky 9 apunta `core.hooksPath` a `.husky/_`, así que los ganchos que instala `git lfs install` en `.git/hooks` **no se
+ejecutan**: sin ellos, un `git push` con un `.webp` nuevo falla con «GH008: unknown Git LFS objects». Por eso el
+repositorio incluye en `.husky/` los ganchos de LFS (`pre-push`, `post-checkout`, `post-commit` y `post-merge`, el contenido
+que genera `git lfs install --manual`) junto al `pre-commit` de lint-staged. No hace falta ninguna acción: tras `pnpm
+install` (que ejecuta `husky`) basta con tener `git-lfs` instalado. Si falta, el gancho avisa y detiene la operación.
+
 ## Control de calidad
 
 - **Antes de cada commit** (husky + lint-staged): se formatea y se corrige con ESLint lo que está en staging.
