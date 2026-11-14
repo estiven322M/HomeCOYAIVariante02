@@ -4,7 +4,7 @@ Principio rector: **arquitectura proporcional**. Cada carpeta, librería o regla
 proyecto (un solo desarrollador, sitio estático, contenido mayormente fijo, bilingüe). Lo que no se justifica, no
 se añade. Las decisiones y sus alternativas descartadas están en [`docs/adr/`](./adr).
 
-## Estado actual (Fase 2B)
+## Estado actual (Fase 3)
 
 Sitio estático generado con **React Router 8.5.1 en modo framework** (`ssr: false` + `prerender`), sobre Vite 8,
 React 19.3 y Tailwind v4. Seis páginas en dos idiomas (inicio, nosotros, proyectos, transparencia, colaborar y
@@ -36,8 +36,9 @@ src/
   env.ts            variables de entorno tipadas (VITE_*)
 react-router.config.ts   modo framework: appDirectory, ssr: false, prerender
 config/             plugins de Vite: robots.txt y plugins de Figma (aislados)
-scripts/            preview.mjs (sirve build/client como Netlify), finalize-build.mjs (404.html), capture.mjs (capturas)
-                    y measure-intro.mjs (mide la duración del intro)
+scripts/            preview.mjs (sirve build/client como Netlify), finalize-build.mjs (404.html), capture.mjs (capturas),
+                    measure-intro.mjs (mide la duración del intro) e images.mjs (`pnpm images`: derivados optimizados)
+assets-src/         originales de las imágenes que no están ya en `public/` (entrada de `pnpm images`)
 docs/               esta documentación, ADR y problemas conocidos
 test/               render con router, preparación común y verificación posterior al build (post-build/)
 e2e/                pruebas de extremo a extremo con Playwright (menú, idioma, 404, intro)
@@ -92,8 +93,8 @@ Si una feature necesita algo de otra, ese algo es `shared` (súbelo) o se compon
 `NAV_KEYS` fija las páginas del menú, de «Explora» y del pie (en ese orden, igual que `common.nav`). «Colaborar»
 cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">` sin destino: un test los recorre todos.
 
-- **Anclas.** Los `id` de las anclas son **los mismos en español e inglés** (`#historia`, `#direccionamiento`,
-  `#liderazgo`, `#equipo`, `#marco-legal`) porque el selector de idioma conserva el hash
+- **Anclas.** Los `id` de las anclas son **los mismos en español e inglés** (Nosotros: `#historia`, `#mision`,
+  `#valores`, `#equipo`; Transparencia: `#marco-legal`) porque el selector de idioma conserva el hash
   (`/nosotros/#historia` ↔ `/en/about/#historia`). Al añadir un ancla, el `id` no se traduce.
 - **Navegación en el cliente.** Los enlaces internos son `<Link>` de React Router (sin recargar). Al navegar, el
   foco pasa al `<h1>` de la página (o al elemento del hash) con `FocusOnNavigate`; `ScrollRestoration` sube al
@@ -152,6 +153,30 @@ Ejemplo real: la página **Contacto** (`/contacto/` · `/en/contact/`).
 2. Crea su contenido: `src/content/es/<dominio>.ts` (define el tipo) y `src/content/en/<dominio>.ts`
    (`satisfies typeof es<Dominio>`). Súmalos en `src/content/{es,en}/index.ts` (nuevo espacio de nombres).
 3. Escribe una prueba de humo `src/features/<dominio>/<dominio>.test.tsx` con `renderAt` (`test/render.tsx`).
+
+## Página Nosotros (Fase 3)
+
+`features/nosotros/components/`: un componente por bloque (`NosotrosHero`, `SectionNav`, `SidePattern`, `Historia` con
+`Territorio`, `MisionVision`, `Valores`, `Equipo`, `CierreLegal`) ensamblados por `Nosotros.tsx`. Piezas reutilizables
+nuevas en `shared/ui`: `Diamond` (motivo en rombo y `DIAMOND_CLIP` para imágenes) y `SubTitle` con numeración (`n="01"`).
+
+- **Anclas** (iguales en es y en): `#historia`, `#mision`, `#valores`, `#equipo`. El marco legal **no** está aquí: vive en
+  `/transparencia/#marco-legal` y `CierreLegal` solo enlaza (y reutiliza título e insignias de `t.transparencia.legal`).
+- **Barra interna** (`SectionNav`): `<nav>` con enlaces `<a href="#id">` (no pestañas: todas las secciones están visibles).
+  Fija bajo el encabezado desde `md` (`top: var(--header-h)`), en el flujo y desplazable en móvil con un velo en el borde
+  derecho. Marca la sección actual con `aria-current="location"` (IntersectionObserver en un efecto; el HTML estático no
+  marca ninguna). `--header-h` y `--sectionnav-h` (`index.css`) deben coincidir con el alto real del encabezado y de la
+  barra; `.anchor-section` los usa en `scroll-margin-top` (una e2e lo comprueba).
+- **Patrón lateral** (`SidePattern`): franjas de 40 px en los márgenes, solo desde 1280 px, ~420 px desde la barra con
+  fundido. Azulejo SVG de 40×59 (`shared/styles/patron-lateral.svg`) usado como máscara (`mask-image` y
+  `-webkit-mask-image`) sobre el color `--color-patron`; sin fondo propio; `aria-hidden`.
+- **Hero**: la foto es la imagen principal (`fetchPriority="high"`, sin lazy, `srcset`/`sizes`); React emite su preload en
+  el `<head>` a partir del propio `<img>` (no se declara aparte, para que no diverjan). Los velos de `index.css`
+  (`.nosotros-velo-*`) mantienen el contraste AA del texto en todos los anchos (medido sobre la foto).
+- **Retratos de la junta**: iniciales (`members[].initials`) sobre un fondo de la paleta, `aria-hidden` (el nombre va
+  debajo). Cuando haya fotos: añadir una clave opcional `photo` y usar `<img alt={nombre}>`.
+- **Imágenes**: derivados de `pnpm images` en `public/nosotros/`; las fotos de Misión, Visión y Valores salen de las
+  del carrusel de la portada (`public/slider`).
 
 ## Estado y datos
 

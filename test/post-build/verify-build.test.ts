@@ -126,6 +126,64 @@ describe('build/client', () => {
     })
   })
 
+  describe.each(LANGS)('Nosotros · %s', (lang) => {
+    const doc = read(pathFor('nosotros', lang))
+    const n = dict[lang].nosotros
+
+    it('tiene las cuatro anclas de la barra interna, con los mismos ids en los dos idiomas', () => {
+      const nav = doc.querySelector(`nav[aria-label="${n.navAria}"]`)
+      const ids = [...(nav?.querySelectorAll('a') ?? [])].map((a) => a.getAttribute('href')?.slice(1))
+      expect(ids).toEqual(['historia', 'mision', 'valores', 'equipo'])
+      for (const id of ids) expect(doc.getElementById(id ?? ''), id).not.toBeNull()
+      expect(nav?.querySelector('[aria-current]')).toBeNull()
+    })
+
+    it('encabezados sin saltos: un h1, h2 por sección y h3/h4 debajo', () => {
+      const levels = [...doc.querySelectorAll('main h1, main h2, main h3, main h4')].map((h) => Number(h.tagName[1]))
+      expect(levels.filter((l) => l === 1)).toHaveLength(1)
+      expect(levels[0]).toBe(1)
+      levels.forEach((l, i) => i > 0 && expect(l - (levels[i - 1] ?? 0)).toBeLessThanOrEqual(1))
+      expect(levels.filter((l) => l === 2)).toHaveLength(5) // 4 secciones + cierre legal
+    })
+
+    it('la foto del hero se precarga una sola vez con los mismos srcset y sizes que el <img>', () => {
+      const img = doc.querySelector('main img')
+      const preloads = [...doc.querySelectorAll('link[rel="preload"][as="image"]')].filter((l) =>
+        l.getAttribute('imagesrcset')?.includes('hero-selva'),
+      )
+      expect(preloads).toHaveLength(1)
+      expect(preloads[0]?.getAttribute('imagesrcset')).toBe(img?.getAttribute('srcset'))
+      expect(preloads[0]?.getAttribute('imagesizes')).toBe(img?.getAttribute('sizes'))
+      expect(img?.getAttribute('fetchpriority')).toBe('high')
+      expect(img?.hasAttribute('loading')).toBe(false)
+      expect(img?.getAttribute('alt')).toBe('')
+    })
+
+    it('las demás imágenes son diferidas y llevan alt; sin textos entre corchetes ni botones de descarga falsos', () => {
+      const rest = [...doc.querySelectorAll('main img')].slice(1)
+      expect(rest.length).toBeGreaterThan(0)
+      for (const img of rest) {
+        expect(img.getAttribute('loading')).toBe('lazy')
+        expect(img.getAttribute('alt')?.length).toBeGreaterThan(0)
+      }
+      const text = doc.querySelector('main')?.textContent ?? ''
+      expect(text).not.toMatch(/[[^]]+]/)
+      expect(text).not.toContain('PDF')
+    })
+
+    it('la cita del propósito es <figure><blockquote> con <figcaption>', () => {
+      const fig = [...doc.querySelectorAll('figure')].find((f) => f.querySelector('blockquote'))
+      expect(fig?.querySelector('blockquote')?.textContent).toBe(n.mision.purpose.quote)
+      expect(fig?.querySelector('figcaption')?.textContent).toBe(n.mision.purpose.cite)
+    })
+
+    it('el cierre enlaza a Transparencia#marco-legal, y esa ancla existe en esa página', () => {
+      const href = pathFor('transparencia', lang) + '#marco-legal'
+      expect([...doc.querySelectorAll('main a')].map((a) => a.getAttribute('href'))).toContain(href)
+      expect(read(pathFor('transparencia', lang)).getElementById('marco-legal')).not.toBeNull()
+    })
+  })
+
   it('robots.txt y la meta robots siguen el mismo interruptor', () => {
     const robotsTxt = existsSync(join(BUILD, 'robots.txt')) ? readFileSync(join(BUILD, 'robots.txt'), 'utf8') : ''
     const blocked = robotsTxt.includes('Disallow: /')

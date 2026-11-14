@@ -11,11 +11,13 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
   redacta aquí: es un texto jurídico de la organización. Mientras no exista, «Aviso legal» y «Política de privacidad» no
   se muestran en el pie (ver abajo). _Requisito bloqueante._
 
-## Para la fase de rediseño de Inicio y Nosotros
+## Para la fase de rediseño de Inicio (Nosotros ya rediseñada en la Fase 3)
 
 - **Adelanto de Misión y Visión en Inicio.** Se decidió **no** mostrarlo en la 2B (ni siquiera como enlaces sueltos).
   Retomarlo en el rediseño de Inicio; si se hace, leer las mismas claves de `content/nosotros` (sin copiar) y enlazar a
-  `/nosotros/#direccionamiento`.
+  `/nosotros/#mision`.
+- **Retratos de la junta directiva.** Se muestran iniciales (VP, FY, MR, JP) hasta tener las fotos; ver "Retratos" en
+  ARCHITECTURE. Falta además un recorte revisado de `slider9` (corona de plumas, con inclinación de cámara de origen).
 - **Descripciones muy cortas.** Las de Nosotros y Contacto (`common.nav[*].desc`, ~40 caracteres) son honestas pero
   débiles para buscadores. Mejorarlas con el contenido definitivo.
 - **Páginas con contenido por llegar.** `/proyectos/` y `/colaborar/` reutilizan el texto del proyecto destacado y de
@@ -42,9 +44,6 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
 - **Barra final en Netlify.** Se asume que `/en` redirige a `/en/` (301) porque existe `en/index.html`; no hay
   regla propia. **No verificado:** `curl -I <previsualización>/en`. Si no redirige (o duplica contenido), añadir
   entonces la regla `/en /en/ 301`, vigilando que no genere un bucle.
-- **Medios en Git LFS.** `public/` guarda imágenes, el video y el poster en Git LFS (`.gitattributes`). CI no
-  descarga LFS a propósito. **No he podido verificar desde aquí que Netlify los resuelva en el build**: confirmar en
-  el primer despliegue (si faltaran, se verían los punteros LFS en lugar de los medios).
 - **Cabeceras de Netlify sin probar.** `X-Robots-Tag` en previsualizaciones (`_headers` generado tras el build) y la
   caché de 30 días de `/video`, `/slider` y `/branding` (sin hash: si se reemplaza un archivo con el mismo nombre,
   los visitantes pueden ver la copia antigua hasta 30 días).
@@ -62,14 +61,14 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
 
 ## Estilos y diseño
 
-- **Texto justificado.** `src/shared/styles/index.css` aplica `text-align: justify; hyphens: auto` a todos los
-  `<p>`. Afecta a la legibilidad y a la accesibilidad (ríos de espacio, sobre todo en columnas estrechas). _Fase 4._
-- **Colisión del token «selva».** `@theme` define `--color-selva` (alias de `--color-huito`, `#1c2233`) y el hero
-  define otra variable `--selva` (`#0f1b16`). Son dos colores distintos con el mismo nombre. Conviven además dos
-  paletas (Huito y achiote, y las variables del hero/intro: `--niebla`, `--ambar`…). _Fase 4._
-- **Tamaños de texto pequeños.** Hay `text-[10px]` (6 usos) y `text-[11px]` (11 usos), además de tamaños
-  arbitrarios `text-[15px]` y `text-[17px]`, fuera de una escala tipográfica. Los de 10–11 px quedan por debajo
-  de lo recomendable para lectura. _Fase 4._
+- **Colisión del token «selva» (resuelta en la Fase 3, queda un alias confuso).** El `--selva` (#0f1b16) del hero y el
+  intro se renombró a `--color-noche`. Pendiente para la fase de paletas: el alias `--color-selva` (clase `bg-selva`…)
+  apunta al azul huito (#1c2233) y su nombre confunde; se resuelve al consolidar las paletas (Huito y achiote, y las
+  variables del hero/intro, que siguen conviviendo). _Fase 4._
+- **Tamaños de texto pequeños (parcial).** Ya existe una escala tipográfica en tokens (`--text-*` en `@theme`, mínimo
+  12 px) y `Eyebrow`/`SubTitle` la usan; la página Nosotros solo usa la escala. Siguen con `text-[10px]`/`text-[11px]`
+  fuera de la escala: pie, menú, selector de idioma, intro, portada (`Hero`, `Sections`), 404 y `Transparencia`.
+  _Fase 4._
 - **Contraste del acento.** Un comentario en `index.css` ya anota que el ámbar no alcanza 3:1 sobre el fotograma
   más claro del hero. _Fase 4._
 
@@ -93,6 +92,22 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
   visto. La navegación de idioma tampoco lo repite (el proveedor vive en la raíz); es lo deseado.
 - **Los enlaces de salto y de ancla dentro de una página** (`#origen`, `#contenido`) son `<a>` normales; el resto de los
   internos son `<Link>` (navegación en cliente).
+
+## Accesibilidad detectada por axe (no corregida en la Fase 3)
+
+La e2e «accesibilidad (axe, WCAG A/AA)» (`e2e/site.e2e.test.ts`) recorre todas las páginas en es y en (1280 y 390 px, intro
+visto, movimiento reducido) y falla ante cualquier infracción que no esté en su lista `KNOWN`. La página **Nosotros no tiene
+ninguna propia**; lo que sigue ya existía y está fuera del alcance de la Fase 3 (al corregir una, quítala de `KNOWN`):
+
+- **Selector de idioma (encabezado, todas las páginas)** — `label-content-name-mismatch` (WCAG 2.5.3, A): el `aria-label`
+  («Cambiar idioma a inglés») no contiene el texto visible («ES»/«EN»). _Fase 4/5._
+- **Texto de derechos del pie (todas las páginas)** — `color-contrast`: 3,9:1 (#7e7e82 sobre #1c2233, 12 px). _Fase 4._
+- **Portada** — `color-contrast`: el eyebrow «Origen/Born in Putumayo» (`text-carbon/60`, 11 px; 4,0:1) y las descripciones de
+  «Explora» (`text-carbon/60`, 14 px; 4,0:1). Además `list` y `listitem`: la lista de «Explora» tiene un `<div>` (el `Reveal`)
+  entre `<ul>` y cada `<li>`. _Fase 4 y rediseño de Inicio._
+- **Transparencia** — `color-contrast`: «Documento por cargar» (`text-carbon/60`, 12 px; 4,1:1). _Fase 4._
+- axe no puede medir el contraste sobre fotografías (queda «incompleto»): el del texto del hero de Nosotros se midió aparte,
+  píxel a píxel (peor caso 4,56:1).
 
 ## Calidad y herramientas
 

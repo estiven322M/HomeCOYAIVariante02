@@ -1,10 +1,11 @@
 // Pruebas de extremo a extremo (Playwright + Vitest). Sirven build/client con scripts/preview.mjs, que imita a Netlify
 // (404 real, sin fallback SPA). Uso: pnpm run build && pnpm run test:e2e
 import { spawn, type ChildProcess } from 'node:child_process'
+import AxeBuilder from '@axe-core/playwright'
 import { chromium, type Browser, type BrowserContext } from 'playwright'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { dict } from '@/content'
-import { NOT_FOUND, pathFor } from '@/shared/i18n/routes'
+import { LANGS, NOT_FOUND, ROUTES, pathFor, type RouteKey } from '@/shared/i18n/routes'
 
 const PORT = 4199
 const BASE = `http://localhost:${PORT}`
@@ -304,7 +305,10 @@ describe('encabezado y anclas', () => {
     const measure = () =>
       page.evaluate(() => ({
         top: document.getElementById('equipo')?.getBoundingClientRect().top ?? -1,
-        header: document.querySelector('header')?.getBoundingClientRect().height ?? 0,
+        // Encabezado fijo + barra interna de Nosotros (también fija desde md).
+        header:
+          (document.querySelector('header')?.getBoundingClientRect().height ?? 0) +
+          (document.querySelector('main nav')?.getBoundingClientRect().height ?? 0),
       }))
     await expect
       .poll(
@@ -326,4 +330,134 @@ describe('encabezado y anclas', () => {
     }
     await page.context().close()
   })
+})
+
+describe('Nosotros', () => {
+  const T = dict
+
+  it.each(['es', 'en'] as const)(
+    'hero (%s): imagen principal con prioridad, sin lazy y descargada una sola vez',
+    async (lang) => {
+      const page = await (await context()).newPage()
+      const downloads: string[] = []
+      page.on('request', (r) => r.url().includes('hero-selva') && downloads.push(r.url()))
+      await page.goto(BASE + pathFor('nosotros', lang), { waitUntil: 'networkidle' })
+      const img = page.locator('main section img').first()
+      expect(await img.getAttribute('fetchpriority')).toBe('high')
+      expect(await img.getAttribute('loading')).toBeNull()
+      expect(await img.getAttribute('alt')).toBe('')
+      expect(await page.locator('head link[rel="preload"][imagesrcset*="hero-selva"]').count()).toBe(1)
+      expect(downloads).toHaveLength(1)
+      await page.context().close()
+    },
+  )
+
+  it.each(['es', 'en'] as const)('a 390 px no hay scroll horizontal (%s)', async (lang) => {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } })
+    await ctx.addInitScript((k) => sessionStorage.setItem(k, '1'), SEEN)
+    const page = await ctx.newPage()
+    await page.goto(BASE + pathFor('nosotros', lang), { waitUntil: 'networkidle' })
+    const { scroll, inner } = await page.evaluate(() => ({
+      scroll: document.documentElement.scrollWidth,
+      inner: window.innerWidth,
+    }))
+    expect(scroll).toBeLessThanOrEqual(inner)
+    await ctx.close()
+  })
+
+  it('la barra interna marca la sección actual con aria-current al desplazarse', async () => {
+    const page = await (await context()).newPage()
+    await page.goto(BASE + pathFor('nosotros', 'es'))
+    const nav = page.getByRole('navigation', { name: T.es.nosotros.navAria })
+    expect(await nav.locator('[aria-current]').count()).toBe(0)
+    await nav.getByRole('link', { name: T.es.nosotros.mision.label }).click()
+    await expect
+      .poll(() => nav.locator('[aria-current="location"]').innerText(), { timeout: 8000 })
+      .toContain(T.es.nosotros.mision.label)
+    expect(await nav.locator('[aria-current]').count()).toBe(1)
+    await page.context().close()
+  })
+
+  it('en móvil la barra interna se desliza y el velo del borde derecho se apaga al llegar al final', async () => {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } })
+    await ctx.addInitScript((k) => sessionStorage.setItem(k, '1'), SEEN)
+    const page = await ctx.newPage()
+    await page.goto(BASE + pathFor('nosotros', 'es'), { waitUntil: 'networkidle' })
+    const nav = page.getByRole('navigation', { name: T.es.nosotros.navAria })
+    const veil = nav.locator('span[aria-hidden]')
+    const scrollable = await nav.locator('ul').evaluate((ul) => ul.scrollWidth > ul.clientWidth)
+    expect(scrollable).toBe(true)
+    await expect.poll(() => veil.evaluate((v) => getComputedStyle(v).opacity)).toBe('1')
+    expect(await veil.evaluate((v) => getComputedStyle(v).pointerEvents)).toBe('none')
+    await nav.locator('ul').evaluate((ul) => ul.scrollTo({ left: ul.scrollWidth }))
+    await expect.poll(() => veil.evaluate((v) => getComputedStyle(v).opacity)).toBe('0')
+    // No es fija en móvil: queda en el flujo.
+    expect(await nav.evaluate((n) => getComputedStyle(n).position)).toBe('relative')
+    await ctx.close()
+  })
+
+  it('el patrón lateral solo aparece desde 1280 px', async () => {
+    const wide = await (await context()).newPage()
+    await wide.goto(BASE + pathFor('nosotros', 'es'))
+    expect(await wide.locator('.patron-lateral').first().isVisible()).toBe(true)
+    await wide.context().close()
+    const ctx = await browser.newContext({ viewport: { width: 1100, height: 800 } })
+    await ctx.addInitScript((k) => sessionStorage.setItem(k, '1'), SEEN)
+    const narrow = await ctx.newPage()
+    await narrow.goto(BASE + pathFor('nosotros', 'es'))
+    expect(await narrow.locator('.patron-lateral').first().isVisible()).toBe(false)
+    await ctx.close()
+  })
+})
+
+// Accesibilidad automática (axe-core): todas las páginas en es y en, a 1280 y 390 px, con el intro ya visto y movimiento
+// reducido (las animaciones de aparición no dejan texto a medias). Reglas WCAG 2.0/2.1 A y AA, incluido el contraste.
+//
+// La lista KNOWN recoge infracciones que YA existían en otras páginas, el encabezado y el pie y que no se corrigen en la
+// Fase 3 (están en docs/known-issues.md, «Accesibilidad detectada por axe»). Cualquier otra infracción hace fallar la
+// prueba, y Nosotros no tiene ninguna propia. Al corregir una, quítala de aquí.
+type Known = { rule: string; page?: RouteKey | 'notFound'; html?: RegExp }
+const KNOWN: Known[] = [
+  { rule: 'label-content-name-mismatch', html: /hreflang=/ }, // selector de idioma del encabezado (aria-label sin el texto visible)
+  { rule: 'color-contrast', html: /©/ }, // texto de derechos del pie (3,9:1)
+  { rule: 'color-contrast', page: 'home', html: /text-carbon\/60|text-\[11px\]/ }, // eyebrow y descripciones de «Explora»
+  { rule: 'list', page: 'home' }, // la lista de «Explora» contiene <div> (Reveal) entre <ul> y <li>
+  { rule: 'listitem', page: 'home' },
+  { rule: 'color-contrast', page: 'transparencia', html: /text-carbon\/60/ }, // «Documento por cargar»
+]
+
+const AXE_PAGES = [
+  ...(Object.keys(ROUTES) as RouteKey[]).flatMap((key) =>
+    LANGS.map((lang) => ({ key: key as RouteKey | 'notFound', lang, path: pathFor(key, lang) })),
+  ),
+  ...LANGS.map((lang) => ({ key: 'notFound' as const, lang, path: lang === 'es' ? '/no-existe/' : '/en/no-existe/' })),
+]
+
+describe('accesibilidad (axe, WCAG A/AA)', () => {
+  it.each([1280, 390])(
+    'ninguna página tiene infracciones nuevas a %i px',
+    async (width) => {
+      const ctx = await browser.newContext({ viewport: { width, height: 800 }, reducedMotion: 'reduce' })
+      await ctx.addInitScript((k) => sessionStorage.setItem(k, '1'), SEEN)
+      const failures: string[] = []
+      for (const { key, lang, path } of AXE_PAGES) {
+        const page = await ctx.newPage()
+        await page.goto(BASE + path, { waitUntil: 'networkidle' })
+        const { violations } = await new AxeBuilder({ page })
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+          .analyze()
+        for (const v of violations)
+          for (const node of v.nodes) {
+            const known = KNOWN.some(
+              (k) => k.rule === v.id && (!k.page || k.page === key) && (!k.html || k.html.test(node.html)),
+            )
+            if (!known) failures.push(`${lang} ${path} · ${v.id}: ${node.target.join(' ')}`)
+          }
+        await page.close()
+      }
+      await ctx.close()
+      expect(failures).toEqual([])
+    },
+    180_000,
+  )
 })

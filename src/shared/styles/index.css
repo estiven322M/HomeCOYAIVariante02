@@ -30,18 +30,53 @@
   --color-calido: var(--color-arena-clara);
   --color-carbon: var(--color-huito);
   --color-tierra: var(--color-achiote);
+
+  /* Escala tipográfica (mínimo 12 px). Uso: `text-title`, `text-body`… Cada token lleva su interlineado. */
+  --text-caption: 0.75rem; /* 12 px: etiquetas, eyebrows, insignias */
+  --text-caption--line-height: 1.5;
+  --text-ui: 0.875rem; /* 14 */
+  --text-ui--line-height: 1.429;
+  --text-body-sm: 0.9375rem; /* 15 */
+  --text-body-sm--line-height: 1.6;
+  --text-body: 1.0625rem; /* 17 */
+  --text-body--line-height: 1.625;
+  --text-lead-sm: 1.25rem; /* 20 */
+  --text-lead-sm--line-height: 1.6;
+  --text-lead: 1.5rem; /* 24 */
+  --text-lead--line-height: 1.375;
+  --text-heading: 1.75rem; /* 28 */
+  --text-heading--line-height: 1.15;
+  --text-note: 1.125rem; /* 18: pies de foto en cursiva */
+  --text-note--line-height: 1.375;
+  --text-quote: 2rem; /* 32 */
+  --text-quote--line-height: 1.3;
+  --text-list-title: 2.25rem; /* 36 */
+  --text-list-title--line-height: 1.11;
+  --text-subtitle: 3rem; /* 48 */
+  --text-subtitle--line-height: 1.08;
+  --text-statement: 3.5rem; /* 56 */
+  --text-statement--line-height: 1;
+  --text-title: 3.75rem; /* 60 */
+  --text-title--line-height: 1.05;
+  --text-title-xl: 4.5rem; /* 72 */
+  --text-title-xl--line-height: 1.02;
+  --text-display: 6rem; /* 96 */
+  --text-display--line-height: 1.02;
+  /* Un paso menos para móvil (como hace la maqueta) */
+  --text-display-sm: 4rem; /* 64 */
+  --text-display-sm--line-height: 1.02;
+  --text-title-sm: 2.5rem; /* 40 */
+  --text-title-sm--line-height: 1.1;
 }
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
   body {
     @apply bg-calido text-carbon font-sans antialiased;
-  }
-  p {
-    text-align: justify;
-    hyphens: auto;
   }
   :focus-visible {
     outline: 2px solid var(--color-tierra);
@@ -107,9 +142,17 @@
   }
 }
 
+/* ---- Página Nosotros ---- */
+:root {
+  /* Alto del encabezado fijo (py-3 + botón de 44 px) y de la barra interna fija (md+): destino de los enlaces ancla. */
+  --header-h: 4.25rem;
+  --sectionnav-h: 3.8125rem;
+  --color-patron: #6e593b;
+}
+
 /* ---- Hero palette (solo hero + intro) ---- */
 :root {
-  --selva: #0f1b16;
+  --color-noche: #0f1b16;
   --niebla: #f2ede3;
   --ambar: #e3a93a;
   --turquesa: #35b5ab;
@@ -124,6 +167,66 @@
 }
 
 @layer components {
+  /* Sección con ancla: el destino queda bajo el encabezado (y bajo la barra interna, que es fija desde md). */
+  .anchor-section {
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+  }
+  @media (min-width: 768px) {
+    .anchor-section {
+      scroll-margin-top: calc(var(--header-h) + var(--sectionnav-h) + 1rem);
+    }
+  }
+  /* Franja lateral con el patrón geométrico (azulejo de 40×59 px usado como máscara; el color es --color-patron). */
+  .patron-lateral {
+    background-color: var(--color-patron);
+    -webkit-mask-image: url('./patron-lateral.svg');
+    mask-image: url('./patron-lateral.svg');
+    -webkit-mask-repeat: repeat-y;
+    mask-repeat: repeat-y;
+    -webkit-mask-size: 40px 59px;
+    mask-size: 40px 59px;
+  }
+  /* Variante «fundido»: la franja mide ~420 px (como en Figma) y se desvanece al final. */
+  .patron-fundido {
+    -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent);
+    mask-image: linear-gradient(to bottom, #000 65%, transparent);
+  }
+  /* Velos del hero de Nosotros: legibilidad del texto sobre la foto. */
+  .nosotros-velo-h {
+    background: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-noche) 86%, transparent) 0%,
+      color-mix(in srgb, var(--color-noche) 55%, transparent) 45%,
+      transparent 80%
+    );
+  }
+  /* En pantallas estrechas el texto ocupa todo el ancho: el velo es casi uniforme para mantener el contraste AA. */
+  @media (max-width: 1023px) {
+    .nosotros-velo-h {
+      background: linear-gradient(
+        to right,
+        color-mix(in srgb, var(--color-noche) 80%, transparent),
+        color-mix(in srgb, var(--color-noche) 68%, transparent)
+      );
+    }
+  }
+  /* Detrás de «Putumayo · Colombia» (esquina inferior derecha, sobre la zona más clara de la foto). */
+  .nosotros-velo-esquina {
+    background: radial-gradient(
+      ellipse 22rem 12rem at 100% 100%,
+      color-mix(in srgb, var(--color-noche) 82%, transparent) 0%,
+      transparent 100%
+    );
+  }
+  .nosotros-velo-v {
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-noche) 35%, transparent) 0%,
+      transparent 35%,
+      transparent 70%,
+      color-mix(in srgb, var(--color-noche) 70%, transparent) 100%
+    );
+  }
   .hero-scope :focus-visible {
     outline: 2px solid var(--turquesa);
     outline-offset: 3px;
@@ -148,10 +251,10 @@
   }
   .hero-btn {
     background: var(--niebla);
-    color: var(--selva);
+    color: var(--color-noche);
   }
   .hero-btn:hover {
-    background: color-mix(in srgb, var(--niebla) 88%, var(--selva));
+    background: color-mix(in srgb, var(--niebla) 88%, var(--color-noche));
   }
   .hero-btn-ghost {
     border: 1px solid var(--niebla-60);
@@ -165,13 +268,13 @@
   .hero-grad-v {
     background: linear-gradient(
       to bottom,
-      color-mix(in srgb, var(--selva) 45%, transparent) 0%,
-      color-mix(in srgb, var(--selva) 8%, transparent) 50%,
-      color-mix(in srgb, var(--selva) 85%, transparent) 100%
+      color-mix(in srgb, var(--color-noche) 45%, transparent) 0%,
+      color-mix(in srgb, var(--color-noche) 8%, transparent) 50%,
+      color-mix(in srgb, var(--color-noche) 85%, transparent) 100%
     );
   }
   .hero-grad-h {
-    background: linear-gradient(to right, color-mix(in srgb, var(--selva) 85%, transparent) 0%, transparent 70%);
+    background: linear-gradient(to right, color-mix(in srgb, var(--color-noche) 85%, transparent) 0%, transparent 70%);
   }
   /* Transición hero -> sección siguiente (#origen, bg-crema). Altura: --hero-fade-h. Parada intermedia: --hero-fade-mid. */
   .hero-fade {
@@ -201,7 +304,11 @@
     }
   }
   .hero-grad-top {
-    background: linear-gradient(to bottom, color-mix(in srgb, var(--selva) 55%, transparent) 0%, transparent 100%);
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-noche) 55%, transparent) 0%,
+      transparent 100%
+    );
   }
 }
 
@@ -238,7 +345,7 @@
   opacity: 0;
 }
 .intro-bar {
-  background: color-mix(in srgb, var(--selva) 15%, transparent);
+  background: color-mix(in srgb, var(--color-noche) 15%, transparent);
 }
 .intro-bar > span {
   background: var(--turquesa);
@@ -301,13 +408,13 @@
   color: var(--tinta);
 }
 .intro-label {
-  color: color-mix(in srgb, var(--selva) 70%, transparent);
+  color: color-mix(in srgb, var(--color-noche) 70%, transparent);
 }
 .intro-skip {
-  color: color-mix(in srgb, var(--selva) 70%, transparent);
+  color: color-mix(in srgb, var(--color-noche) 70%, transparent);
 }
 .intro-skip:hover {
-  color: var(--selva);
+  color: var(--color-noche);
 }
 .intro-root :focus-visible {
   outline: 2px solid var(--turquesa);
