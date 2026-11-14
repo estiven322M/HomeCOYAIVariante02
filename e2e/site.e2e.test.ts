@@ -395,19 +395,134 @@ describe('Nosotros', () => {
     expect(await nav.evaluate((n) => getComputedStyle(n).position)).toBe('relative')
     await ctx.close()
   })
+})
 
-  it('el patrón lateral solo aparece desde 1280 px', async () => {
-    const wide = await (await context()).newPage()
-    await wide.goto(BASE + pathFor('nosotros', 'es'))
-    expect(await wide.locator('.patron-lateral').first().isVisible()).toBe(true)
-    await wide.context().close()
-    const ctx = await browser.newContext({ viewport: { width: 1100, height: 800 } })
+// Patrón lateral (shared/ui/PatternZone): solo en zonas claras, desde 1280 px, sin tapar nada.
+describe('patrón lateral', () => {
+  /** Páginas con al menos una zona clara (la 404 es toda oscura y no lleva patrón). */
+  const WITH_PATTERN: RouteKey[] = ['home', 'nosotros', 'proyectos', 'transparencia', 'colaborar', 'contacto']
+  const PAGES = [
+    ...WITH_PATTERN.flatMap((key) =>
+      LANGS.map((lang) => ({ name: `${key} ${lang}`, path: pathFor(key, lang), has: true })),
+    ),
+    ...LANGS.map((lang) => ({
+      name: `404 ${lang}`,
+      path: lang === 'es' ? '/no-existe/' : '/en/no-existe/',
+      has: false,
+    })),
+  ]
+
+  it('no aparece por debajo de 1280 px', async () => {
+    const ctx = await browser.newContext({ viewport: { width: 1279, height: 800 } })
     await ctx.addInitScript((k) => sessionStorage.setItem(k, '1'), SEEN)
-    const narrow = await ctx.newPage()
-    await narrow.goto(BASE + pathFor('nosotros', 'es'))
-    expect(await narrow.locator('.patron-lateral').first().isVisible()).toBe(false)
+    const page = await ctx.newPage()
+    for (const { path } of PAGES) {
+      await page.goto(BASE + path)
+      const shown = await page
+        .locator('.patron-lateral')
+        .evaluateAll((els) => els.filter((e) => e.getBoundingClientRect().width > 0).length)
+      expect(shown, path).toBe(0)
+    }
     await ctx.close()
   })
+
+  it.each([1280, 1440, 1920])(
+    'a %i px va solo sobre fondos claros, cubre cada zona entera y no tapa contenido, foco ni la barra fija',
+    async (width) => {
+      const ctx = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: 'reduce' })
+      await ctx.addInitScript((k) => sessionStorage.setItem(k, '1'), SEEN)
+      const page = await ctx.newPage()
+      const problems: string[] = []
+      for (const { name, path, has } of PAGES) {
+        await page.goto(BASE + path, { waitUntil: 'networkidle' })
+        const r = await page.evaluate(() => {
+          const lum = (c: number[]) => {
+            const f = (v: number) => ((v /= 255) <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)
+            return 0.2126 * f(c[0] ?? 0) + 0.7152 * f(c[1] ?? 0) + 0.0722 * f(c[2] ?? 0)
+          }
+          // Chrome devuelve algunos fondos con alfa como oklab(…): se pasan a RGBA por un canvas de 1×1.
+          const canvas = document.createElement('canvas')
+          canvas.width = canvas.height = 1
+          const g = canvas.getContext('2d', { willReadFrequently: true })
+          const rgba = (el: Element): number[] => {
+            if (!g) return [0, 0, 0, 0]
+            g.clearRect(0, 0, 1, 1)
+            g.fillStyle = getComputedStyle(el).backgroundColor
+            g.fillRect(0, 0, 1, 1)
+            const d = g.getImageData(0, 0, 1, 1).data
+            return [d[0] ?? 0, d[1] ?? 0, d[2] ?? 0, (d[3] ?? 0) / 255]
+          }
+          /** Primer fondo con opacidad suficiente subiendo por los ancestros (el del <body> si no hay otro). */
+          const bgOf = (el: Element | null): number[] => {
+            for (let e = el; e; e = e.parentElement) {
+              const c = rgba(e)
+              if ((c[3] ?? 1) >= 0.5) return c
+            }
+            return [255, 255, 255]
+          }
+          const strips = [...document.querySelectorAll('.patron-lateral')]
+            .map((e) => ({ el: e, box: e.getBoundingClientRect() }))
+            .filter((s) => s.box.width > 0)
+          const out = {
+            strips: strips.length,
+            dark: [] as string[],
+            short: [] as string[],
+            covered: [] as string[],
+            navCovered: false,
+          }
+          for (const { el, box } of strips) {
+            const zone = el.parentElement?.parentElement as HTMLElement
+            const zb = zone.getBoundingClientRect()
+            // Cubre la zona entera (sin fundido): misma altura que su contenedor.
+            if (Math.abs(box.height - zb.height) > 1 || Math.abs(box.top - zb.top) > 1)
+              out.short.push(zone.className.slice(0, 40))
+            // Fondo claro: el de la zona o, si no tiene, el de cada hijo directo (secciones consecutivas con fondos distintos).
+            const own = rgba(zone)
+            const bgs =
+              (own[3] ?? 1) >= 0.3
+                ? [own]
+                : [...zone.children].filter((c) => !c.hasAttribute('aria-hidden')).map((c) => bgOf(c))
+            for (const bg of bgs) if (lum(bg) < 0.6) out.dark.push(zone.className.slice(0, 40) + ' ' + bg.join(','))
+          }
+          const strip = (r: DOMRect) =>
+            strips.some(
+              (s) =>
+                r.left < s.box.right + 6 &&
+                r.right > s.box.left - 6 &&
+                r.top < s.box.bottom + 6 &&
+                r.bottom > s.box.top - 6,
+            )
+          for (const el of document.querySelectorAll(
+            'main a[href], main button, main input, main [tabindex]:not([tabindex="-1"]), footer a[href]',
+          )) {
+            const r = el.getBoundingClientRect()
+            if (r.width > 0 && strip(r)) out.covered.push((el.textContent ?? '').trim().slice(0, 30) || el.tagName)
+          }
+          return out
+        })
+        if (r.dark.length) problems.push(`${name}: sobre fondo oscuro ${r.dark.join(' | ')}`)
+        if (r.short.length) problems.push(`${name}: no cubre la zona entera ${r.short.join(' | ')}`)
+        if (r.covered.length) problems.push(`${name}: tapa ${r.covered.join(', ')}`)
+        if (has !== r.strips > 0) problems.push(`${name}: franjas ${r.strips} (esperadas: ${has})`)
+      }
+      // Barra interna fija de Nosotros: con una zona clara pasando por debajo, el patrón no la tapa.
+      await page.goto(BASE + pathFor('nosotros', 'es'), { waitUntil: 'networkidle' })
+      await page.evaluate(() => document.getElementById('valores')?.scrollIntoView())
+      await page.waitForTimeout(400)
+      const navOnTop = await page.evaluate(() => {
+        const nav = document.querySelector('main nav')?.getBoundingClientRect()
+        if (!nav) return false
+        const y = nav.top + nav.height / 2
+        return [10, 20, 30, window.innerWidth - 20].every(
+          (x) => document.elementFromPoint(x, y)?.closest('nav') !== null,
+        )
+      })
+      if (!navOnTop) problems.push('la barra interna queda bajo el patrón')
+      await ctx.close()
+      expect(problems).toEqual([])
+    },
+    180_000,
+  )
 })
 
 // Accesibilidad automática (axe-core): todas las páginas en es y en, a 1280 y 390 px, con el intro ya visto y movimiento

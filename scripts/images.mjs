@@ -31,13 +31,6 @@ const JOBS = [
   // Miniaturas de rombo (128 px, 2x = 256 px) a partir de imágenes ya publicadas en el carrusel de la portada.
   { name: 'mision', src: 'public/slider/slider4.webp', out: 'public/nosotros/mision', widths: [256], quality: 80 },
   { name: 'vision', src: 'public/slider/slider5.webp', out: 'public/nosotros/vision', widths: [256], quality: 80 },
-  {
-    name: 'valores',
-    src: 'public/slider/slider9.webp',
-    out: 'public/nosotros/valores',
-    widths: [480, 960],
-    quality: 78,
-  },
   // Retrato 4:3 recortado alrededor del Taita (cara y busto) para la tarjeta de la junta directiva.
   {
     name: 'taita-junta',

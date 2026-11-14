@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { Button } from '@/shared/ui/Button'
 import { Eyebrow } from '@/shared/ui/Eyebrow'
 import { MediaPlaceholder } from '@/shared/ui/MediaPlaceholder'
+import { PatternZone } from '@/shared/ui/PatternZone'
 import { Reveal } from '@/shared/ui/Reveal'
 import { TextLink } from '@/shared/ui/TextLink'
 import { useScrollY } from '@/shared/hooks/useScrollY'
@@ -175,7 +176,7 @@ export function QueEs() {
   const q = useLang().t.home.queEs
   const pathFor = usePathFor()
   return (
-    <section id="origen" className="scroll-mt-14 bg-crema px-6 py-28 lg:py-40">
+    <PatternZone as="section" id="origen" className="scroll-mt-14 bg-crema px-6 py-28 lg:py-40">
       <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-12">
         <Reveal className="lg:col-span-5">
           <Eyebrow>{q.eyebrow}</Eyebrow>
@@ -196,7 +197,7 @@ export function QueEs() {
           </div>
         </Reveal>
       </div>
-    </section>
+    </PatternZone>
   )
 }
 
@@ -245,7 +246,7 @@ export function Explora() {
   const e = useLang().t.home.explora
   const NAV = useNav()
   return (
-    <section id="explora" className="bg-arena/60 px-6 py-28 lg:py-40">
+    <PatternZone as="section" id="explora" className="bg-arena/60 px-6 py-28 lg:py-40">
       <div className="mx-auto max-w-6xl">
         <Reveal>
           <Eyebrow>{e.eyebrow}</Eyebrow>
@@ -274,7 +275,7 @@ export function Explora() {
           ))}
         </ul>
       </div>
-    </section>
+    </PatternZone>
   )
 }
 

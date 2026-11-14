@@ -16,8 +16,8 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
 - **Adelanto de Misión y Visión en Inicio.** Se decidió **no** mostrarlo en la 2B (ni siquiera como enlaces sueltos).
   Retomarlo en el rediseño de Inicio; si se hace, leer las mismas claves de `content/nosotros` (sin copiar) y enlazar a
   `/nosotros/#mision`.
-- **Retratos de la junta directiva.** Se muestran iniciales (VP, FY, MR, JP) hasta tener las fotos; ver "Retratos" en
-  ARCHITECTURE. Falta además un recorte revisado de `slider9` (corona de plumas, con inclinación de cámara de origen).
+- **Retratos de la junta directiva.** Solo Victoriano tiene foto; el resto muestra iniciales hasta tener las suyas (ver
+  «Retratos» en ARCHITECTURE).
 - **Descripciones muy cortas.** Las de Nosotros y Contacto (`common.nav[*].desc`, ~40 caracteres) son honestas pero
   débiles para buscadores. Mejorarlas con el contenido definitivo.
 - **Páginas con contenido por llegar.** `/proyectos/` y `/colaborar/` reutilizan el texto del proyecto destacado y de
