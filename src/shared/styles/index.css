@@ -147,6 +147,10 @@
   /* Alto del encabezado fijo (py-3 + botón de 44 px) y de la barra interna fija (md+): destino de los enlaces ancla. */
   --header-h: 4.25rem;
   --sectionnav-h: 3.8125rem;
+}
+
+/* ---- Patrón lateral (shared/ui/PatternZone) ---- */
+:root {
   --color-patron: #6e593b;
 }
 
@@ -176,7 +180,8 @@
       scroll-margin-top: calc(var(--header-h) + var(--sectionnav-h) + 1rem);
     }
   }
-  /* Franja lateral con el patrón geométrico (azulejo de 40×59 px usado como máscara; el color es --color-patron). */
+  /* Franja lateral con el patrón geométrico (azulejo de 40×59 px usado como máscara; el color es --color-patron).
+     La usa solo shared/ui/PatternZone. */
   .patron-lateral {
     background-color: var(--color-patron);
     -webkit-mask-image: url('./patron-lateral.svg');
@@ -185,11 +190,6 @@
     mask-repeat: repeat-y;
     -webkit-mask-size: 40px 59px;
     mask-size: 40px 59px;
-  }
-  /* Variante «fundido»: la franja mide ~420 px (como en Figma) y se desvanece al final. */
-  .patron-fundido {
-    -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent);
-    mask-image: linear-gradient(to bottom, #000 65%, transparent);
   }
   /* Velos del hero de Nosotros: legibilidad del texto sobre la foto. */
   .nosotros-velo-h {

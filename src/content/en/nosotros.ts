@@ -59,7 +59,6 @@ export const nosotros = {
   valores: {
     label: 'Values',
     title: 'Institutional values',
-    imageAlt: 'Detail of a traditional feather crown with beadwork',
     items: [
       {
         k: 'Solidarity',

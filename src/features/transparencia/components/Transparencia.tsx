@@ -1,3 +1,4 @@
+import { PatternZone } from '@/shared/ui/PatternZone'
 import { Reveal } from '@/shared/ui/Reveal'
 import { SubTitle } from '@/shared/ui/SubTitle'
 import { useLang } from '@/shared/i18n'
@@ -11,7 +12,7 @@ export function Transparencia() {
   const { t } = useLang()
   const g = t.transparencia.legal
   return (
-    <>
+    <PatternZone>
       <section className="bg-calido px-6 pb-16 pt-28 lg:pt-40">
         <div className="mx-auto max-w-6xl">
           <Reveal>
@@ -73,6 +74,6 @@ export function Transparencia() {
           </Reveal>
         </div>
       </section>
-    </>
+    </PatternZone>
   )
 }

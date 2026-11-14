@@ -61,7 +61,6 @@ export const nosotros = {
   valores: {
     label: 'Valores',
     title: 'Valores institucionales',
-    imageAlt: 'Detalle de una corona de plumas tradicional con cuentas',
     items: [
       {
         k: 'Solidaridad',

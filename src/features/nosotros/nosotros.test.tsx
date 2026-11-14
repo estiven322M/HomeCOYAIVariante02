@@ -91,4 +91,32 @@ describe('feature nosotros', () => {
       expect(container.querySelectorAll('section#mision figure blockquote')).toHaveLength(1)
     },
   )
+
+  it.each(['es', 'en'] as const)(
+    'valores: siete tarjetas, sin numeración ni imagen, la última ocupa dos columnas (%s)',
+    (lang) => {
+      const { container } = renderNosotros(lang === 'es' ? '/' : '/en/')
+      const items = container.querySelectorAll('#valores ul > li')
+      expect(items).toHaveLength(dict[lang].nosotros.valores.items.length)
+      expect(items).toHaveLength(7)
+      items.forEach((li, i) => {
+        // El título es lo primero de la tarjeta; nada de «01»…«07» ni rombos.
+        expect(li.firstElementChild?.tagName).toBe('H3')
+        expect(li.textContent).toBe(
+          `${dict[lang].nosotros.valores.items[i]?.k}${dict[lang].nosotros.valores.items[i]?.t}`,
+        )
+        expect(li.querySelector('img, svg, [aria-hidden]')).toBeNull()
+      })
+      expect(container.querySelector('#valores img')).toBeNull()
+      expect(items[6]?.className).toContain('last:col-span-2')
+    },
+  )
+
+  it('las zonas claras llevan el patrón y el bloque oscuro de Equipo no', () => {
+    const { container } = renderNosotros('/')
+    const zones = [...container.querySelectorAll('.patron-lateral')].map((s) => s.parentElement?.parentElement)
+    expect(new Set(zones).size).toBe(2) // Historia–Valores y el cierre legal
+    expect(zones.some((z) => z?.querySelector('#historia') && z.querySelector('#valores'))).toBe(true)
+    expect(zones.every((z) => !z?.querySelector('#equipo'))).toBe(true)
+  })
 })

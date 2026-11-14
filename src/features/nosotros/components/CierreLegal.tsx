@@ -1,4 +1,5 @@
 import { useLang, usePathFor } from '@/shared/i18n'
+import { PatternZone } from '@/shared/ui/PatternZone'
 import { TextLink } from '@/shared/ui/TextLink'
 
 /**
@@ -10,7 +11,7 @@ export function CierreLegal() {
   const pathFor = usePathFor()
   const g = t.transparencia.legal
   return (
-    <section className="bg-arena py-24">
+    <PatternZone as="section" className="bg-arena py-24">
       <div className="mx-auto max-w-6xl px-6">
         <h2 className="font-serif text-title-sm font-light text-huito md:text-title">{g.title}</h2>
         <ul className="mt-8 flex flex-wrap gap-2">
@@ -27,6 +28,6 @@ export function CierreLegal() {
           <TextLink href={`${pathFor('transparencia')}#marco-legal`}>{t.nosotros.cierre.link}</TextLink>
         </div>
       </div>
-    </section>
+    </PatternZone>
   )
 }

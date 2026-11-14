@@ -156,9 +156,10 @@ Ejemplo real: la página **Contacto** (`/contacto/` · `/en/contact/`).
 
 ## Página Nosotros (Fase 3)
 
-`features/nosotros/components/`: un componente por bloque (`NosotrosHero`, `SectionNav`, `SidePattern`, `Historia` con
+`features/nosotros/components/`: un componente por bloque (`NosotrosHero`, `SectionNav`, `Historia` con
 `Territorio`, `MisionVision`, `Valores`, `Equipo`, `CierreLegal`) ensamblados por `Nosotros.tsx`. Piezas reutilizables
-nuevas en `shared/ui`: `Diamond` (motivo en rombo y `DIAMOND_CLIP` para imágenes) y `SubTitle` con numeración (`n="01"`).
+nuevas en `shared/ui`: `Diamond` (motivo en rombo y `DIAMOND_CLIP` para imágenes), `SubTitle` con numeración (`n="01"`) y
+`PatternZone` (patrón lateral; ver «Patrón lateral» más abajo).
 
 - **Anclas** (iguales en es y en): `#historia`, `#mision`, `#valores`, `#equipo`. El marco legal **no** está aquí: vive en
   `/transparencia/#marco-legal` y `CierreLegal` solo enlaza (y reutiliza título e insignias de `t.transparencia.legal`).
@@ -167,16 +168,50 @@ nuevas en `shared/ui`: `Diamond` (motivo en rombo y `DIAMOND_CLIP` para imágene
   derecho. Marca la sección actual con `aria-current="location"` (IntersectionObserver en un efecto; el HTML estático no
   marca ninguna). `--header-h` y `--sectionnav-h` (`index.css`) deben coincidir con el alto real del encabezado y de la
   barra; `.anchor-section` los usa en `scroll-margin-top` (una e2e lo comprueba).
-- **Patrón lateral** (`SidePattern`): franjas de 40 px en los márgenes, solo desde 1280 px, ~420 px desde la barra con
-  fundido. Azulejo SVG de 40×59 (`shared/styles/patron-lateral.svg`) usado como máscara (`mask-image` y
-  `-webkit-mask-image`) sobre el color `--color-patron`; sin fondo propio; `aria-hidden`.
+- **Patrón lateral**: en Nosotros hay dos zonas, Historia–Misión–Valores y el cierre legal (el bloque oscuro de Equipo
+  queda fuera). La barra interna fija no lleva patrón.
 - **Hero**: la foto es la imagen principal (`fetchPriority="high"`, sin lazy, `srcset`/`sizes`); React emite su preload en
   el `<head>` a partir del propio `<img>` (no se declara aparte, para que no diverjan). Los velos de `index.css`
   (`.nosotros-velo-*`) mantienen el contraste AA del texto en todos los anchos (medido sobre la foto).
-- **Retratos de la junta**: iniciales (`members[].initials`) sobre un fondo de la paleta, `aria-hidden` (el nombre va
-  debajo). Cuando haya fotos: añadir una clave opcional `photo` y usar `<img alt={nombre}>`.
-- **Imágenes**: derivados de `pnpm images` en `public/nosotros/`; las fotos de Misión, Visión y Valores salen de las
-  del carrusel de la portada (`public/slider`).
+- **Valores**: siete tarjetas sin numeración ni imagen, en rejilla de 1 → 2 → 4 columnas; desde 520 px la última ocupa
+  dos columnas, así que no queda ninguna celda vacía (2 columnas: 4.ª fila; 4 columnas: 2.ª fila = 1 + 1 + 2).
+- **Retratos de la junta**: la foto si existe (`members[].photoAlt` + una entrada en `PHOTOS` de `Equipo.tsx`, con derivados
+  de `pnpm images`); si no, iniciales (`members[].initials`) en un tono neutro, `aria-hidden` (el nombre va al lado).
+- **Imágenes**: derivados de `pnpm images` en `public/nosotros/`; las miniaturas de Misión y Visión salen de las
+  del carrusel de la portada (`public/slider`; la de Valores, slider9, solo la usa el carrusel).
+
+## Patrón lateral (`PatternZone`)
+
+Franjas con el patrón geométrico de Figma en los márgenes de las **zonas de fondo claro** (arena, arena clara, cálido,
+crema). Una sola pieza: `shared/ui/PatternZone.tsx`; los estilos (`.patron-lateral`, que usa el azulejo
+`shared/styles/patron-lateral.svg` como máscara con `-webkit-mask-image`) y el color (`--color-patron`) están en
+`shared/styles/index.css`.
+
+**Activarlo en una sección nueva** (explícito, nunca automático):
+
+```tsx
+import { PatternZone } from '@/shared/ui/PatternZone'
+
+// Una sección clara: la propia sección es la zona.
+<PatternZone as="section" id="x" className="bg-crema px-6 py-28">…</PatternZone>
+
+// Varias secciones claras consecutivas (aunque tengan fondos distintos): una sola zona, franjas continuas.
+<PatternZone>
+  <SeccionClara1 />
+  <SeccionClara2 />
+</PatternZone>
+```
+
+Reglas: **solo** sobre fondos claros; una sección oscura (huito, noche, chagra), una foto, el hero o el degradado de
+transición del hero de Inicio quedan **fuera** de la zona (dos zonas separadas si hay una oscura en medio). La zona
+cubre su contenedor entero, sin fundido vertical y sin fondo propio (deja ver el de cada sección). Solo desde 1280 px
+(`xl`), en el margen (≥ 64 px frente a 40 px de franja), con el contenido en `max-w-6xl`, `aria-hidden`, sin eventos de
+puntero y oculto al imprimir. Queda por debajo de la barra interna fija (`z-20`) y del encabezado (`z-50`).
+Una e2e («patrón lateral») lo comprueba en todas las páginas a 1280, 1440 y 1920 px.
+
+Dónde está hoy: Nosotros (Historia–Misión–Valores y cierre legal), Inicio («¿Qué es ÉCOYAI?» y «Explora»),
+Transparencia (sus dos secciones), y el aviso `SoonNotice` de Proyectos, Colaborar y Contacto. La 404 es toda oscura y no
+lleva patrón.
 
 ## Estado y datos
 
