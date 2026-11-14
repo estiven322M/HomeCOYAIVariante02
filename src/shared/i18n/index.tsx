@@ -63,13 +63,13 @@ export function LangSwitch({ className = 'relative inline-flex' }: { className?:
       />
       <span
         aria-hidden
-        className={`relative z-10 w-1/2 text-center transition-colors duration-500 ${isEn ? 'text-(color:--niebla)' : 'text-(color:--selva)'}`}
+        className={`relative z-10 w-1/2 text-center transition-colors duration-500 ${isEn ? 'text-(color:--niebla)' : 'text-(color:--color-noche)'}`}
       >
         ES
       </span>
       <span
         aria-hidden
-        className={`relative z-10 w-1/2 text-center transition-colors duration-500 ${isEn ? 'text-(color:--selva)' : 'text-(color:--niebla)'}`}
+        className={`relative z-10 w-1/2 text-center transition-colors duration-500 ${isEn ? 'text-(color:--color-noche)' : 'text-(color:--niebla)'}`}
       >
         EN
       </span>
