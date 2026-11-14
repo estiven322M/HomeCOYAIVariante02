@@ -200,6 +200,24 @@
       transparent 80%
     );
   }
+  /* En pantallas estrechas el texto ocupa todo el ancho: el velo es casi uniforme para mantener el contraste AA. */
+  @media (max-width: 1023px) {
+    .nosotros-velo-h {
+      background: linear-gradient(
+        to right,
+        color-mix(in srgb, var(--color-noche) 80%, transparent),
+        color-mix(in srgb, var(--color-noche) 68%, transparent)
+      );
+    }
+  }
+  /* Detrás de «Putumayo · Colombia» (esquina inferior derecha, sobre la zona más clara de la foto). */
+  .nosotros-velo-esquina {
+    background: radial-gradient(
+      ellipse 22rem 12rem at 100% 100%,
+      color-mix(in srgb, var(--color-noche) 82%, transparent) 0%,
+      transparent 100%
+    );
+  }
   .nosotros-velo-v {
     background: linear-gradient(
       to bottom,

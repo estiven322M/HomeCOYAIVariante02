@@ -22,6 +22,7 @@ export function NosotrosHero() {
       />
       <div aria-hidden className="nosotros-velo-h absolute inset-0" />
       <div aria-hidden className="nosotros-velo-v absolute inset-0" />
+      <div aria-hidden className="nosotros-velo-esquina absolute inset-0 hidden sm:block" />
       <div className="relative mx-auto flex h-full max-w-6xl flex-col justify-end px-6 pb-16 md:pb-24">
         <p className="hero-eyebrow text-caption uppercase tracking-[0.3em]">{n.eyebrow}</p>
         <h1 className="hero-title mt-6 font-serif text-display-sm font-light tracking-tight md:text-display">
