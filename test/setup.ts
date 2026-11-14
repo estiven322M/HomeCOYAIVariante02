@@ -12,6 +12,14 @@ class IntersectionObserverStub {
   }
 }
 vi.stubGlobal('IntersectionObserver', IntersectionObserverStub)
+vi.stubGlobal(
+  'ResizeObserver',
+  class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  },
+)
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

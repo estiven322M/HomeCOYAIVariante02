@@ -22,7 +22,7 @@ export const nosotros = {
     },
     territorio: {
       name: 'Zio Bain',
-      people: 'Siona People · “People of the Chagra”',
+      people: 'Siona People · “People of the Chagra”',
       timeline: [
         {
           k: 'Centuries',
@@ -99,7 +99,8 @@ export const nosotros = {
       name: 'Taita Victoriano Piaguaje Yaiguaje',
       role: 'Executive Director of ÉCOYAI',
       text: 'Taita and traditional knowledge keeper of the Siona people (Zio Bain). As the organization’s spiritual and community authority, he guides ÉCOYAI’s strategic direction, ensuring that every project and technology respects ancestral wisdom, sacred medicine and the cultural sovereignty of the territory.',
-      imageAlt: 'Portrait of Taita Victoriano Piaguaje Yaiguaje',
+      imageAlt:
+        'Taita Victoriano Piaguaje Yaiguaje, wearing a feather crown and traditional necklaces, seated on a bench in the territory',
     },
     junta: {
       title: 'Board of Directors',

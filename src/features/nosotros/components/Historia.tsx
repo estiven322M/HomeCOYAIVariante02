@@ -33,10 +33,12 @@ export function Historia() {
               decoding="async"
               className="block aspect-[4/5] w-full object-cover object-[72%_50%]"
             />
-            <figcaption className="mt-5 flex items-start justify-between gap-6 border-t border-huito/15 pt-4">
+            <figcaption className="mt-5 flex flex-col gap-2 border-t border-huito/15 pt-4 md:flex-row md:items-start md:justify-between md:gap-6">
               <span className="text-caption uppercase tracking-[0.3em] text-huito/70">{h.image.caption}</span>
               {/* La frase es la de «¿Qué es ÉCOYAI?» de la portada (`home.queEs.quote`): una sola clave. */}
-              <span className="max-w-60 text-right font-serif text-note italic text-chagra">{t.home.queEs.quote}</span>
+              <span className="font-serif text-note italic text-chagra md:max-w-60 md:text-right">
+                {t.home.queEs.quote}
+              </span>
             </figcaption>
           </figure>
         </div>

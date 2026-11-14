@@ -377,6 +377,24 @@ describe('Nosotros', () => {
     await page.context().close()
   })
 
+  it('en móvil la barra interna se desliza y el velo del borde derecho se apaga al llegar al final', async () => {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } })
+    await ctx.addInitScript((k) => sessionStorage.setItem(k, '1'), SEEN)
+    const page = await ctx.newPage()
+    await page.goto(BASE + pathFor('nosotros', 'es'), { waitUntil: 'networkidle' })
+    const nav = page.getByRole('navigation', { name: T.es.nosotros.navAria })
+    const veil = nav.locator('span[aria-hidden]')
+    const scrollable = await nav.locator('ul').evaluate((ul) => ul.scrollWidth > ul.clientWidth)
+    expect(scrollable).toBe(true)
+    await expect.poll(() => veil.evaluate((v) => getComputedStyle(v).opacity)).toBe('1')
+    expect(await veil.evaluate((v) => getComputedStyle(v).pointerEvents)).toBe('none')
+    await nav.locator('ul').evaluate((ul) => ul.scrollTo({ left: ul.scrollWidth }))
+    await expect.poll(() => veil.evaluate((v) => getComputedStyle(v).opacity)).toBe('0')
+    // No es fija en móvil: queda en el flujo.
+    expect(await nav.evaluate((n) => getComputedStyle(n).position)).toBe('relative')
+    await ctx.close()
+  })
+
   it('el patrón lateral solo aparece desde 1280 px', async () => {
     const wide = await (await context()).newPage()
     await wide.goto(BASE + pathFor('nosotros', 'es'))

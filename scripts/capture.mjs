@@ -52,6 +52,8 @@ for (const [lang, url] of [
       await Promise.all(
         [...document.images].map((i) => (i.complete ? null : new Promise((r) => (i.onload = i.onerror = r)))),
       )
+      // Con srcset, `complete` puede ser verdadero antes de elegir el archivo: se espera a la decodificación.
+      await Promise.all([...document.images].map((i) => i.decode().catch(() => {})))
     })
     await page.waitForTimeout(500)
     const file = `${out}/${lang}-${width}.png`

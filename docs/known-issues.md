@@ -11,11 +11,13 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
   redacta aquí: es un texto jurídico de la organización. Mientras no exista, «Aviso legal» y «Política de privacidad» no
   se muestran en el pie (ver abajo). _Requisito bloqueante._
 
-## Para la fase de rediseño de Inicio y Nosotros
+## Para la fase de rediseño de Inicio (Nosotros ya rediseñada en la Fase 3)
 
 - **Adelanto de Misión y Visión en Inicio.** Se decidió **no** mostrarlo en la 2B (ni siquiera como enlaces sueltos).
   Retomarlo en el rediseño de Inicio; si se hace, leer las mismas claves de `content/nosotros` (sin copiar) y enlazar a
   `/nosotros/#mision`.
+- **Retratos de la junta directiva.** Se muestran iniciales (VP, FY, MR, JP) hasta tener las fotos; ver "Retratos" en
+  ARCHITECTURE. Falta además un recorte revisado de `slider9` (corona de plumas, con inclinación de cámara de origen).
 - **Descripciones muy cortas.** Las de Nosotros y Contacto (`common.nav[*].desc`, ~40 caracteres) son honestas pero
   débiles para buscadores. Mejorarlas con el contenido definitivo.
 - **Páginas con contenido por llegar.** `/proyectos/` y `/colaborar/` reutilizan el texto del proyecto destacado y de

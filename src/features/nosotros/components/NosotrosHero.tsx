@@ -28,7 +28,9 @@ export function NosotrosHero() {
         <h1 className="hero-title mt-6 font-serif text-display-sm font-light tracking-tight md:text-display">
           {t.common.nav[0]?.label}
         </h1>
-        <p className="hero-text mt-6 max-w-[30rem] font-serif text-lead font-light italic">{n.hero.subtitle}</p>
+        <p className="hero-text mt-6 max-w-[30rem] text-balance font-serif text-lead font-light italic lg:max-w-[42rem]">
+          {n.hero.subtitle}
+        </p>
       </div>
       <p
         aria-hidden

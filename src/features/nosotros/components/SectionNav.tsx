@@ -12,6 +12,7 @@ export type SectionNavItem = { id: string; label: string }
  */
 export function SectionNav({ items, label }: { items: SectionNavItem[]; label: string }) {
   const [active, setActive] = useState<string | null>(null)
+  const [moreRight, setMoreRight] = useState(false) // hay enlaces fuera de la vista a la derecha (solo móvil)
   const listRef = useRef<HTMLUListElement>(null)
 
   useEffect(() => {
@@ -35,6 +36,21 @@ export function SectionNav({ items, label }: { items: SectionNavItem[]; label: s
     return () => io.disconnect()
   }, [items])
 
+  // Indicio de desplazamiento: velo en el borde derecho mientras queden enlaces por ver. Se actualiza desde callbacks
+  // (ResizeObserver y scroll), no en el cuerpo del efecto.
+  useEffect(() => {
+    const list = listRef.current
+    if (!list) return
+    const update = () => setMoreRight(list.scrollLeft + list.clientWidth < list.scrollWidth - 4)
+    const ro = new ResizeObserver(update)
+    ro.observe(list)
+    list.addEventListener('scroll', update, { passive: true })
+    return () => {
+      ro.disconnect()
+      list.removeEventListener('scroll', update)
+    }
+  }, [])
+
   // En móvil la fila se desplaza: el enlace activo se centra.
   useEffect(() => {
     const list = listRef.current
@@ -48,10 +64,10 @@ export function SectionNav({ items, label }: { items: SectionNavItem[]; label: s
   }, [active])
 
   return (
-    <nav aria-label={label} className="z-20 border-b border-huito/15 bg-arena md:sticky md:top-(--header-h)">
+    <nav aria-label={label} className="relative z-20 border-b border-huito/15 bg-arena md:sticky md:top-(--header-h)">
       <ul
         ref={listRef}
-        className="mx-auto flex max-w-6xl snap-x gap-3 overflow-x-auto px-6 py-5 [mask-image:linear-gradient(to_right,transparent,#000_20px,#000_calc(100%-20px),transparent)] [scrollbar-width:none] md:flex-wrap md:justify-center md:overflow-visible md:py-2 md:[mask-image:none]"
+        className="mx-auto flex max-w-6xl snap-x gap-3 overflow-x-auto px-6 py-5 [scroll-padding-inline:2.5rem] [scrollbar-width:none] md:flex-wrap md:justify-center md:overflow-visible md:py-2"
       >
         {items.map((item, i) => (
           <li key={item.id} data-id={item.id} className="shrink-0 snap-center">
@@ -68,6 +84,12 @@ export function SectionNav({ items, label }: { items: SectionNavItem[]; label: s
           </li>
         ))}
       </ul>
+      {/* Velo sutil (solo móvil) que insinúa que la fila se desliza. No captura eventos y deja margen de desplazamiento
+          (`scroll-padding`) para que un enlace enfocado no quede bajo el velo. */}
+      <span
+        aria-hidden
+        className={`pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-arena to-transparent transition-opacity duration-300 motion-reduce:transition-none md:hidden ${moreRight ? 'opacity-100' : 'opacity-0'}`}
+      />
     </nav>
   )
 }

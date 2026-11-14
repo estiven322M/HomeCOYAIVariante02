@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { renderAt } from '@test/render'
 import { dict } from '@/content'
 import { LangSwitch } from '@/shared/i18n'
+import { pathFor } from '@/shared/i18n/routes'
 import { Nosotros } from './components/Nosotros'
 
 const esTitle = dict.es.common.nav[0]?.label ?? ''
@@ -65,5 +66,20 @@ describe('feature nosotros', () => {
   it.each(['es', 'en'] as const)('la frase del pie de foto reutiliza home.queEs.quote (%s)', (lang) => {
     renderNosotros(lang === 'es' ? '/' : '/en/')
     expect(screen.getByText(dict[lang].home.queEs.quote)).toBeInTheDocument()
+  })
+
+  it.each(['es', 'en'] as const)('el cierre enlaza a Transparencia y la junta usa iniciales sin alt (%s)', (lang) => {
+    const { container } = renderNosotros(lang === 'es' ? '/' : '/en/')
+    const href = pathFor('transparencia', lang) + '#marco-legal'
+    expect(screen.getByRole('link', { name: new RegExp(dict[lang].nosotros.cierre.link) })).toHaveAttribute(
+      'href',
+      href,
+    )
+    for (const m of dict[lang].nosotros.equipo.junta.members) {
+      const initials = screen.getByText(m.initials)
+      expect(initials.parentElement).toHaveAttribute('aria-hidden', 'true')
+      expect(screen.getByRole('heading', { level: 4, name: m.name })).toBeInTheDocument()
+    }
+    expect(container.querySelectorAll('section#mision figure blockquote')).toHaveLength(1)
   })
 })

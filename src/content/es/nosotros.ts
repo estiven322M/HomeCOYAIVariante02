@@ -22,7 +22,8 @@ export const nosotros = {
     },
     territorio: {
       name: 'Zio Bain',
-      people: 'Pueblo Siona · «Gente de la Chagra»',
+      /** Espacios de no separación: «Gente de la Chagra» no se parte entre líneas. */
+      people: 'Pueblo Siona · «Gente de la Chagra»',
       timeline: [
         {
           k: 'Siglos',
@@ -100,7 +101,8 @@ export const nosotros = {
       name: 'Taita Victoriano Piaguaje Yaiguaje',
       role: 'Director Ejecutivo de ÉCOYAI',
       text: 'Taita y sabedor tradicional del pueblo Siona (Zio Bain). Como autoridad espiritual y comunitaria de la organización, guía el direccionamiento estratégico de ÉCOYAI, asegurando que cada proyecto y tecnología respete la sabiduría ancestral, la medicina sagrada y la soberanía cultural del territorio.',
-      imageAlt: 'Retrato del Taita Victoriano Piaguaje Yaiguaje',
+      imageAlt:
+        'El Taita Victoriano Piaguaje Yaiguaje, con corona de plumas y collares tradicionales, sentado en un banco en el territorio',
     },
     junta: {
       title: 'Junta directiva',
