@@ -36,8 +36,9 @@ src/
   env.ts            variables de entorno tipadas (VITE_*)
 react-router.config.ts   modo framework: appDirectory, ssr: false, prerender
 config/             plugins de Vite: robots.txt y plugins de Figma (aislados)
-scripts/            preview.mjs (sirve build/client como Netlify), finalize-build.mjs (404.html), capture.mjs (capturas)
-                    y measure-intro.mjs (mide la duración del intro)
+scripts/            preview.mjs (sirve build/client como Netlify), finalize-build.mjs (404.html), capture.mjs (capturas),
+                    measure-intro.mjs (mide la duración del intro) e images.mjs (`pnpm images`: derivados optimizados)
+assets-src/         originales de las imágenes que no están ya en `public/` (entrada de `pnpm images`)
 docs/               esta documentación, ADR y problemas conocidos
 test/               render con router, preparación común y verificación posterior al build (post-build/)
 e2e/                pruebas de extremo a extremo con Playwright (menú, idioma, 404, intro)
@@ -92,8 +93,8 @@ Si una feature necesita algo de otra, ese algo es `shared` (súbelo) o se compon
 `NAV_KEYS` fija las páginas del menú, de «Explora» y del pie (en ese orden, igual que `common.nav`). «Colaborar»
 cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">` sin destino: un test los recorre todos.
 
-- **Anclas.** Los `id` de las anclas son **los mismos en español e inglés** (`#historia`, `#direccionamiento`,
-  `#liderazgo`, `#equipo`, `#marco-legal`) porque el selector de idioma conserva el hash
+- **Anclas.** Los `id` de las anclas son **los mismos en español e inglés** (Nosotros: `#historia`, `#mision`,
+  `#valores`, `#equipo`; Transparencia: `#marco-legal`) porque el selector de idioma conserva el hash
   (`/nosotros/#historia` ↔ `/en/about/#historia`). Al añadir un ancla, el `id` no se traduce.
 - **Navegación en el cliente.** Los enlaces internos son `<Link>` de React Router (sin recargar). Al navegar, el
   foco pasa al `<h1>` de la página (o al elemento del hash) con `FocusOnNavigate`; `ScrollRestoration` sube al

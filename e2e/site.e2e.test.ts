@@ -304,7 +304,10 @@ describe('encabezado y anclas', () => {
     const measure = () =>
       page.evaluate(() => ({
         top: document.getElementById('equipo')?.getBoundingClientRect().top ?? -1,
-        header: document.querySelector('header')?.getBoundingClientRect().height ?? 0,
+        // Encabezado fijo + barra interna de Nosotros (también fija desde md).
+        header:
+          (document.querySelector('header')?.getBoundingClientRect().height ?? 0) +
+          (document.querySelector('main nav')?.getBoundingClientRect().height ?? 0),
       }))
     await expect
       .poll(
@@ -325,5 +328,65 @@ describe('encabezado y anclas', () => {
       expect(await page.locator('main#contenido').count()).toBe(1)
     }
     await page.context().close()
+  })
+})
+
+describe('Nosotros', () => {
+  const T = dict
+
+  it.each(['es', 'en'] as const)(
+    'hero (%s): imagen principal con prioridad, sin lazy y descargada una sola vez',
+    async (lang) => {
+      const page = await (await context()).newPage()
+      const downloads: string[] = []
+      page.on('request', (r) => r.url().includes('hero-selva') && downloads.push(r.url()))
+      await page.goto(BASE + pathFor('nosotros', lang), { waitUntil: 'networkidle' })
+      const img = page.locator('main section img').first()
+      expect(await img.getAttribute('fetchpriority')).toBe('high')
+      expect(await img.getAttribute('loading')).toBeNull()
+      expect(await img.getAttribute('alt')).toBe('')
+      expect(await page.locator('head link[rel="preload"][imagesrcset*="hero-selva"]').count()).toBe(1)
+      expect(downloads).toHaveLength(1)
+      await page.context().close()
+    },
+  )
+
+  it.each(['es', 'en'] as const)('a 390 px no hay scroll horizontal (%s)', async (lang) => {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } })
+    await ctx.addInitScript((k) => sessionStorage.setItem(k, '1'), SEEN)
+    const page = await ctx.newPage()
+    await page.goto(BASE + pathFor('nosotros', lang), { waitUntil: 'networkidle' })
+    const { scroll, inner } = await page.evaluate(() => ({
+      scroll: document.documentElement.scrollWidth,
+      inner: window.innerWidth,
+    }))
+    expect(scroll).toBeLessThanOrEqual(inner)
+    await ctx.close()
+  })
+
+  it('la barra interna marca la sección actual con aria-current al desplazarse', async () => {
+    const page = await (await context()).newPage()
+    await page.goto(BASE + pathFor('nosotros', 'es'))
+    const nav = page.getByRole('navigation', { name: T.es.nosotros.navAria })
+    expect(await nav.locator('[aria-current]').count()).toBe(0)
+    await nav.getByRole('link', { name: T.es.nosotros.mision.label }).click()
+    await expect
+      .poll(() => nav.locator('[aria-current="location"]').innerText(), { timeout: 8000 })
+      .toContain(T.es.nosotros.mision.label)
+    expect(await nav.locator('[aria-current]').count()).toBe(1)
+    await page.context().close()
+  })
+
+  it('el patrón lateral solo aparece desde 1280 px', async () => {
+    const wide = await (await context()).newPage()
+    await wide.goto(BASE + pathFor('nosotros', 'es'))
+    expect(await wide.locator('.patron-lateral').first().isVisible()).toBe(true)
+    await wide.context().close()
+    const ctx = await browser.newContext({ viewport: { width: 1100, height: 800 } })
+    await ctx.addInitScript((k) => sessionStorage.setItem(k, '1'), SEEN)
+    const narrow = await ctx.newPage()
+    await narrow.goto(BASE + pathFor('nosotros', 'es'))
+    expect(await narrow.locator('.patron-lateral').first().isVisible()).toBe(false)
+    await ctx.close()
   })
 })

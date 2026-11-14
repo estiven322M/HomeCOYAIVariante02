@@ -13,6 +13,7 @@ Node >= 22.22 (`.node-version`) and pnpm 10 (`packageManager`). If `pnpm` is not
 
 - `pnpm dev` — `react-router dev` on `$PORT` (default 8443). It does not prerender.
 - `pnpm build` — static output in `build/client` (one `index.html` per route and language). `pnpm preview` serves it.
+- `pnpm images` — genera los derivados `.webp` (sharp) a partir de `assets-src/` o `public/`; ver README.
 - `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm test`, `pnpm verify:build` and `pnpm test:e2e` (both after a build; e2e needs Chromium), `pnpm check` (all).
 - Conventional Commits; husky + lint-staged run oxfmt and ESLint on staged files.
 

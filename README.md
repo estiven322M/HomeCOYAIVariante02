@@ -28,6 +28,7 @@ pnpm build            # build de producción: HTML estático por ruta e idioma e
 pnpm verify:build     # revisa el HTML generado (lang, title, h1, hreflang…); requiere haber hecho build
 pnpm test:e2e         # extremo a extremo con Playwright (menú, idioma, 404, intro); requiere build y Chromium
 pnpm preview          # sirve build/client como Netlify (puerto 4173 por defecto)
+pnpm images           # genera los derivados .webp de las imágenes (sharp); ver «Imágenes»
 pnpm check            # typecheck + lint + format:check + test + build + verify:build + test:e2e (lo mismo que CI)
 ```
 
@@ -44,6 +45,15 @@ feature, y las reglas para el prerenderizado están en [`docs/ARCHITECTURE.md`](
 - [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) — estructura, reglas y guías.
 - [`docs/adr/`](./docs/adr) — decisiones de arquitectura y su motivo.
 - [`docs/known-issues.md`](./docs/known-issues.md) — problemas conocidos pendientes para fases siguientes.
+
+## Imágenes
+
+`pnpm images` (`scripts/images.mjs`, con `sharp`) genera los derivados optimizados en `public/`: `<nombre>-<ancho>.webp`,
+auto-orientados según EXIF, sin ampliar y sin metadatos. Cada trabajo de la lista `JOBS` toma un original (de
+`assets-src/<página>/` o una imagen ya publicada en `public/`) y un conjunto de anchos. Para añadir imágenes (retratos,
+proyectos…): copia el original a `assets-src/<página>/`, añade una entrada a `JOBS`, ejecuta `pnpm images` y usa los
+derivados con `srcset` y `sizes`. `pnpm images hero` regenera solo los trabajos cuyo nombre contiene «hero». Los
+`.webp` van por Git LFS (ver `.gitattributes`). Si una foto sale girada y no trae EXIF, el trabajo admite `rotate` (grados).
 
 ## Control de calidad
 

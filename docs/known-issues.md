@@ -15,7 +15,7 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
 
 - **Adelanto de Misión y Visión en Inicio.** Se decidió **no** mostrarlo en la 2B (ni siquiera como enlaces sueltos).
   Retomarlo en el rediseño de Inicio; si se hace, leer las mismas claves de `content/nosotros` (sin copiar) y enlazar a
-  `/nosotros/#direccionamiento`.
+  `/nosotros/#mision`.
 - **Descripciones muy cortas.** Las de Nosotros y Contacto (`common.nav[*].desc`, ~40 caracteres) son honestas pero
   débiles para buscadores. Mejorarlas con el contenido definitivo.
 - **Páginas con contenido por llegar.** `/proyectos/` y `/colaborar/` reutilizan el texto del proyecto destacado y de
@@ -42,9 +42,6 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
 - **Barra final en Netlify.** Se asume que `/en` redirige a `/en/` (301) porque existe `en/index.html`; no hay
   regla propia. **No verificado:** `curl -I <previsualización>/en`. Si no redirige (o duplica contenido), añadir
   entonces la regla `/en /en/ 301`, vigilando que no genere un bucle.
-- **Medios en Git LFS.** `public/` guarda imágenes, el video y el poster en Git LFS (`.gitattributes`). CI no
-  descarga LFS a propósito. **No he podido verificar desde aquí que Netlify los resuelva en el build**: confirmar en
-  el primer despliegue (si faltaran, se verían los punteros LFS en lugar de los medios).
 - **Cabeceras de Netlify sin probar.** `X-Robots-Tag` en previsualizaciones (`_headers` generado tras el build) y la
   caché de 30 días de `/video`, `/slider` y `/branding` (sin hash: si se reemplaza un archivo con el mismo nombre,
   los visitantes pueden ver la copia antigua hasta 30 días).
@@ -62,14 +59,14 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
 
 ## Estilos y diseño
 
-- **Texto justificado.** `src/shared/styles/index.css` aplica `text-align: justify; hyphens: auto` a todos los
-  `<p>`. Afecta a la legibilidad y a la accesibilidad (ríos de espacio, sobre todo en columnas estrechas). _Fase 4._
-- **Colisión del token «selva».** `@theme` define `--color-selva` (alias de `--color-huito`, `#1c2233`) y el hero
-  define otra variable `--selva` (`#0f1b16`). Son dos colores distintos con el mismo nombre. Conviven además dos
-  paletas (Huito y achiote, y las variables del hero/intro: `--niebla`, `--ambar`…). _Fase 4._
-- **Tamaños de texto pequeños.** Hay `text-[10px]` (6 usos) y `text-[11px]` (11 usos), además de tamaños
-  arbitrarios `text-[15px]` y `text-[17px]`, fuera de una escala tipográfica. Los de 10–11 px quedan por debajo
-  de lo recomendable para lectura. _Fase 4._
+- **Colisión del token «selva» (resuelta en la Fase 3, queda un alias confuso).** El `--selva` (#0f1b16) del hero y el
+  intro se renombró a `--color-noche`. Pendiente para la fase de paletas: el alias `--color-selva` (clase `bg-selva`…)
+  apunta al azul huito (#1c2233) y su nombre confunde; se resuelve al consolidar las paletas (Huito y achiote, y las
+  variables del hero/intro, que siguen conviviendo). _Fase 4._
+- **Tamaños de texto pequeños (parcial).** Ya existe una escala tipográfica en tokens (`--text-*` en `@theme`, mínimo
+  12 px) y `Eyebrow`/`SubTitle` la usan; la página Nosotros solo usa la escala. Siguen con `text-[10px]`/`text-[11px]`
+  fuera de la escala: pie, menú, selector de idioma, intro, portada (`Hero`, `Sections`), 404 y `Transparencia`.
+  _Fase 4._
 - **Contraste del acento.** Un comentario en `index.css` ya anota que el ámbar no alcanza 3:1 sobre el fotograma
   más claro del hero. _Fase 4._
 
