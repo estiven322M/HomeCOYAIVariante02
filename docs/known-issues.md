@@ -93,6 +93,22 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
 - **Los enlaces de salto y de ancla dentro de una página** (`#origen`, `#contenido`) son `<a>` normales; el resto de los
   internos son `<Link>` (navegación en cliente).
 
+## Accesibilidad detectada por axe (no corregida en la Fase 3)
+
+La e2e «accesibilidad (axe, WCAG A/AA)» (`e2e/site.e2e.test.ts`) recorre todas las páginas en es y en (1280 y 390 px, intro
+visto, movimiento reducido) y falla ante cualquier infracción que no esté en su lista `KNOWN`. La página **Nosotros no tiene
+ninguna propia**; lo que sigue ya existía y está fuera del alcance de la Fase 3 (al corregir una, quítala de `KNOWN`):
+
+- **Selector de idioma (encabezado, todas las páginas)** — `label-content-name-mismatch` (WCAG 2.5.3, A): el `aria-label`
+  («Cambiar idioma a inglés») no contiene el texto visible («ES»/«EN»). _Fase 4/5._
+- **Texto de derechos del pie (todas las páginas)** — `color-contrast`: 3,9:1 (#7e7e82 sobre #1c2233, 12 px). _Fase 4._
+- **Portada** — `color-contrast`: el eyebrow «Origen/Born in Putumayo» (`text-carbon/60`, 11 px; 4,0:1) y las descripciones de
+  «Explora» (`text-carbon/60`, 14 px; 4,0:1). Además `list` y `listitem`: la lista de «Explora» tiene un `<div>` (el `Reveal`)
+  entre `<ul>` y cada `<li>`. _Fase 4 y rediseño de Inicio._
+- **Transparencia** — `color-contrast`: «Documento por cargar» (`text-carbon/60`, 12 px; 4,1:1). _Fase 4._
+- axe no puede medir el contraste sobre fotografías (queda «incompleto»): el del texto del hero de Nosotros se midió aparte,
+  píxel a píxel (peor caso 4,56:1).
+
 ## Calidad y herramientas
 
 - **`react-hooks/set-state-in-effect` en `warn`** (3 avisos que `pnpm lint` muestra y no bloquean): la transición

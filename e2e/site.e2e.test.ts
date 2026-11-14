@@ -1,10 +1,11 @@
 // Pruebas de extremo a extremo (Playwright + Vitest). Sirven build/client con scripts/preview.mjs, que imita a Netlify
 // (404 real, sin fallback SPA). Uso: pnpm run build && pnpm run test:e2e
 import { spawn, type ChildProcess } from 'node:child_process'
+import AxeBuilder from '@axe-core/playwright'
 import { chromium, type Browser, type BrowserContext } from 'playwright'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { dict } from '@/content'
-import { NOT_FOUND, pathFor } from '@/shared/i18n/routes'
+import { LANGS, NOT_FOUND, ROUTES, pathFor, type RouteKey } from '@/shared/i18n/routes'
 
 const PORT = 4199
 const BASE = `http://localhost:${PORT}`
@@ -407,4 +408,56 @@ describe('Nosotros', () => {
     expect(await narrow.locator('.patron-lateral').first().isVisible()).toBe(false)
     await ctx.close()
   })
+})
+
+// Accesibilidad automática (axe-core): todas las páginas en es y en, a 1280 y 390 px, con el intro ya visto y movimiento
+// reducido (las animaciones de aparición no dejan texto a medias). Reglas WCAG 2.0/2.1 A y AA, incluido el contraste.
+//
+// La lista KNOWN recoge infracciones que YA existían en otras páginas, el encabezado y el pie y que no se corrigen en la
+// Fase 3 (están en docs/known-issues.md, «Accesibilidad detectada por axe»). Cualquier otra infracción hace fallar la
+// prueba, y Nosotros no tiene ninguna propia. Al corregir una, quítala de aquí.
+type Known = { rule: string; page?: RouteKey | 'notFound'; html?: RegExp }
+const KNOWN: Known[] = [
+  { rule: 'label-content-name-mismatch', html: /hreflang=/ }, // selector de idioma del encabezado (aria-label sin el texto visible)
+  { rule: 'color-contrast', html: /©/ }, // texto de derechos del pie (3,9:1)
+  { rule: 'color-contrast', page: 'home', html: /text-carbon\/60|text-\[11px\]/ }, // eyebrow y descripciones de «Explora»
+  { rule: 'list', page: 'home' }, // la lista de «Explora» contiene <div> (Reveal) entre <ul> y <li>
+  { rule: 'listitem', page: 'home' },
+  { rule: 'color-contrast', page: 'transparencia', html: /text-carbon\/60/ }, // «Documento por cargar»
+]
+
+const AXE_PAGES = [
+  ...(Object.keys(ROUTES) as RouteKey[]).flatMap((key) =>
+    LANGS.map((lang) => ({ key: key as RouteKey | 'notFound', lang, path: pathFor(key, lang) })),
+  ),
+  ...LANGS.map((lang) => ({ key: 'notFound' as const, lang, path: lang === 'es' ? '/no-existe/' : '/en/no-existe/' })),
+]
+
+describe('accesibilidad (axe, WCAG A/AA)', () => {
+  it.each([1280, 390])(
+    'ninguna página tiene infracciones nuevas a %i px',
+    async (width) => {
+      const ctx = await browser.newContext({ viewport: { width, height: 800 }, reducedMotion: 'reduce' })
+      await ctx.addInitScript((k) => sessionStorage.setItem(k, '1'), SEEN)
+      const failures: string[] = []
+      for (const { key, lang, path } of AXE_PAGES) {
+        const page = await ctx.newPage()
+        await page.goto(BASE + path, { waitUntil: 'networkidle' })
+        const { violations } = await new AxeBuilder({ page })
+          .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+          .analyze()
+        for (const v of violations)
+          for (const node of v.nodes) {
+            const known = KNOWN.some(
+              (k) => k.rule === v.id && (!k.page || k.page === key) && (!k.html || k.html.test(node.html)),
+            )
+            if (!known) failures.push(`${lang} ${path} · ${v.id}: ${node.target.join(' ')}`)
+          }
+        await page.close()
+      }
+      await ctx.close()
+      expect(failures).toEqual([])
+    },
+    180_000,
+  )
 })
