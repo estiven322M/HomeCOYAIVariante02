@@ -36,18 +36,21 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
   Fase 6._
 - **`VITE_SITE_URL` sin definir.** Hasta que se defina, `canonical`, `hreflang` y `og:url` salen como rutas
   relativas a la raíz. Google recomienda URL absolutas en `hreflang`. Definirla en Netlify antes de publicar.
-- **404 por idioma en Netlify.** `netlify.toml` añade `/en/* → /en/404.html` (estado 404). Según la documentación de
-  Netlify los archivos existentes tienen prioridad («shadowing»), así que no debería afectar a `/en/` ni a `/en/about/`.
-  **No verificado:** en la primera previsualización, `curl -I <preview>/en/no-existe/` debe dar 404 con la página en inglés,
-  `curl -I <preview>/no-existe/` 404 en español, `curl -I <preview>/404/` 404 y `curl -I <preview>/en/about/` 200. Si
-  la regla fallara, quitarla: las URL bajo `/en/` mostrarían la 404 en español (con `lang` correcto tras hidratar).
-- **Barra final en Netlify.** Se asume que `/en` redirige a `/en/` (301) porque existe `en/index.html`; no hay
-  regla propia. **No verificado:** `curl -I <previsualización>/en`. Si no redirige (o duplica contenido), añadir
-  entonces la regla `/en /en/ 301`, vigilando que no genere un bucle.
-- **Cabeceras de Netlify sin probar.** `X-Robots-Tag` en previsualizaciones (`_headers` generado tras el build) y la
-  caché de 30 días de `/video`, `/slider` y `/branding` (sin hash: si se reemplaza un archivo con el mismo nombre,
-  los visitantes pueden ver la copia antigua hasta 30 días).
-- **Node en Netlify.** `.node-version` fija 22.22.0; Netlify debe tener esa versión disponible (no verificado).
+- **Netlify verificado (2026-11-22, `curl -I` contra producción y la previsualización del PR #5).** Funciona:
+  `/no-existe/` → 404 en español y `/en/no-existe/` → 404 con la página en inglés (`<html lang="en">`; la regla
+  `/en/* → /en/404.html` de `netlify.toml` es correcta y no tapa `/en/` ni `/en/about/`); `/en` → 301 a `/en/` (no
+  hace falta regla propia); `/nosotros/` y `/en/about/` → 200; `Cache-Control` de `/slider/slider1.webp` =
+  `max-age=2592000` (30 días) y de `/assets/*` = `max-age=31536000, immutable`; `X-Robots-Tag: noindex` solo en la
+  previsualización (no sale en producción); `robots.txt` con `Disallow: /` en ambas; `<meta name="robots">` con
+  noindex en producción; Git LFS en Netlify (los `.webp` se sirven como imagen). Sigue en pie, a propósito, que el
+  sitio no es indexable (ver arriba).
+- **`/404` y `/en/404` (sin barra) responden 200 en Netlify** (es `404.html`, que Netlify sirve con «URL limpias»), y
+  `/404/` → 301 a `/404`. No es una página enlazada ni indexable (lleva `noindex`), y el 404 real sí se da en cualquier URL
+  inexistente; se deja anotado por si en la Fase 6 se quiere forzar 404 también ahí.
+- **`VITE_SITE_URL` sigue sin definir en Netlify** (comprobado: `canonical`, `hreflang` y `og:url` salen relativos; ver
+  arriba).
+- **Node en Netlify.** `.node-version` fija 22.22.0; los despliegues construyen, pero no se ha confirmado que Netlify use
+  exactamente esa versión (no verificable con `curl`; mirar el registro del despliegue).
 - **Sin Open Graph completo.** Falta `og:image` (y `twitter:*`). `og:title`, `og:description`, `og:locale`, `og:url` y
   `og:type` sí están. _Fase 2B/6._
 - **Títulos y descripciones.** Salen solo de textos existentes (aprobados en la 2B): la portada ya no usa el nombre
@@ -55,8 +58,8 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
 
 ## Contenido
 
-- **Textos provisionales.** `src/content/{es,en}/common.ts`: «Transparencia y Gobernanza» lleva
-  `[Contenido por definir]` en la descripción del menú. `MediaPlaceholder` sustituye fotografías en varias
+- **Textos provisionales.** Ya no queda ningún texto entre corchetes en `src/content` (una prueba,
+  `src/content/content.test.ts`, falla si aparece alguno). `MediaPlaceholder` sustituye fotografías en varias
   secciones. _Fase 3/5._
 
 ## Estilos y diseño
