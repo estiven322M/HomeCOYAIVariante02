@@ -22,8 +22,7 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
   débiles para buscadores. Mejorarlas con el contenido definitivo.
 - **Páginas con contenido por llegar.** `/proyectos/` y `/colaborar/` reutilizan el texto del proyecto destacado y de
   «Colaborar» más el aviso «Esta sección estará disponible pronto»; `/contacto/` solo tiene título, descripción y el
-  aviso. `/transparencia/` solo tiene el marco legal, con los documentos «por cargar» (cuando exista cada archivo, se
-  le añade `url` en `content/{es,en}/transparencia.ts`).
+  aviso.
 - **Pie de página incompleto a propósito.** «Aviso legal» y «Política de privacidad» están ocultos hasta que exista su
   contenido (ver el bloqueante de arriba). Las redes (`common.footer.socials`, lista `{name, url}`) están vacías y el
   bloque no se muestra: faltan las URL reales. Antes había marcadores `[Instagram] [Facebook] [YouTube]`.
@@ -58,6 +57,10 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
 
 ## Contenido
 
+- **Marco legal retirado.** La página «Transparencia y Gobernanza» (marco legal, estatutos y documentos) y el cierre «Marco
+  legal y estatutos» de Nosotros se retiraron por decisión de los stakeholders. No hay redirección (el sitio aún no está
+  indexado). Su texto queda en el historial de git (commits anteriores al PR de este lote).
+
 - **Textos provisionales.** Ya no queda ningún texto entre corchetes en `src/content` (una prueba,
   `src/content/content.test.ts`, falla si aparece alguno). `MediaPlaceholder` sustituye fotografías en varias
   secciones. _Fase 3/5._
@@ -75,7 +78,7 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
   variables del hero/intro, que siguen conviviendo). _Fase 4._
 - **Tamaños de texto pequeños (parcial).** Ya existe una escala tipográfica en tokens (`--text-*` en `@theme`, mínimo
   12 px) y `Eyebrow`/`SubTitle` la usan; la página Nosotros solo usa la escala. Siguen con `text-[10px]`/`text-[11px]`
-  fuera de la escala: pie, menú, selector de idioma, intro, portada (`Hero`, `Sections`), 404 y `Transparencia`.
+  fuera de la escala: pie, menú, selector de idioma, intro, portada (`Hero`, `Sections`) y 404.
   _Fase 4._
 - **Contraste del acento.** Un comentario en `index.css` ya anota que el ámbar no alcanza 3:1 sobre el fotograma
   más claro del hero. _Fase 4._
@@ -113,7 +116,6 @@ ninguna propia**; lo que sigue ya existía y está fuera del alcance de la Fase 
 - **Portada** — `color-contrast`: el eyebrow «Origen/Born in Putumayo» (`text-carbon/60`, 11 px; 4,0:1) y las descripciones de
   «Explora» (`text-carbon/60`, 14 px; 4,0:1). Además `list` y `listitem`: la lista de «Explora» tiene un `<div>` (el `Reveal`)
   entre `<ul>` y cada `<li>`. _Fase 4 y rediseño de Inicio._
-- **Transparencia** — `color-contrast`: «Documento por cargar» (`text-carbon/60`, 12 px; 4,1:1). _Fase 4._
 - axe no puede medir el contraste sobre fotografías (queda «incompleto»): el del texto del hero de Nosotros se midió aparte,
   píxel a píxel (peor caso 4,56:1).
 

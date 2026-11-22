@@ -5,7 +5,7 @@ import AxeBuilder from '@axe-core/playwright'
 import { chromium, type Browser, type BrowserContext } from 'playwright'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { dict } from '@/content'
-import { LANGS, NOT_FOUND, ROUTES, pathFor, type RouteKey } from '@/shared/i18n/routes'
+import { LANGS, NAV_KEYS, NOT_FOUND, ROUTES, pathFor, type RouteKey } from '@/shared/i18n/routes'
 
 const PORT = 4199
 const BASE = `http://localhost:${PORT}`
@@ -48,10 +48,9 @@ async function context(opts: { seen?: boolean } = {}): Promise<BrowserContext> {
 }
 
 const T = { es: dict.es, en: dict.en }
-const NAV_KEYS = ['nosotros', 'proyectos', 'transparencia', 'colaborar', 'contacto'] as const
 
 describe.each(['es', 'en'] as const)('menú · %s', (lang) => {
-  it('recorre las cinco páginas desde el menú, con aria-current y foco en el h1', async () => {
+  it('recorre todas las páginas del menú, con aria-current y foco en el h1', async () => {
     const page = await (await context()).newPage()
     await page.goto(BASE + pathFor('home', lang))
     for (const [i, key] of NAV_KEYS.entries()) {
@@ -400,7 +399,7 @@ describe('Nosotros', () => {
 // Patrón lateral (shared/ui/PatternZone): solo en zonas claras, desde 1280 px, sin tapar nada.
 describe('patrón lateral', () => {
   /** Páginas con al menos una zona clara (la 404 es toda oscura y no lleva patrón). */
-  const WITH_PATTERN: RouteKey[] = ['home', 'nosotros', 'proyectos', 'transparencia', 'colaborar', 'contacto']
+  const WITH_PATTERN: RouteKey[] = ['home', 'nosotros', 'proyectos', 'colaborar', 'contacto']
   const PAGES = [
     ...WITH_PATTERN.flatMap((key) =>
       LANGS.map((lang) => ({ name: `${key} ${lang}`, path: pathFor(key, lang), has: true })),
@@ -538,7 +537,6 @@ const KNOWN: Known[] = [
   { rule: 'color-contrast', page: 'home', html: /text-carbon\/60|text-\[11px\]/ }, // eyebrow y descripciones de «Explora»
   { rule: 'list', page: 'home' }, // la lista de «Explora» contiene <div> (Reveal) entre <ul> y <li>
   { rule: 'listitem', page: 'home' },
-  { rule: 'color-contrast', page: 'transparencia', html: /text-carbon\/60/ }, // «Documento por cargar»
 ]
 
 const AXE_PAGES = [

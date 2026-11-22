@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { dict } from '@/content'
-import { LANGS, NOT_FOUND, ROUTES, pathFor, type RouteKey } from '@/shared/i18n/routes'
+import { LANGS, NAV_KEYS, NOT_FOUND, ROUTES, pathFor, type RouteKey } from '@/shared/i18n/routes'
 
 const BUILD = join(import.meta.dirname, '..', '..', 'build', 'client')
 
@@ -18,14 +18,10 @@ const pages = (Object.keys(ROUTES) as RouteKey[]).flatMap((key) => LANGS.map((la
 /** Texto que debe contener el h1 de cada página. */
 const h1Of = (key: RouteKey, lang: 'es' | 'en') => {
   const t = dict[lang]
-  return {
-    home: t.home.hero.title,
-    nosotros: t.common.nav[0]?.label,
-    proyectos: t.home.proyecto.title,
-    transparencia: t.common.nav[2]?.label,
-    colaborar: t.home.colaborar.title,
-    contacto: t.common.nav[4]?.label,
-  }[key]
+  if (key === 'home') return t.home.hero.title
+  if (key === 'proyectos') return t.home.proyecto.title
+  if (key === 'colaborar') return t.home.colaborar.title
+  return t.common.nav[(NAV_KEYS as readonly RouteKey[]).indexOf(key)]?.label
 }
 
 describe('build/client', () => {
@@ -72,7 +68,7 @@ describe('build/client', () => {
       expect(doc.querySelectorAll('main')).toHaveLength(1)
       expect(doc.querySelector('main')?.getAttribute('id')).toBe('contenido')
       const footerLinks = [...doc.querySelectorAll('footer nav a')].map((a) => a.getAttribute('href'))
-      for (const k of ['nosotros', 'proyectos', 'transparencia', 'colaborar', 'contacto'] as const) {
+      for (const k of NAV_KEYS) {
         expect(footerLinks).toContain(pathFor(k, lang))
       }
     })
@@ -143,7 +139,7 @@ describe('build/client', () => {
       expect(levels.filter((l) => l === 1)).toHaveLength(1)
       expect(levels[0]).toBe(1)
       levels.forEach((l, i) => i > 0 && expect(l - (levels[i - 1] ?? 0)).toBeLessThanOrEqual(1))
-      expect(levels.filter((l) => l === 2)).toHaveLength(5) // 4 secciones + cierre legal
+      expect(levels.filter((l) => l === 2)).toHaveLength(4) // 4 secciones
     })
 
     it('la foto del hero se precarga una sola vez con los mismos srcset y sizes que el <img>', () => {
@@ -177,10 +173,9 @@ describe('build/client', () => {
       expect(fig?.querySelector('figcaption')?.textContent).toBe(n.mision.purpose.cite)
     })
 
-    it('el cierre enlaza a Transparencia#marco-legal, y esa ancla existe en esa página', () => {
-      const href = pathFor('transparencia', lang) + '#marco-legal'
-      expect([...doc.querySelectorAll('main a')].map((a) => a.getAttribute('href'))).toContain(href)
-      expect(read(pathFor('transparencia', lang)).getElementById('marco-legal')).not.toBeNull()
+    it('no queda rastro del marco legal ni de /transparencia/', () => {
+      expect(doc.body.textContent).not.toMatch(/marco legal|legal framework/i)
+      expect([...doc.querySelectorAll('a')].some((a) => /transparen/.test(a.getAttribute('href') ?? ''))).toBe(false)
     })
   })
 

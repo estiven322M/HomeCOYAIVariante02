@@ -4,7 +4,7 @@ import { SoonNotice } from '@/shared/ui/SoonNotice'
 
 /** /contacto/ — sin contenido propio todavía: título y descripción del menú, y el aviso. */
 export function ContactoPage() {
-  const nav = useLang().t.common.nav[4]
+  const nav = useLang().t.common.nav[3]
   return (
     <>
       <PageIntro title={nav?.label ?? ''} lead={nav?.desc} />

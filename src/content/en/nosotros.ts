@@ -111,7 +111,4 @@ export const nosotros = {
       ],
     },
   },
-  cierre: {
-    link: 'See the legal framework and documents',
-  },
 } satisfies typeof esNosotros

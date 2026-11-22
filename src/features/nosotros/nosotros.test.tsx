@@ -4,7 +4,6 @@ import { describe, expect, it } from 'vitest'
 import { renderAt } from '@test/render'
 import { dict } from '@/content'
 import { LangSwitch } from '@/shared/i18n'
-import { pathFor } from '@/shared/i18n/routes'
 import { Nosotros } from './components/Nosotros'
 
 const esTitle = dict.es.common.nav[0]?.label ?? ''
@@ -61,27 +60,19 @@ describe('feature nosotros', () => {
     expect(screen.getByText(dict[lang].home.queEs.quote)).toBeInTheDocument()
   })
 
-  it.each(['es', 'en'] as const)(
-    'el cierre enlaza a Transparencia y la junta son tres integrantes con iniciales (%s)',
-    (lang) => {
-      const { container } = renderNosotros(lang === 'es' ? '/' : '/en/')
-      const href = pathFor('transparencia', lang) + '#marco-legal'
-      expect(screen.getByRole('link', { name: new RegExp(dict[lang].nosotros.cierre.link) })).toHaveAttribute(
-        'href',
-        href,
-      )
-      const members = dict[lang].nosotros.equipo.junta.members
-      expect(members).toHaveLength(3)
-      for (const m of members) {
-        expect(screen.getByRole('heading', { level: 4, name: m.name })).toBeInTheDocument()
-        // Iniciales decorativas (el nombre ya está en el encabezado).
-        expect(screen.getByText(m.initials).parentElement).toHaveAttribute('aria-hidden', 'true')
-      }
-      // Victoriano figura como Taita (liderazgo), no como tarjeta de la junta.
-      expect(screen.getAllByRole('heading', { level: 4 })).toHaveLength(3)
-      expect(container.querySelectorAll('section#mision figure blockquote')).toHaveLength(1)
-    },
-  )
+  it.each(['es', 'en'] as const)('la junta son tres integrantes con iniciales (%s)', (lang) => {
+    const { container } = renderNosotros(lang === 'es' ? '/' : '/en/')
+    const members = dict[lang].nosotros.equipo.junta.members
+    expect(members).toHaveLength(3)
+    for (const m of members) {
+      expect(screen.getByRole('heading', { level: 4, name: m.name })).toBeInTheDocument()
+      // Iniciales decorativas (el nombre ya está en el encabezado).
+      expect(screen.getByText(m.initials).parentElement).toHaveAttribute('aria-hidden', 'true')
+    }
+    // Victoriano figura como Taita (liderazgo), no como tarjeta de la junta.
+    expect(screen.getAllByRole('heading', { level: 4 })).toHaveLength(3)
+    expect(container.querySelectorAll('section#mision figure blockquote')).toHaveLength(1)
+  })
 
   it.each(['es', 'en'] as const)(
     'valores: siete tarjetas, sin numeración ni imagen, la última ocupa dos columnas (%s)',
@@ -106,7 +97,7 @@ describe('feature nosotros', () => {
   it('las zonas claras llevan el patrón y el bloque oscuro de Equipo no', () => {
     const { container } = renderNosotros('/')
     const zones = [...container.querySelectorAll('.patron-lateral')].map((s) => s.parentElement?.parentElement)
-    expect(new Set(zones).size).toBe(2) // Historia–Valores y el cierre legal
+    expect(new Set(zones).size).toBe(1) // Historia–Valores
     expect(zones.some((z) => z?.querySelector('#historia') && z.querySelector('#valores'))).toBe(true)
     expect(zones.every((z) => !z?.querySelector('#equipo'))).toBe(true)
   })

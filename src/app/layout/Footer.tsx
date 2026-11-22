@@ -11,8 +11,9 @@ export function Footer() {
   const f = useLang().t.common.footer
   const NAV = useNav()
   const hasSocial = f.socials.length > 0
+  // La línea ocre separa el pie de la sección oscura que lo precede (p. ej. Equipo, del mismo color).
   return (
-    <footer className="bg-selva px-6 pb-10 pt-20 text-calido/70">
+    <footer className="border-t border-ocre/40 bg-selva px-6 pb-10 pt-20 text-calido/70">
       <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-4">
         <div className="md:col-span-2">
           <Logo />

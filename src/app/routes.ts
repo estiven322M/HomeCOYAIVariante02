@@ -9,7 +9,6 @@ const MODULES: Record<RouteKey, string> = {
   home: 'routes/home.tsx',
   nosotros: 'routes/nosotros.tsx',
   proyectos: 'routes/proyectos.tsx',
-  transparencia: 'routes/transparencia.tsx',
   colaborar: 'routes/colaborar.tsx',
   contacto: 'routes/contacto.tsx',
 }

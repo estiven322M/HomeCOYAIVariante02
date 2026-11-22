@@ -1,5 +1,5 @@
 // Contenido en español (fuente de verdad: define el tipo que debe cumplir el inglés).
-// Página Nosotros: hero, historia y territorio, misión y visión, valores, equipo y cierre (marco legal → Transparencia).
+// Página Nosotros: hero, historia y territorio, misión y visión, valores, equipo.
 export const nosotros = {
   eyebrow: 'Quiénes somos',
   hero: {
@@ -112,9 +112,5 @@ export const nosotros = {
         },
       ],
     },
-  },
-  /** Cierre: el marco legal vive en /transparencia/; aquí solo se enlaza. */
-  cierre: {
-    link: 'Ver marco legal y documentos',
   },
 }

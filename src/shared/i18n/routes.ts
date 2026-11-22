@@ -18,7 +18,6 @@ export const ROUTES = {
   home: { es: '/', en: '/en/' },
   nosotros: { es: '/nosotros/', en: '/en/about/' },
   proyectos: { es: '/proyectos/', en: '/en/projects/' },
-  transparencia: { es: '/transparencia/', en: '/en/transparency/' },
   colaborar: { es: '/colaborar/', en: '/en/collaborate/' },
   contacto: { es: '/contacto/', en: '/en/contact/' },
 } as const satisfies Record<string, Record<Lang, string>>
@@ -29,13 +28,7 @@ export type RouteKey = keyof typeof ROUTES
  * Páginas del menú, del bloque «Explora» y del pie, en este orden. Coincide por posición con `common.nav` (textos);
  * un test lo comprueba. «Colaborar» cubre «Donaciones / Alianzas».
  */
-export const NAV_KEYS = [
-  'nosotros',
-  'proyectos',
-  'transparencia',
-  'colaborar',
-  'contacto',
-] as const satisfies readonly RouteKey[]
+export const NAV_KEYS = ['nosotros', 'proyectos', 'colaborar', 'contacto'] as const satisfies readonly RouteKey[]
 
 /**
  * Página 404. No está en `ROUTES` (no es una página del sitio: no lleva canonical ni hreflang y es noindex).
