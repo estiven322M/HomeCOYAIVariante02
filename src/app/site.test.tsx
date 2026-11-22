@@ -11,6 +11,7 @@ import { NosotrosPage } from '@/pages/NosotrosPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { SaludPage } from '@/pages/SaludPage'
 import { EventosPage } from '@/pages/EventosPage'
+import { GaleriaPage } from '@/pages/GaleriaPage'
 import { ProyectosPage } from '@/pages/ProyectosPage'
 import { LANGS, NAV_KEYS, NOT_FOUND, ROUTES, pathFor, type RouteKey } from '@/shared/i18n/routes'
 import { IntroProvider } from '@/shared/intro/intro-context'
@@ -22,6 +23,7 @@ const PAGES: Record<RouteKey, ComponentType> = {
   proyectos: ProyectosPage,
   salud: SaludPage,
   eventos: EventosPage,
+  galeria: GaleriaPage,
   colaborar: ColaborarPage,
   contacto: ContactoPage,
 }

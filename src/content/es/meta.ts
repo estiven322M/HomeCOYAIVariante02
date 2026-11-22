@@ -33,13 +33,17 @@ export const meta = {
       title: 'Eventos — ÉCOYAI',
       description: navDesc(3),
     },
+    galeria: {
+      title: 'Galería — ÉCOYAI',
+      description: navDesc(4),
+    },
     colaborar: {
       title: 'Donaciones / Alianzas — ÉCOYAI',
       description: home.colaborar.text,
     },
     contacto: {
       title: 'Contacto — ÉCOYAI',
-      description: navDesc(5),
+      description: navDesc(6),
     },
   },
   notFound: { title: 'Página no encontrada — ÉCOYAI' },
