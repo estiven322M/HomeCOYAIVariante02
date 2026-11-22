@@ -1,7 +1,8 @@
 import fs from 'node:fs'
+import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 
-const css = fs.readFileSync(new URL('./index.css', import.meta.url), 'utf8')
+const css = fs.readFileSync(path.resolve(process.cwd(), 'src/shared/styles/index.css'), 'utf8')
 
 // El justificado es una utilidad explícita (`justificado`): una regla global sobre «p» ya desalineó el eyebrow de Colaborar.
 describe('texto justificado', () => {
