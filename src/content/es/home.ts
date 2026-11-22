@@ -16,7 +16,6 @@ export const home = {
     p1: 'Un acto de compromiso cultural nacido en el corazón del Putumayo.',
     p2: 'ÉCOYAI es una organización sin ánimo de lucro nacida en el Putumayo, en la Amazonía colombiana, dedicada a la salvaguarda y conservación de la medicina tradicional, los usos y costumbres, la lengua materna y la cosmovisión del pueblo Siona y los pueblos indígenas de Colombia. Guiados por el liderazgo de nuestros sabedores tradicionales, impulsamos proyectos de alto impacto que protegen el patrimonio cultural, el territorio y la dignidad humana.',
     media: 'Fotografía documental — territorio y comunidad',
-    caption: 'Nace en el Putumayo',
     quote: 'Territorio, memoria y lengua como un mismo tejido.',
     prev: 'Anterior',
     next: 'Siguiente',

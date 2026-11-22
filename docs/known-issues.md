@@ -113,7 +113,7 @@ ninguna propia**; lo que sigue ya existía y está fuera del alcance de la Fase 
 - **Selector de idioma (encabezado, todas las páginas)** — `label-content-name-mismatch` (WCAG 2.5.3, A): el `aria-label`
   («Cambiar idioma a inglés») no contiene el texto visible («ES»/«EN»). _Fase 4/5._
 - **Texto de derechos del pie (todas las páginas)** — `color-contrast`: 3,9:1 (#7e7e82 sobre #1c2233, 12 px). _Fase 4._
-- **Portada** — `color-contrast`: el eyebrow «Origen/Born in Putumayo» (`text-carbon/60`, 11 px; 4,0:1) y las descripciones de
+- **Portada** — `color-contrast`: las descripciones de
   «Explora» (`text-carbon/60`, 14 px; 4,0:1). Además `list` y `listitem`: la lista de «Explora» tiene un `<div>` (el `Reveal`)
   entre `<ul>` y cada `<li>`. _Fase 4 y rediseño de Inicio._
 - axe no puede medir el contraste sobre fotografías (queda «incompleto»): el del texto del hero de Nosotros se midió aparte,

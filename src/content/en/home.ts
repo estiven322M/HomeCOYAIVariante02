@@ -18,7 +18,6 @@ export const home = {
     p1: 'An act of cultural commitment born in the heart of Putumayo.',
     p2: 'ÉCOYAI is a non-profit organization born in Putumayo, in the Colombian Amazon, dedicated to safeguarding and preserving the traditional medicine, customs, mother tongue and worldview of the Siona people and the Indigenous peoples of Colombia. Guided by the leadership of our traditional knowledge keepers, we drive high-impact projects that protect cultural heritage, the territory and human dignity.',
     media: 'Documentary photography — territory and community',
-    caption: 'Born in Putumayo',
     quote: 'Territory, memory and language as a single fabric.',
     prev: 'Previous',
     next: 'Next',

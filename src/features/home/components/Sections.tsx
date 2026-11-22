@@ -186,9 +186,8 @@ export function QueEs() {
         </Reveal>
         <Reveal delay={200} className="lg:col-span-6 lg:col-start-7">
           <ImageSlider label={q.media} />
-          <div className="mt-6 flex items-start justify-between gap-6 border-t border-carbon/15 pt-5">
-            <p className="text-[11px] uppercase tracking-[0.3em] text-carbon/60">{q.caption}</p>
-            <p className="max-w-[16rem] font-serif text-lg italic leading-snug text-bosque">{q.quote}</p>
+          <div className="mt-6 border-t border-carbon/15 pt-5">
+            <p className="max-w-md font-serif text-lg italic leading-snug text-bosque">{q.quote}</p>
           </div>
         </Reveal>
       </div>
