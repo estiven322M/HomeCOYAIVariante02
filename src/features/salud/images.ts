@@ -1,6 +1,7 @@
 /**
  * Imágenes de Salud (derivados de `pnpm images` en `public/salud/`, originales en `assets-src/salud/`).
- * Mientras un original no exista (`available: false`) la página muestra un marcador de la paleta, sin texto.
+ * Las 7 están activas. Si alguna falta (`available: false`) la página muestra un marcador de la paleta, sin texto.
+ * Hero y solicitar son decorativas (`alt=""`); el resto lleva su texto en `content/{es,en}/salud.ts` (`imageAlt`, `imageAlts`).
  * Al añadir una imagen: copia el original a `assets-src/salud/`, ejecuta `pnpm images salud`, pon `available: true` y
  * añade su texto alternativo en `content/{es,en}/salud.ts` (las imágenes decorativas llevan `alt=""`).
  */
@@ -8,8 +9,8 @@ export type SaludImageId = 'hero' | 'llamado' | 'practica1' | 'practica2' | 'pra
 
 type Spec = { available: boolean; base: string; widths: number[]; width: number; height: number }
 
-const wide = (base: string): Spec => ({ available: false, base, widths: [960, 1280, 1920], width: 1920, height: 1081 })
-const tall = (base: string): Spec => ({ available: false, base, widths: [480, 960], width: 960, height: 1200 })
+const wide = (base: string): Spec => ({ available: true, base, widths: [960, 1280, 1920], width: 1920, height: 1080 })
+const tall = (base: string): Spec => ({ available: true, base, widths: [480, 900], width: 900, height: 1125 })
 
 export const IMAGES: Record<SaludImageId, Spec> = {
   hero: wide('/salud/hero'),
@@ -18,7 +19,8 @@ export const IMAGES: Record<SaludImageId, Spec> = {
   practica2: tall('/salud/practica-2-purgas-banos'),
   practica3: tall('/salud/practica-3-botanica'),
   practica4: tall('/salud/practica-4-saberes'),
-  solicitar: wide('/salud/solicitar'),
+  // Recorte 16:9 de 1200 px (el original es de 1280×960): no se amplía.
+  solicitar: { ...wide('/salud/solicitar'), widths: [960, 1200], width: 1200, height: 675 },
 }
 
 export const PRACTICE_IMAGES = ['practica1', 'practica2', 'practica3', 'practica4'] as const satisfies SaludImageId[]

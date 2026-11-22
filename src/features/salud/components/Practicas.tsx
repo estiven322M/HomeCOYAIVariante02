@@ -70,7 +70,12 @@ export function Practicas() {
                       <figure
                         className={`relative mt-6 aspect-[4/5] w-full max-w-64 overflow-hidden bg-huito ${hydrated ? 'lg:hidden' : ''}`}
                       >
-                        <SaludImage id={PRACTICE_IMAGES[i] ?? 'practica1'} tone="huito" sizes="256px" />
+                        <SaludImage
+                          id={PRACTICE_IMAGES[i] ?? 'practica1'}
+                          tone="huito"
+                          sizes="256px"
+                          alt={e.imageAlts[i]}
+                        />
                       </figure>
                     </div>
                   </Disclosure>
@@ -89,7 +94,13 @@ export function Practicas() {
                     key={item.title}
                     className={`absolute inset-0 transition-opacity duration-700 motion-reduce:transition-none ${i === current ? 'opacity-100' : 'opacity-0'}`}
                   >
-                    <SaludImage id={PRACTICE_IMAGES[i] ?? 'practica1'} tone="huito" sizes="460px" />
+                    {/* Solo la imagen visible lleva texto alternativo; las otras (opacidad 0) son decorativas. */}
+                    <SaludImage
+                      id={PRACTICE_IMAGES[i] ?? 'practica1'}
+                      tone="huito"
+                      sizes="460px"
+                      alt={i === current ? e.imageAlts[i] : ''}
+                    />
                   </div>
                 ))}
               </div>

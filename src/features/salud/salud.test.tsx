@@ -20,8 +20,20 @@ describe('feature salud', () => {
     expect(h1).toHaveLength(1)
     expect(h1[0]).toHaveTextContent(dict[lang].salud.hero.title)
     expect(container.textContent).not.toMatch(/\[[^\]]+\]/)
-    // Sin fotos todavía: marcadores sin texto, ocultos a los lectores de pantalla.
-    expect(container.querySelectorAll('img')).toHaveLength(0)
+  })
+
+  it.each(langs)('imágenes: hero y fondo decorativos; retrato y prácticas con texto alternativo (%s)', (lang, path) => {
+    const { container } = renderAt(<Salud />, path)
+    const s = dict[lang].salud
+    const imgs = [...container.querySelectorAll('img')]
+    const alts = imgs.map((i) => i.getAttribute('alt'))
+    expect(alts.every((a) => a !== null)).toBe(true) // ninguna sin atributo alt
+    expect(alts).toContain(s.llamado.imageAlt)
+    expect(s.llamado.imageAlt).toContain('Victoriano Piaguaje Yaiguaje')
+    for (const a of s.encuentros.imageAlts) expect(alts).toContain(a)
+    // Hero y fondo de «Solicitar»: decorativos (los demás, con texto salvo las de opacidad 0 del acordeón de escritorio).
+    expect(imgs.filter((i) => i.getAttribute('src')?.includes('/salud/hero'))[0]?.getAttribute('alt')).toBe('')
+    expect(imgs.filter((i) => i.getAttribute('src')?.includes('/salud/solicitar'))[0]?.getAttribute('alt')).toBe('')
   })
 
   it.each(langs)('El llamado: dos párrafos justificados y una cita (%s)', (lang, path) => {

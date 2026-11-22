@@ -9,6 +9,8 @@ export const salud = {
       'Espacios sagrados de armonización del espíritu, la mente y el cuerpo físico, guiados por taitas y sabedores del Putumayo para buscadores de todo el mundo.',
   },
   llamado: {
+    imageAlt:
+      'El Taita Victoriano Piaguaje Yaiguaje, sabedor siona, con corona de plumas multicolor y collares tradicionales',
     label: 'El llamado',
     title: 'La medicina de la selva al servicio de la humanidad',
     paragraphs: [
@@ -18,6 +20,12 @@ export const salud = {
     quote: '«Sanar el cuerpo físico requiere armonizar primero la mente y el espíritu.»',
   },
   encuentros: {
+    imageAlts: [
+      'Olla sobre el fuego con bejucos y hojas de yagé en preparación',
+      'Un sabedor realiza una limpieza con hojas y humo a un participante',
+      'Un grupo recorre la selva acompañado de una guía',
+      'Mujeres con vestidos tradicionales y un sabedor comparten una danza en un centro cultural',
+    ],
     label: 'Nuestros encuentros',
     title: '¿Qué vivimos en nuestros encuentros?',
     intro:

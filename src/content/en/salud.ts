@@ -9,6 +9,8 @@ export const salud = {
       'Sacred spaces to harmonize spirit, mind and body, guided by taitas and knowledge keepers of Putumayo for seekers from around the world.',
   },
   llamado: {
+    imageAlt:
+      'Taita Victoriano Piaguaje Yaiguaje, a Siona knowledge keeper, wearing a multicolored feather crown and traditional necklaces',
     label: 'The call',
     title: 'The medicine of the rainforest in service of humanity',
     paragraphs: [
@@ -18,6 +20,12 @@ export const salud = {
     quote: '“Healing the physical body requires first harmonizing the mind and the spirit.”',
   },
   encuentros: {
+    imageAlts: [
+      'A pot over a fire with yagé vines and leaves being prepared',
+      'A knowledge keeper performs a cleansing with leaves and smoke on a participant',
+      'A group walks through the rainforest with a guide',
+      'Women in traditional dresses and a knowledge keeper share a dance in a cultural center',
+    ],
     label: 'Our gatherings',
     title: 'What happens at our gatherings?',
     intro:
