@@ -5,7 +5,6 @@ import { Eyebrow } from '@/shared/ui/Eyebrow'
 import { MediaPlaceholder } from '@/shared/ui/MediaPlaceholder'
 import { PatternZone } from '@/shared/ui/PatternZone'
 import { Reveal } from '@/shared/ui/Reveal'
-import { TextLink } from '@/shared/ui/TextLink'
 import { useScrollY } from '@/shared/hooks/useScrollY'
 import { prefersReducedMotion } from '@/shared/lib/reduced-motion'
 import { useLang, useNav, usePathFor } from '@/shared/i18n'
@@ -174,7 +173,6 @@ function ImageSlider({ label }: { label: string }) {
 
 export function QueEs() {
   const q = useLang().t.home.queEs
-  const pathFor = usePathFor()
   return (
     <PatternZone as="section" id="origen" className="scroll-mt-14 bg-crema px-6 py-28 lg:py-40">
       <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-12">
@@ -184,9 +182,6 @@ export function QueEs() {
           <div className="mt-10 space-y-5 text-[17px] leading-relaxed text-carbon/80">
             <p className="font-serif text-2xl italic leading-snug text-bosque">{q.p1}</p>
             <p>{q.p2}</p>
-          </div>
-          <div className="mt-10">
-            <TextLink href={`${pathFor('nosotros')}#historia`}>{q.link}</TextLink>
           </div>
         </Reveal>
         <Reveal delay={200} className="lg:col-span-6 lg:col-start-7">
