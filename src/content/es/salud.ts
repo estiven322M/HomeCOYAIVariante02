@@ -41,4 +41,36 @@ export const salud = {
       },
     ],
   },
+  cuidado: {
+    label: 'Cuidado y respeto',
+    title: 'Seguridad, ética y acompañamiento',
+    intro:
+      'En ÉCOYAI honramos la medicina tradicional lejos de cualquier enfoque comercial o superficial. Todos nuestros encuentros cuentan con:',
+    items: [
+      {
+        title: 'Guía espiritual legítima',
+        text: 'Ceremonias dirigidas exclusivamente por taitas y sabedores tradicionales reconocidos por su trayectoria comunitaria.',
+      },
+      {
+        title: 'Acompañamiento integral',
+        text: 'Preparación previa (dieta y recomendaciones), cuidado constante durante las ceremonias y espacios de integración posterior para cada participante.',
+      },
+      {
+        title: 'Sostenibilidad comunitaria',
+        text: 'Los aportes de estos encuentros fortalecen directamente los programas de preservación cultural, lengua materna y bienestar de las comunidades del Putumayo.',
+      },
+    ],
+  },
+  /** El texto del protocolo lo valida la organización antes de publicar (solo recoge los puntos que dio). */
+  protocolo: {
+    title: 'Protocolo de preparación y salud',
+    show: 'Ver detalles',
+    hide: 'Ocultar',
+    points: [
+      'Antes de participar, cada persona completa un cuestionario médico confidencial.',
+      'Existen contraindicaciones, como ciertos antidepresivos o afecciones cardíacas.',
+      'Los encuentros son solo para personas de 18 años o más.',
+      'La medicina tradicional no reemplaza la atención médica.',
+    ],
+  },
 }

@@ -41,4 +41,35 @@ export const salud = {
       },
     ],
   },
+  cuidado: {
+    label: 'Care and respect',
+    title: 'Safety, ethics and support',
+    intro:
+      'At ÉCOYAI we honor traditional medicine, far from any commercial or superficial approach. All our gatherings include:',
+    items: [
+      {
+        title: 'Legitimate spiritual guidance',
+        text: 'Ceremonies led exclusively by taitas and traditional knowledge keepers recognized for their community standing.',
+      },
+      {
+        title: 'Comprehensive support',
+        text: 'Prior preparation (diet and recommendations), constant care during the ceremonies and spaces for integration afterwards for each participant.',
+      },
+      {
+        title: 'Community contribution',
+        text: 'The contributions from these gatherings directly strengthen the programs for cultural preservation, mother tongue and well-being of the communities of Putumayo.',
+      },
+    ],
+  },
+  protocolo: {
+    title: 'Preparation and health protocol',
+    show: 'Show details',
+    hide: 'Hide',
+    points: [
+      'Before taking part, each person completes a confidential medical questionnaire.',
+      'There are contraindications, such as certain antidepressants or heart conditions.',
+      'The gatherings are only for people aged 18 or older.',
+      'Traditional medicine does not replace medical care.',
+    ],
+  },
 } satisfies typeof esSalud

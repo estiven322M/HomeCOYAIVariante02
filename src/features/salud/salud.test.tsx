@@ -44,7 +44,7 @@ describe('acordeón de prácticas', () => {
       </MemoryRouter>,
     )
     for (const item of dict.es.salud.encuentros.items) expect(html).toContain(item.text)
-    expect(html.match(/aria-expanded="true"/g)).toHaveLength(4)
+    expect(html.match(/aria-expanded="true"/g)).toHaveLength(5) // 4 prácticas + el protocolo
     expect(html).not.toMatch(/<div id="practica-\d-panel"[^>]*hidden/)
     // Cada panel lleva su imagen y no hay figura lateral hasta hidratar.
     expect(html.match(/<figure/g)).toHaveLength(5) // 4 prácticas + el retrato de El llamado
@@ -108,5 +108,49 @@ describe('acordeón de prácticas', () => {
     for (const b of container.querySelectorAll('button')) {
       expect(b.querySelector('[aria-hidden="true"]')).not.toBeNull()
     }
+  })
+})
+
+describe('seguridad y protocolo', () => {
+  it.each(langs)('tres tarjetas con texto a la izquierda (sin justificar) y rombos decorativos (%s)', (lang, path) => {
+    const { container } = renderAt(<Salud />, path)
+    const c = dict[lang].salud.cuidado
+    const cards = container.querySelectorAll('section ul.grid > li')
+    expect(cards).toHaveLength(3)
+    cards.forEach((li, i) => {
+      expect(li.querySelector('h3')).toHaveTextContent(c.items[i]?.title ?? '')
+      expect(li.querySelector('p')?.className).not.toContain('justificado')
+      expect(li.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
+    })
+    // Solo El llamado se justifica.
+    expect(container.querySelectorAll('.justificado')).toHaveLength(2)
+  })
+
+  it.each(langs)('el protocolo se abre y se cierra (cerrado al cargar con JS) (%s)', async (lang, path) => {
+    renderAt(<Salud />, path)
+    const p = dict[lang].salud.protocolo
+    const btn = screen.getByRole('button', { name: new RegExp(p.title) })
+    expect(btn).toHaveAttribute('aria-expanded', 'false')
+    expect(btn.closest('h2')).not.toBeNull()
+    const panel = document.getElementById(btn.getAttribute('aria-controls') ?? '')
+    expect(panel).toHaveAttribute('hidden')
+    await userEvent.click(btn)
+    expect(btn).toHaveAttribute('aria-expanded', 'true')
+    expect(panel).not.toHaveAttribute('hidden')
+    for (const point of p.points) expect(panel).toHaveTextContent(point)
+    await userEvent.click(btn)
+    expect(btn).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  it('sin JavaScript el protocolo sale abierto con sus cuatro puntos', () => {
+    const html = renderToString(
+      <MemoryRouter initialEntries={['/salud-y-medicina-tradicional/']}>
+        <LangFromUrl>
+          <Salud />
+        </LangFromUrl>
+      </MemoryRouter>,
+    )
+    for (const point of dict.es.salud.protocolo.points) expect(html).toContain(point)
+    expect(html).not.toMatch(/<div id="protocolo-panel"[^>]*hidden/)
   })
 })
