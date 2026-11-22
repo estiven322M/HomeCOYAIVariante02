@@ -29,6 +29,12 @@ describe('feature home', () => {
     expect(screen.getByRole('heading', { level: 2, name: dict.es.home.queEs.title })).toBeInTheDocument()
   })
 
+  it.each(['/', '/en/'])('«¿Qué es ÉCOYAI?» no enlaza a Nosotros (%s)', (path) => {
+    renderHome(path)
+    const section = document.querySelector('#origen')
+    expect(section?.querySelectorAll('a')).toHaveLength(0)
+  })
+
   it('se renderiza en inglés en «/en/», sin leer localStorage ni navigator', () => {
     localStorage.setItem('ecoyai-lang', 'es') // ya no influye: el idioma sale de la URL
     renderHome('/en/')

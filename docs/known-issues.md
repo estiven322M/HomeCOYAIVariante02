@@ -16,8 +16,8 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
 - **Adelanto de Misión y Visión en Inicio.** Se decidió **no** mostrarlo en la 2B (ni siquiera como enlaces sueltos).
   Retomarlo en el rediseño de Inicio; si se hace, leer las mismas claves de `content/nosotros` (sin copiar) y enlazar a
   `/nosotros/#mision`.
-- **Retratos de la junta directiva.** Solo Victoriano tiene foto; el resto muestra iniciales hasta tener las suyas (ver
-  «Retratos» en ARCHITECTURE).
+- **Retratos de la junta directiva.** Los tres integrantes muestran iniciales hasta tener sus fotos (ver «Retratos» en
+  ARCHITECTURE); el Taita aparece en «Liderazgo ancestral» con su foto.
 - **Descripciones muy cortas.** Las de Nosotros y Contacto (`common.nav[*].desc`, ~40 caracteres) son honestas pero
   débiles para buscadores. Mejorarlas con el contenido definitivo.
 - **Páginas con contenido por llegar.** `/proyectos/` y `/colaborar/` reutilizan el texto del proyecto destacado y de
@@ -63,6 +63,11 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
   secciones. _Fase 3/5._
 
 ## Estilos y diseño
+
+- **Texto justificado (ajuste general de los stakeholders).** Solo en párrafos de texto corrido, desde `md` (en móvil,
+  a la izquierda), con la clase `justificado` (ver ARCHITECTURE). Las tarjetas estrechas (Valores, junta, texto del Taita)
+  y los textos centrados quedan sin justificar a propósito. Pendiente de confirmar con los stakeholders: si lo quieren
+  también en móvil y si desean extenderlo a las tarjetas estrechas (con guionado hay menos huecos, pero aparecen).
 
 - **Colisión del token «selva» (resuelta en la Fase 3, queda un alias confuso).** El `--selva` (#0f1b16) del hero y el
   intro se renombró a `--color-noche`. Pendiente para la fase de paletas: el alias `--color-selva` (clase `bg-selva`…)

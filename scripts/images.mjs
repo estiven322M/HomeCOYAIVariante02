@@ -28,18 +28,6 @@ const JOBS = [
     widths: [640, 1280],
     quality: 78,
   },
-  // Miniaturas de rombo (128 px, 2x = 256 px) a partir de imágenes ya publicadas en el carrusel de la portada.
-  { name: 'mision', src: 'public/slider/slider4.webp', out: 'public/nosotros/mision', widths: [256], quality: 80 },
-  { name: 'vision', src: 'public/slider/slider5.webp', out: 'public/nosotros/vision', widths: [256], quality: 80 },
-  // Retrato 4:3 recortado alrededor del Taita (cara y busto) para la tarjeta de la junta directiva.
-  {
-    name: 'taita-junta',
-    src: 'public/taita/taita_victoriano.webp',
-    out: 'public/nosotros/taita-junta',
-    widths: [256, 512],
-    quality: 80,
-    crop: { left: 256, top: 0, width: 768, height: 576 },
-  },
   {
     name: 'taita',
     src: 'public/taita/taita_victoriano.webp',

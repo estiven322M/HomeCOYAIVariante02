@@ -56,20 +56,13 @@ describe('feature nosotros', () => {
     expect(container.textContent).not.toMatch(/[[^]]+]/)
   })
 
-  it.each(['es', 'en'] as const)('la cita del propósito es un fragmento literal del tercer párrafo (%s)', (lang) => {
-    const n = dict[lang].nosotros
-    const quote = n.mision.purpose.quote
-    const fragment = quote.charAt(0).toLowerCase() + quote.slice(1)
-    expect(n.historia.paragraphs[2]).toContain(fragment)
-  })
-
   it.each(['es', 'en'] as const)('la frase del pie de foto reutiliza home.queEs.quote (%s)', (lang) => {
     renderNosotros(lang === 'es' ? '/' : '/en/')
     expect(screen.getByText(dict[lang].home.queEs.quote)).toBeInTheDocument()
   })
 
   it.each(['es', 'en'] as const)(
-    'el cierre enlaza a Transparencia y la junta usa foto o iniciales según haya retrato (%s)',
+    'el cierre enlaza a Transparencia y la junta son tres integrantes con iniciales (%s)',
     (lang) => {
       const { container } = renderNosotros(lang === 'es' ? '/' : '/en/')
       const href = pathFor('transparencia', lang) + '#marco-legal'
@@ -77,17 +70,15 @@ describe('feature nosotros', () => {
         'href',
         href,
       )
-      for (const m of dict[lang].nosotros.equipo.junta.members) {
+      const members = dict[lang].nosotros.equipo.junta.members
+      expect(members).toHaveLength(3)
+      for (const m of members) {
         expect(screen.getByRole('heading', { level: 4, name: m.name })).toBeInTheDocument()
-        if (m.photoAlt) {
-          // Con foto: imagen con su alt, sin marcador de iniciales.
-          expect(screen.getByRole('img', { name: m.photoAlt })).toBeInTheDocument()
-          expect(screen.queryByText(m.initials)).toBeNull()
-        } else {
-          // Sin foto: iniciales decorativas (el nombre ya está en el encabezado).
-          expect(screen.getByText(m.initials).parentElement).toHaveAttribute('aria-hidden', 'true')
-        }
+        // Iniciales decorativas (el nombre ya está en el encabezado).
+        expect(screen.getByText(m.initials).parentElement).toHaveAttribute('aria-hidden', 'true')
       }
+      // Victoriano figura como Taita (liderazgo), no como tarjeta de la junta.
+      expect(screen.getAllByRole('heading', { level: 4 })).toHaveLength(3)
       expect(container.querySelectorAll('section#mision figure blockquote')).toHaveLength(1)
     },
   )

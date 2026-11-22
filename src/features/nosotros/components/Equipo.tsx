@@ -1,40 +1,17 @@
 import { useLang } from '@/shared/i18n'
 import { SubTitle } from '@/shared/ui/SubTitle'
 
-/** Retratos disponibles de la junta, por iniciales. Derivados de `pnpm images`; las demás personas usan iniciales. */
-const PHOTOS: Record<string, { src: string; srcSet: string }> = {
-  VP: {
-    src: '/nosotros/taita-junta-512.webp',
-    srcSet: '/nosotros/taita-junta-256.webp 256w, /nosotros/taita-junta-512.webp 512w',
-  },
-}
-
 /**
- * Retrato de la tarjeta: la foto si existe; si no, las iniciales en un tono neutro y suave (discreto, para no competir
- * con las fotos reales; decorativas: el nombre va justo al lado). En móvil es un avatar pequeño a la izquierda.
+ * Marcador del retrato: las iniciales en un tono neutro y suave (decorativas: el nombre va justo al lado). En móvil es
+ * un avatar pequeño a la izquierda; desde `md`, un bloque 3:2 sobre el nombre.
  */
-function Portrait({ initials, photoAlt }: { initials: string; photoAlt?: string }) {
-  const box =
-    'size-[4.5rem] flex-none overflow-hidden min-[520px]:aspect-[3/2] min-[520px]:size-auto min-[520px]:w-full'
-  const photo = PHOTOS[initials]
-  if (photo && photoAlt) {
-    return (
-      <img
-        src={photo.src}
-        srcSet={photo.srcSet}
-        sizes="(min-width: 1024px) 258px, (min-width: 520px) 50vw, 72px"
-        width={512}
-        height={384}
-        alt={photoAlt}
-        loading="lazy"
-        decoding="async"
-        className={`${box} object-cover object-[50%_15%]`}
-      />
-    )
-  }
+function Portrait({ initials }: { initials: string }) {
   return (
-    <div aria-hidden className={`flex items-center justify-center bg-tierra-suave/15 ${box}`}>
-      <span className="font-serif text-lead font-light tracking-wide text-tierra-suave min-[520px]:text-subtitle">
+    <div
+      aria-hidden
+      className="flex size-[4.5rem] flex-none items-center justify-center overflow-hidden bg-tierra-suave/15 md:aspect-[3/2] md:size-auto md:w-full"
+    >
+      <span className="font-serif text-lead font-light tracking-wide text-tierra-suave md:text-subtitle">
         {initials}
       </span>
     </div>
@@ -67,7 +44,8 @@ export function Equipo() {
           <div>
             <p className="text-caption uppercase tracking-[0.3em] text-ocre">{l.label}</p>
             <h3 className="mt-6 font-serif text-list-title font-light md:text-subtitle">{l.name}</h3>
-            <p className="mt-6 inline-block border border-ocre/60 px-4 py-1.5 text-caption uppercase tracking-[0.25em] text-ocre">
+            {/* Cargo largo: texto normal (sin mayúsculas ni tracking amplio), en el mismo recuadro, hasta dos líneas. */}
+            <p className="mt-6 inline-block max-w-md border border-ocre/60 px-4 py-2 text-ui leading-snug text-ocre">
               {l.role}
             </p>
             <p className="mt-8 font-serif text-lead-sm font-light text-arena-clara/90">{l.text}</p>
@@ -78,14 +56,14 @@ export function Equipo() {
           <span aria-hidden className="h-px w-10 bg-ocre" />
           <h3 className="text-caption uppercase tracking-[0.3em] text-arena-clara/75">{e.junta.title}</h3>
         </div>
-        <ul className="mt-10 grid gap-x-6 gap-y-8 min-[520px]:grid-cols-2 min-[520px]:gap-y-12 lg:grid-cols-4">
+        <ul className="mt-10 grid gap-x-6 gap-y-8 md:grid-cols-3 md:gap-x-10">
           {e.junta.members.map((m) => (
-            <li key={m.name} className="flex gap-4 min-[520px]:block">
-              <Portrait initials={m.initials} photoAlt={m.photoAlt} />
-              <div className="min-w-0 min-[520px]:mt-6">
+            <li key={m.name} className="flex gap-4 md:block">
+              <Portrait initials={m.initials} />
+              <div className="min-w-0 md:mt-6">
                 <h4 className="font-serif text-lead leading-tight">{m.name}</h4>
                 <p className="mt-2 text-ui leading-snug text-ocre">{m.role}</p>
-                <p className="mt-3 border-t border-arena-clara/15 pt-3 text-ui text-arena-clara/80 min-[520px]:mt-4 min-[520px]:pt-4">
+                <p className="mt-3 border-t border-arena-clara/15 pt-3 text-ui text-arena-clara/80 md:mt-4 md:pt-4">
                   {m.profile}
                 </p>
               </div>

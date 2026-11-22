@@ -155,9 +155,9 @@ Ejemplo real: la página **Contacto** (`/contacto/` · `/en/contact/`).
 
 ## Página Nosotros (Fase 3)
 
-`features/nosotros/components/`: un componente por bloque (`NosotrosHero`, `SectionNav`, `Historia` con
-`Territorio`, `MisionVision`, `Valores`, `Equipo`, `CierreLegal`) ensamblados por `Nosotros.tsx`. Piezas reutilizables
-nuevas en `shared/ui`: `Diamond` (motivo en rombo y `DIAMOND_CLIP` para imágenes), `SubTitle` con numeración (`n="01"`) y
+`features/nosotros/components/`: un componente por bloque (`NosotrosHero`, `SectionNav`, `Historia`,
+`MisionVision`, `Valores`, `Equipo`, `CierreLegal`) ensamblados por `Nosotros.tsx`. Piezas reutilizables
+nuevas en `shared/ui`: `SubTitle` con numeración (`n="01"`) y
 `PatternZone` (patrón lateral; ver «Patrón lateral» más abajo).
 
 - **Anclas** (iguales en es y en): `#historia`, `#mision`, `#valores`, `#equipo`. El marco legal **no** está aquí: vive en
@@ -174,10 +174,11 @@ nuevas en `shared/ui`: `Diamond` (motivo en rombo y `DIAMOND_CLIP` para imágene
   (`.nosotros-velo-*`) mantienen el contraste AA del texto en todos los anchos (medido sobre la foto).
 - **Valores**: siete tarjetas sin numeración ni imagen, en rejilla de 1 → 2 → 4 columnas; desde 520 px la última ocupa
   dos columnas, así que no queda ninguna celda vacía (2 columnas: 4.ª fila; 4 columnas: 2.ª fila = 1 + 1 + 2).
-- **Retratos de la junta**: la foto si existe (`members[].photoAlt` + una entrada en `PHOTOS` de `Equipo.tsx`, con derivados
-  de `pnpm images`); si no, iniciales (`members[].initials`) en un tono neutro, `aria-hidden` (el nombre va al lado).
-- **Imágenes**: derivados de `pnpm images` en `public/nosotros/`; las miniaturas de Misión y Visión salen de las
-  del carrusel de la portada (`public/slider`; la de Valores, slider9, solo la usa el carrusel).
+- **Retratos de la junta**: tres integrantes con iniciales (`members[].initials`) en un tono neutro, `aria-hidden` (el nombre
+  va al lado). Avatar en fila hasta `md`; desde `md`, rejilla de 3 columnas sin huecos. Cuando haya fotos, se añaden a
+  `members` y a `Portrait` (con derivados de `pnpm images`).
+- **Imágenes**: derivados de `pnpm images` en `public/nosotros/` (hero, río Putumayo y el Taita). Las tarjetas de Misión y
+  Visión no llevan foto; solo el rombo ocre decorativo que las une.
 
 ## Patrón lateral (`PatternZone`)
 
@@ -211,6 +212,20 @@ Una e2e («patrón lateral») lo comprueba en todas las páginas a 1280, 1440 y 
 Dónde está hoy: Nosotros (Historia–Misión–Valores y cierre legal), Inicio («¿Qué es ÉCOYAI?» y «Explora»),
 Transparencia (sus dos secciones), y el aviso `SoonNotice` de Proyectos, Colaborar y Contacto. La 404 es toda oscura y no
 lleva patrón.
+
+## Texto justificado (`justificado`)
+
+Clase explícita (`@utility justificado` en `shared/styles/index.css`): `text-align: justify`, `hyphens: auto` y `text-wrap: pretty`
+**solo desde `md`**; por debajo (móvil) el texto queda a la izquierda. El guionado usa el `lang` de cada página (es/en).
+**No es una regla global sobre `p`** (esa regla desalineó el eyebrow de Colaborar); un test
+(`shared/styles/justificado.test.ts`) falla si el justificado aparece fuera de la utilidad.
+
+Cuándo usarla: **solo párrafos de texto corrido** (cuerpo y entradillas largas) con una medida suficiente: Historia de
+Nosotros, descripciones de Misión y Visión, «¿Qué es ÉCOYAI?» (el párrafo largo), Proyecto de Inicio y el marco legal de
+Transparencia. Nunca en: títulos, etiquetas o eyebrows, citas destacadas (el banner del propósito), pies de foto, botones,
+enlaces, insignias, textos centrados (Colaborar), el hero ni tarjetas estrechas donde se verían huecos (Valores, perfiles de
+la junta, texto del Taita, la frase corta de «¿Qué es ÉCOYAI?»). Si los stakeholders lo piden también en móvil, basta quitar
+el `@media` de la utilidad.
 
 ## Estado y datos
 
