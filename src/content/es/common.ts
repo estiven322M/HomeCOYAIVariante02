@@ -31,6 +31,8 @@ export const common = {
     // Redes: {name, url}. Mientras la lista esté vacía el bloque no se muestra (sin marcadores entre corchetes).
     socials: [] as Social[],
   },
+  /** Página provisional de la política de datos (/privacidad/) hasta que exista la política real. */
+  privacy: { title: 'Política de privacidad', description: 'Política de tratamiento de datos personales de ÉCOYAI.' },
   soon: 'Esta sección estará disponible pronto',
   backHome: 'Volver al inicio',
   notFound: {

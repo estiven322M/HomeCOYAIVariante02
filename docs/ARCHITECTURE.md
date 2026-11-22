@@ -23,7 +23,7 @@ src/
     ErrorBoundary.tsx pantalla de respaldo accesible
     layout/           RootLayout (<main id="contenido">), Intro (overlay), SideNav, Footer (global), FocusOnNavigate
   pages/            un componente por página; solo ensambla secciones
-  features/         un dominio por carpeta (hoy: home, nosotros)
+  features/         un dominio por carpeta (hoy: home, nosotros, salud)
     <dominio>/components/  componentes propios del dominio
   shared/
     ui/             componentes genéricos sin lógica de negocio (Button, Eyebrow, Reveal…)
@@ -90,7 +90,12 @@ Si una feature necesita algo de otra, ese algo es `shared` (súbelo) o se compon
 | `galeria`         | `/galeria/`                      | `/en/gallery/`                         |
 | `colaborar`       | `/colaborar/`                    | `/en/collaborate/`                     |
 | `contacto`        | `/contacto/`                     | `/en/contact/`                         |
+| `privacidad`      | `/privacidad/`                   | `/en/privacy/`                         |
+| `gracias`         | `/gracias/`                      | `/en/thank-you/`                       |
 | 404 (`NOT_FOUND`) | `/404/` → `404.html`             | `/en/404/` → `en/404.html`             |
+
+`privacidad` y `gracias` están en `ROUTES` pero **no** en `NAV_KEYS` (ni en el menú, «Explora» o el pie) y siempre llevan `noindex`
+(`NOINDEX_ROUTES`).
 
 `NAV_KEYS` fija las páginas del menú, de «Explora» y del pie (en ese orden, igual que `common.nav`): Nosotros, Proyectos,
 Salud y medicina tradicional, Eventos, Galería, Donaciones / Alianzas y Contacto. El menú lateral con 7 entradas cabe sin
@@ -109,7 +114,7 @@ cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">
 - **Pie global** (`app/layout/Footer.tsx`): enlaces reales a todas las páginas, así que sin JavaScript basta para
   recorrer el sitio. «Aviso legal» y «Política de privacidad» no se muestran hasta que exista su contenido; las redes
   (`common.footer.socials`, lista `{name, url}`) tampoco mientras la lista esté vacía.
-- **Páginas con contenido por llegar** (`proyectos`, `colaborar`; y `salud`, `eventos`, `galeria` y `contacto`, que solo
+- **Páginas con contenido por llegar** (`proyectos`, `colaborar`; y `eventos`, `galeria` y `contacto`, que solo
   tienen `ProvisionalPage`: su nombre y descripción de `common.nav` como título y entradilla): título, el texto que ya
   existe y `SoonNotice` («Esta sección estará disponible pronto» + enlace a la portada). Ningún botón apunta a la página en la
   que está (un test lo comprueba).
@@ -173,7 +178,7 @@ nuevas en `shared/ui`: `SubTitle` con numeración (`n="01"`) y
   queda fuera y cierra la página, separado del pie por una línea ocre). La barra interna fija no lleva patrón.
 - **Hero**: la foto es la imagen principal (`fetchPriority="high"`, sin lazy, `srcset`/`sizes`); React emite su preload en
   el `<head>` a partir del propio `<img>` (no se declara aparte, para que no diverjan). Los velos de `index.css`
-  (`.nosotros-velo-*`) mantienen el contraste AA del texto en todos los anchos (medido sobre la foto).
+  (`.page-hero-velo-*`, en `PageHero`) mantienen el contraste AA del texto en todos los anchos (medido sobre la foto).
 - **Valores**: siete tarjetas sin numeración ni imagen, en rejilla de 1 → 2 → 4 columnas; desde 520 px la última ocupa
   dos columnas, así que no queda ninguna celda vacía (2 columnas: 4.ª fila; 4 columnas: 2.ª fila = 1 + 1 + 2).
 - **Retratos de la junta**: tres integrantes con iniciales (`members[].initials`) en un tono neutro, `aria-hidden` (el nombre
@@ -236,6 +241,30 @@ destacadas en serif, citas (el banner del propósito), pies de foto, botones, en
 el hero ni tarjetas estrechas donde se verían huecos (Valores, perfiles de la junta, texto del Taita, la frase corta de
 «¿Qué es ÉCOYAI?»). Si los stakeholders lo piden también en móvil, basta quitar el `@media` de la utilidad.
 
+## Página Salud y medicina tradicional
+
+`features/salud/components/`: `Salud.tsx` ensambla `PageHero` (de `shared/ui`, el mismo hero que Nosotros, con
+`size="long"` para el título largo), `Llamado`, `Practicas`, `Cuidados` + `Protocolo` (una sola zona con patrón lateral) y
+`Solicitar`. Contenido: `t.salud` (`content/{es,en}/salud.ts`); el protocolo de preparación y salud lo valida la
+organización antes de publicar. Sin textos entre corchetes (un test lo impide).
+
+- **Acordeón de prácticas** (`Practicas`, sobre `shared/ui/Disclosure`): siempre una sola abierta (la 01 al cargar, también en
+  móvil); la abierta no se puede cerrar (`aria-disabled`, patrón de WAI-ARIA) y lleva un rombo de estado en vez de «−». Toda la
+  fila es el botón (≥ 44 px, `aria-expanded`, `aria-controls`). En escritorio la imagen y su pie (texto normal) van a un lado y
+  cambian con un fundido (sin transición con movimiento reducido); en móvil la imagen va dentro del panel abierto.
+  **Sin JavaScript todas las prácticas salen abiertas** con su imagen: el HTML y el primer render del cliente usan `'all'` y
+  un `useLayoutEffect` pasa a una sola abierta antes de pintar (mismo patrón que el intro). El **protocolo** es un acordeón
+  que se puede cerrar y sale abierto sin JavaScript.
+- **Justificado:** solo los dos párrafos de «El llamado» (`TextoCorrido`); Seguridad, prácticas y protocolo van a la izquierda.
+- **Imágenes** (`features/salud/images.ts`): hero, llamado (4:5), 4 prácticas (4:5) y el fondo del llamado a la acción.
+  Mientras un original no exista se ve `ImagePlaceholder` (degradado de la paleta, sin texto, `aria-hidden`). Al entregar
+  las fotos: copiarlas a `assets-src/salud/` (`hero`, `llamado`, `practica-1-yage`, `practica-2-purgas-banos`,
+  `practica-3-botanica`, `practica-4-saberes`, `solicitar`), `pnpm images salud`, `available: true` en `images.ts` y su
+  texto alternativo en `content/{es,en}/salud.ts`.
+- **Formulario** (`Solicitar`, `SolicitudForm`): Netlify Forms con interruptor `VITE_FORMS_ENABLED`; ver
+  [ADR 0009](./adr/0009-formularios.md). Rutas `/gracias/` (`/en/thank-you/`) y `/privacidad/` (`/en/privacy/`) fuera de
+  `NAV_KEYS` y con `noindex` (`NOINDEX_ROUTES`).
+
 ## Estado y datos
 
 No hace falta librería de estado global.
@@ -293,6 +322,7 @@ Se leen en un solo lugar, `src/env.ts` (tipadas en `src/vite-env.d.ts`); ver `.e
 | --------------------- | ------------------------------------------------------------------------------------------ |
 | `VITE_SITE_INDEXABLE` | **Interruptor único** de indexación: `<meta name="robots">` (React) y `robots.txt` (build) |
 | `VITE_SITE_URL`       | Origen público (sin barra final) para `canonical`, `hreflang` y `og:url` absolutos         |
+| `VITE_FORMS_ENABLED`  | Interruptor de los formularios (Netlify Forms); `false` en producción, `true` en previews  |
 | `PORT`                | Puerto de `pnpm dev` (8443) y de `pnpm preview` (4173)                                     |
 
 ## Indexación

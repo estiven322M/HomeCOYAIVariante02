@@ -13,3 +13,4 @@ Fase 1 (Paso A, aprobadas por el responsable del proyecto). Estado: **Aceptada**
 | 0006 | [Separar Figma Make](./0006-figma-make.md)                               |
 | 0007 | [Indexación y robots](./0007-indexacion.md)                              |
 | 0008 | [Higiene del repositorio: pnpm único](./0008-higiene-repositorio.md)     |
+| 0009 | [Formularios con Netlify Forms e interruptor](./0009-formularios.md)     |

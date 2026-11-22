@@ -19,6 +19,9 @@ jobs:
     timeout-minutes: 10
     env:
       HUSKY: '0' # no instalar hooks de git en CI
+      # Construye con los formularios encendidos (como las previsualizaciones) para verificar el formulario de Netlify
+      # prerenderizado; el estado apagado (producción) lo cubren las pruebas unitarias. Ver ADR 0009.
+      VITE_FORMS_ENABLED: 'true'
     steps:
       # Sin `lfs: true` a propósito: los medios de public/ están en Git LFS y para
       # verificar tipos, lint, pruebas y build no hacen falta (ahorra cuota de LFS).

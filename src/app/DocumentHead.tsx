@@ -1,6 +1,6 @@
 import { dict } from '@/content'
 import { env } from '@/env'
-import { LANGS, langFromPath, pathFor, resolveRoute } from '@/shared/i18n/routes'
+import { LANGS, NOINDEX_ROUTES, langFromPath, pathFor, resolveRoute } from '@/shared/i18n/routes'
 
 /**
  * Metadatos del documento de cada ruta: <title>, descripción, robots, canonical, hreflang y Open Graph.
@@ -24,7 +24,9 @@ export function DocumentHead({ pathname }: { pathname: string }) {
     <>
       <title>{title}</title>
       {description && <meta name="description" content={description} />}
-      {(!env.SITE_INDEXABLE || !route) && <meta name="robots" content="noindex, nofollow" />}
+      {(!env.SITE_INDEXABLE || !route || NOINDEX_ROUTES.includes(route.key)) && (
+        <meta name="robots" content="noindex, nofollow" />
+      )}
       <link rel="icon" href="/favicon.svg" />
       {route && (
         <>

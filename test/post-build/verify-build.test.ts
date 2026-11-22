@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { dict } from '@/content'
-import { LANGS, NAV_KEYS, NOT_FOUND, ROUTES, pathFor, type RouteKey } from '@/shared/i18n/routes'
+import { LANGS, NAV_KEYS, NOINDEX_ROUTES, NOT_FOUND, ROUTES, pathFor, type RouteKey } from '@/shared/i18n/routes'
 
 const BUILD = join(import.meta.dirname, '..', '..', 'build', 'client')
 
@@ -21,6 +21,9 @@ const h1Of = (key: RouteKey, lang: 'es' | 'en') => {
   if (key === 'home') return t.home.hero.title
   if (key === 'proyectos') return t.home.proyecto.title
   if (key === 'colaborar') return t.home.colaborar.title
+  if (key === 'salud') return t.salud.hero.title
+  if (key === 'privacidad') return t.common.privacy.title
+  if (key === 'gracias') return t.salud.solicitar.gracias.title
   return t.common.nav[(NAV_KEYS as readonly RouteKey[]).indexOf(key)]?.label
 }
 
@@ -184,7 +187,91 @@ describe('build/client', () => {
     const blocked = robotsTxt.includes('Disallow: /')
     for (const { key, lang } of pages) {
       const hasNoindex = read(pathFor(key, lang)).querySelector('meta[name="robots"]') !== null
-      expect(hasNoindex).toBe(blocked)
+      // Las páginas de NOINDEX_ROUTES (agradecimiento, privacidad provisional) siempre llevan noindex.
+      expect(hasNoindex).toBe(blocked || NOINDEX_ROUTES.includes(key))
     }
   })
+
+  describe.each(LANGS)('agradecimiento y privacidad · %s', (lang) => {
+    it('la página de agradecimiento existe, lleva noindex y no está en el menú ni en el pie', () => {
+      const doc = read(pathFor('gracias', lang))
+      expect(doc.querySelector('meta[name="robots"]')?.getAttribute('content')).toContain('noindex')
+      expect(doc.querySelector('h1')?.textContent).toBe(dict[lang].salud.solicitar.gracias.title)
+      const home = read(pathFor('home', lang))
+      const hrefs = [...home.querySelectorAll('footer a, nav a')].map((a) => a.getAttribute('href'))
+      expect(hrefs).not.toContain(pathFor('gracias', lang))
+      expect(hrefs).not.toContain(pathFor('privacidad', lang))
+    })
+
+    it('la política de privacidad provisional existe y lleva noindex', () => {
+      const doc = read(pathFor('privacidad', lang))
+      expect(doc.querySelector('meta[name="robots"]')?.getAttribute('content')).toContain('noindex')
+      expect(doc.querySelector('h1')?.textContent).toBe(dict[lang].common.privacy.title)
+    })
+  })
+})
+
+// Salud y medicina tradicional: el HTML estático debe verse completo sin JavaScript y, con el interruptor de formularios
+// encendido (VITE_FORMS_ENABLED=true al construir; así lo hacen CI y las previsualizaciones), llevar el formulario de Netlify.
+const FORMS_ON = process.env.VITE_FORMS_ENABLED === 'true'
+
+describe.each(LANGS)('Salud · %s', (lang) => {
+  const doc = read(pathFor('salud', lang))
+  const s = dict[lang].salud
+  const html = readFileSync(fileFor(pathFor('salud', lang)), 'utf8')
+
+  it('título, descripción (el subtítulo del hero) y un solo h1', () => {
+    expect(doc.title).toBe(dict[lang].meta.pages.salud.title)
+    expect(doc.querySelector('meta[name="description"]')?.getAttribute('content')).toBe(s.hero.subtitle)
+    expect(doc.querySelectorAll('h1')).toHaveLength(1)
+    expect(doc.querySelector('h1')?.textContent).toBe(s.hero.title)
+  })
+
+  it('encabezados sin saltos: h1, h2 por sección (llamado, encuentros, cuidado, protocolo, solicitar) y h3 debajo', () => {
+    const levels = [...doc.querySelectorAll('main h1, main h2, main h3, main h4')].map((h) => Number(h.tagName[1]))
+    expect(levels[0]).toBe(1)
+    levels.forEach((l, i) => i > 0 && expect(l - (levels[i - 1] ?? 0)).toBeLessThanOrEqual(1))
+    expect(levels.filter((l) => l === 2)).toHaveLength(5)
+    expect(levels.filter((l) => l === 3)).toHaveLength(7) // 4 prácticas + 3 tarjetas
+  })
+
+  it('sin JavaScript todas las prácticas y el protocolo salen abiertos con su texto', () => {
+    for (const item of s.encuentros.items) expect(doc.body.textContent).toContain(item.text)
+    for (const point of s.protocolo.points) expect(doc.body.textContent).toContain(point)
+    const buttons = [...doc.querySelectorAll('main button[aria-controls]')]
+    expect(buttons).toHaveLength(5)
+    for (const b of buttons) {
+      expect(b.getAttribute('aria-expanded')).toBe('true')
+      expect(doc.getElementById(b.getAttribute('aria-controls') ?? '')?.hasAttribute('hidden')).toBe(false)
+    }
+  })
+
+  it('el justificado solo está en los dos párrafos de El llamado y no hay textos entre corchetes', () => {
+    expect(doc.querySelectorAll('.justificado')).toHaveLength(2)
+    expect(doc.querySelector('main')?.textContent).not.toMatch(/\[[^\]]+\]/)
+  })
+
+  if (FORMS_ON) {
+    it('el formulario está prerenderizado para Netlify: data-netlify, form-name, honeypot y action a /gracias/', () => {
+      const form = doc.querySelector('form[data-netlify="true"]')
+      expect(form).not.toBeNull()
+      expect(form?.getAttribute('name')).toBe('solicitud-encuentros')
+      expect(form?.getAttribute('method')?.toUpperCase()).toBe('POST')
+      expect(form?.getAttribute('action')).toBe(pathFor('gracias', lang))
+      expect(form?.getAttribute('netlify-honeypot')).toBe('bot-field')
+      expect(form?.querySelector('input[name="form-name"]')?.getAttribute('value')).toBe('solicitud-encuentros')
+      expect(form?.querySelector('input[name="idioma"]')?.getAttribute('value')).toBe(lang)
+      for (const n of ['nombre', 'pais', 'contacto', 'motivacion', 'datos', 'bot-field'])
+        expect(form?.querySelector(`[name="${n}"]`), n).not.toBeNull()
+      expect(form?.querySelector('input[name="datos"]')?.hasAttribute('checked')).toBe(false)
+      expect(doc.querySelectorAll('form')).toHaveLength(1)
+    })
+  } else {
+    it('con el formulario apagado no hay <form> ni data-netlify, y la sección lleva un botón a Contacto', () => {
+      expect(html).not.toContain('data-netlify')
+      expect(doc.querySelector('form')).toBeNull()
+      const hrefs = [...doc.querySelectorAll('main a')].map((a) => a.getAttribute('href'))
+      expect(hrefs).toContain(pathFor('contacto', lang))
+    })
+  }
 })

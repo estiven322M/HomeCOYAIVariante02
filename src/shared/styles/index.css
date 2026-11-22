@@ -21,6 +21,7 @@
   /* Acento (10%) */
   --color-achiote: #9e3b22;
   --color-ocre: #d9a21b;
+  --color-error-claro: #f4b5a3; /* errores de formulario sobre fondo oscuro (≥ 8:1 sobre huito/noche) */
   --color-terracota: #c96a4a;
 
   /* Alias de nombres previos -> nueva paleta */
@@ -184,6 +185,13 @@
 }
 
 @layer components {
+  /* Separador de rombos del acordeón de Salud (decorativo: el elemento lleva aria-hidden). */
+  .rombos-separador {
+    height: 12px;
+    opacity: 0.6;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='12'%3E%3Cpath d='M10 1.5 14.5 6 10 10.5 5.5 6Z' fill='none' stroke='%23d9a21b'/%3E%3C/svg%3E")
+      repeat-x;
+  }
   /* Sección con ancla: el destino queda bajo el encabezado (y bajo la barra interna, que es fija desde md). */
   .anchor-section {
     scroll-margin-top: calc(var(--header-h) + 1rem);
@@ -204,8 +212,8 @@
     -webkit-mask-size: 40px 59px;
     mask-size: 40px 59px;
   }
-  /* Velos del hero de Nosotros: legibilidad del texto sobre la foto. */
-  .nosotros-velo-h {
+  /* Velos del hero de las páginas interiores (PageHero): legibilidad del texto sobre la foto. */
+  .page-hero-velo-h {
     background: linear-gradient(
       to right,
       color-mix(in srgb, var(--color-noche) 86%, transparent) 0%,
@@ -215,7 +223,7 @@
   }
   /* En pantallas estrechas el texto ocupa todo el ancho: el velo es casi uniforme para mantener el contraste AA. */
   @media (max-width: 1023px) {
-    .nosotros-velo-h {
+    .page-hero-velo-h {
       background: linear-gradient(
         to right,
         color-mix(in srgb, var(--color-noche) 80%, transparent),
@@ -224,14 +232,14 @@
     }
   }
   /* Detrás de «Putumayo · Colombia» (esquina inferior derecha, sobre la zona más clara de la foto). */
-  .nosotros-velo-esquina {
+  .page-hero-velo-esquina {
     background: radial-gradient(
       ellipse 22rem 12rem at 100% 100%,
       color-mix(in srgb, var(--color-noche) 82%, transparent) 0%,
       transparent 100%
     );
   }
-  .nosotros-velo-v {
+  .page-hero-velo-v {
     background: linear-gradient(
       to bottom,
       color-mix(in srgb, var(--color-noche) 35%, transparent) 0%,
