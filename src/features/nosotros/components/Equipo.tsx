@@ -67,7 +67,8 @@ export function Equipo() {
           <div>
             <p className="text-caption uppercase tracking-[0.3em] text-ocre">{l.label}</p>
             <h3 className="mt-6 font-serif text-list-title font-light md:text-subtitle">{l.name}</h3>
-            <p className="mt-6 inline-block border border-ocre/60 px-4 py-1.5 text-caption uppercase tracking-[0.25em] text-ocre">
+            {/* Cargo largo: texto normal (sin mayúsculas ni tracking amplio), en el mismo recuadro, hasta dos líneas. */}
+            <p className="mt-6 inline-block max-w-md border border-ocre/60 px-4 py-2 text-ui leading-snug text-ocre">
               {l.role}
             </p>
             <p className="mt-8 font-serif text-lead-sm font-light text-arena-clara/90">{l.text}</p>

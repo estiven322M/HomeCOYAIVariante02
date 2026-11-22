@@ -81,7 +81,7 @@ export const nosotros = {
     liderazgo: {
       label: 'Liderazgo ancestral',
       name: 'Taita Victoriano Piaguaje Yaiguaje',
-      role: 'Director Ejecutivo de ÉCOYAI',
+      role: 'Director ejecutivo y miembro de la junta directiva de ÉCOYAI',
       text: 'Taita y sabedor tradicional del pueblo Siona (Zio Bain). Como autoridad espiritual y comunitaria de la organización, guía el direccionamiento estratégico de ÉCOYAI, asegurando que cada proyecto y tecnología respete la sabiduría ancestral, la medicina sagrada y la soberanía cultural del territorio.',
       imageAlt:
         'El Taita Victoriano Piaguaje Yaiguaje, con corona de plumas y collares tradicionales, sentado en un banco en el territorio',
