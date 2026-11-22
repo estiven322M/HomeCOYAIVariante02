@@ -1,8 +1,7 @@
 import { useLang } from '@/shared/i18n'
 import { SubTitle } from '@/shared/ui/SubTitle'
-import { Territorio } from './Territorio'
 
-/** 01 · Historia y territorio. El primer párrafo es el destacado; el resto, texto corrido. */
+/** 01 · Historia. El primer párrafo es el destacado; el resto, texto corrido. */
 export function Historia() {
   const { t } = useLang()
   const h = t.nosotros.historia
@@ -42,7 +41,6 @@ export function Historia() {
             </figcaption>
           </figure>
         </div>
-        <Territorio />
       </div>
     </section>
   )

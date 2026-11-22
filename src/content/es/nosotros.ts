@@ -20,22 +20,6 @@ export const nosotros = {
       alt: 'Una embarcación con varias personas navega el río Putumayo bajo un cielo nublado',
       caption: 'Río Putumayo',
     },
-    territorio: {
-      name: 'Zio Bain',
-      /** Espacios de no separación: «Gente de la Chagra» no se parte entre líneas. */
-      people: 'Pueblo Siona · «Gente de la Chagra»',
-      timeline: [
-        {
-          k: 'Siglos',
-          t: 'Los Zio Bain habitan las riberas del río Putumayo, custodios de su lengua, su medicina y su cosmovisión.',
-        },
-        { k: 'Marzo de 2024', t: 'Nace formalmente la Asociación ÉCOYAI en Mocoa, Putumayo.' },
-        {
-          k: '2030',
-          t: 'Ser referente regional, nacional e internacional en la salvaguarda de la cultura Siona y de los demás pueblos indígenas de Colombia.',
-        },
-      ],
-    },
   },
   mision: {
     label: 'Misión y visión',

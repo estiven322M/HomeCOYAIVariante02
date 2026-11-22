@@ -20,21 +20,6 @@ export const nosotros = {
       alt: 'A boat carrying several people travels down the Putumayo River under a cloudy sky',
       caption: 'Putumayo River',
     },
-    territorio: {
-      name: 'Zio Bain',
-      people: 'Siona People · “People of the Chagra”',
-      timeline: [
-        {
-          k: 'Centuries',
-          t: 'The Zio Bain have lived along the banks of the Putumayo River, custodians of their language, their medicine and their worldview.',
-        },
-        { k: 'March 2024', t: 'The ÉCOYAI Association is formally founded in Mocoa, Putumayo.' },
-        {
-          k: '2030',
-          t: 'To be a regional, national and international reference in safeguarding the culture of the Siona people and other Indigenous peoples of Colombia.',
-        },
-      ],
-    },
   },
   mision: {
     label: 'Mission and vision',
