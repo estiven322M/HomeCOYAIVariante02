@@ -8,10 +8,7 @@ export const common = {
   nav: [
     { label: 'About us', desc: 'Origin, purpose and team of ÉCOYAI.' },
     { label: 'Projects', desc: 'Initiatives around the Siona language, the territory and traditional knowledge.' },
-    {
-      label: 'Transparency and Governance',
-      desc: 'How we organize ourselves and remain accountable. [Content to be defined]',
-    },
+    { label: 'Transparency and Governance', desc: 'Legal framework, bylaws and documents of the association.' },
     { label: 'Donations / Partnerships', desc: 'Ways to support and strengthen the work of ÉCOYAI.' },
     { label: 'Contact', desc: 'Write to us to talk, collaborate or learn more.' },
   ],
