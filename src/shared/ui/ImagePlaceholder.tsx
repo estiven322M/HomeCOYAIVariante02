@@ -8,7 +8,7 @@ const TONES = {
   /** Tono arena, para retratos sobre fondo claro. */
   claro: 'radial-gradient(120% 90% at 30% 20%, var(--color-arena-clara) 0%, var(--color-tierra-suave) 100%)',
   /** Azul huito, para imágenes sobre fondo oscuro. */
-  huito: 'radial-gradient(120% 90% at 70% 15%, #4a5063 0%, var(--color-huito) 85%)',
+  huito: 'radial-gradient(120% 90% at 70% 15%, #50566b 0%, #2a3046 100%)',
 }
 
 export function ImagePlaceholder({
