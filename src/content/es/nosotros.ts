@@ -33,13 +33,11 @@ export const nosotros = {
       eyebrow: 'Hoy',
       k: 'Misión',
       t: 'La Asociación ÉCOYAI trabaja por la protección, salvaguarda, conservación y preservación de los conocimientos ancestrales de la medicina tradicional, los usos y costumbres, la lengua materna, la cosmovisión y el plan de vida del pueblo Siona y demás pueblos indígenas de Colombia, en procura del mejoramiento de la calidad de vida y la dignidad humana.',
-      imageAlt: 'Integrantes de la comunidad reunidos en un claro del territorio',
     },
     vision: {
       eyebrow: 'Hacia 2030',
       k: 'Visión',
       t: 'Para el año 2030 la Asociación ÉCOYAI será un referente a nivel regional, nacional e internacional en el desarrollo de proyectos para la salvaguarda, conservación y preservación de la cultura y cosmovisión ancestral del pueblo Siona y demás pueblos indígenas de Colombia.',
-      imageAlt: 'Dos sabedores con corona de plumas y collares tradicionales',
     },
   },
   valores: {

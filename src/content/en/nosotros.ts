@@ -32,13 +32,11 @@ export const nosotros = {
       eyebrow: 'Today',
       k: 'Mission',
       t: 'The ÉCOYAI Association works for the protection, safeguarding, conservation and preservation of the ancestral knowledge of traditional medicine, customs and traditions, the mother tongue, the worldview and the life plan of the Siona people and other Indigenous peoples of Colombia, in pursuit of a better quality of life and human dignity.',
-      imageAlt: 'Community members gathered in a clearing in the territory',
     },
     vision: {
       eyebrow: 'Toward 2030',
       k: 'Vision',
       t: 'By 2030, the ÉCOYAI Association will be a regional, national and international reference in developing projects for the safeguarding, conservation and preservation of the ancestral culture and worldview of the Siona people and other Indigenous peoples of Colombia.',
-      imageAlt: 'Two knowledge keepers wearing a feather crown and traditional necklaces',
     },
   },
   valores: {

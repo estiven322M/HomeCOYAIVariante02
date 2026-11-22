@@ -155,9 +155,9 @@ Ejemplo real: la página **Contacto** (`/contacto/` · `/en/contact/`).
 
 ## Página Nosotros (Fase 3)
 
-`features/nosotros/components/`: un componente por bloque (`NosotrosHero`, `SectionNav`, `Historia` con
-`Territorio`, `MisionVision`, `Valores`, `Equipo`, `CierreLegal`) ensamblados por `Nosotros.tsx`. Piezas reutilizables
-nuevas en `shared/ui`: `Diamond` (motivo en rombo y `DIAMOND_CLIP` para imágenes), `SubTitle` con numeración (`n="01"`) y
+`features/nosotros/components/`: un componente por bloque (`NosotrosHero`, `SectionNav`, `Historia`,
+`MisionVision`, `Valores`, `Equipo`, `CierreLegal`) ensamblados por `Nosotros.tsx`. Piezas reutilizables
+nuevas en `shared/ui`: `SubTitle` con numeración (`n="01"`) y
 `PatternZone` (patrón lateral; ver «Patrón lateral» más abajo).
 
 - **Anclas** (iguales en es y en): `#historia`, `#mision`, `#valores`, `#equipo`. El marco legal **no** está aquí: vive en
@@ -176,8 +176,8 @@ nuevas en `shared/ui`: `Diamond` (motivo en rombo y `DIAMOND_CLIP` para imágene
   dos columnas, así que no queda ninguna celda vacía (2 columnas: 4.ª fila; 4 columnas: 2.ª fila = 1 + 1 + 2).
 - **Retratos de la junta**: la foto si existe (`members[].photoAlt` + una entrada en `PHOTOS` de `Equipo.tsx`, con derivados
   de `pnpm images`); si no, iniciales (`members[].initials`) en un tono neutro, `aria-hidden` (el nombre va al lado).
-- **Imágenes**: derivados de `pnpm images` en `public/nosotros/`; las miniaturas de Misión y Visión salen de las
-  del carrusel de la portada (`public/slider`; la de Valores, slider9, solo la usa el carrusel).
+- **Imágenes**: derivados de `pnpm images` en `public/nosotros/` (hero, río Putumayo y el Taita). Las tarjetas de Misión y
+  Visión no llevan foto; solo el rombo ocre decorativo que las une.
 
 ## Patrón lateral (`PatternZone`)
 

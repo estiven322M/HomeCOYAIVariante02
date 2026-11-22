@@ -1,5 +1,4 @@
 import { useLang } from '@/shared/i18n'
-import { DIAMOND_CLIP } from '@/shared/ui/Diamond'
 import { SubTitle } from '@/shared/ui/SubTitle'
 
 /** 02 · Misión y visión: la cita del propósito y las dos tarjetas (Hoy · Misión, Hacia 2030 · Visión). */
@@ -9,16 +8,12 @@ export function MisionVision() {
   const cards = [
     {
       d: m.mision,
-      src: '/nosotros/mision-256.webp',
-      h: 192,
       box: 'bg-huito',
       eyebrow: 'text-ocre',
       rule: 'bg-ocre',
     },
     {
       d: m.vision,
-      src: '/nosotros/vision-256.webp',
-      h: 188,
       box: 'bg-chagra',
       eyebrow: 'text-arena-clara',
       rule: 'bg-arena-clara',
@@ -37,24 +32,13 @@ export function MisionVision() {
         </figure>
         <div className="relative mt-6">
           <div className="grid gap-6 md:grid-cols-2">
-            {cards.map(({ d, src, h, box, eyebrow, rule }) => (
+            {cards.map(({ d, box, eyebrow, rule }) => (
               <article key={d.k} className={`flex flex-col p-8 text-arena-clara md:p-14 ${box}`}>
-                <div className="flex items-center justify-between gap-6">
-                  <div>
-                    <p className={`text-caption uppercase tracking-[0.3em] ${eyebrow}`}>{d.eyebrow}</p>
-                    <h3 className="mt-4 font-serif text-list-title font-light italic text-arena md:text-statement">
-                      {d.k}
-                    </h3>
-                  </div>
-                  <img
-                    src={src}
-                    width={256}
-                    height={h}
-                    alt={d.imageAlt}
-                    loading="lazy"
-                    decoding="async"
-                    className={`size-28 flex-none object-cover md:size-32 ${DIAMOND_CLIP}`}
-                  />
+                <div>
+                  <p className={`text-caption uppercase tracking-[0.3em] ${eyebrow}`}>{d.eyebrow}</p>
+                  <h3 className="mt-4 font-serif text-list-title font-light italic text-arena md:text-statement">
+                    {d.k}
+                  </h3>
                 </div>
                 <span aria-hidden className={`mt-8 block h-px w-10 ${rule}`} />
                 <p className="mt-8 text-body">{d.t}</p>
