@@ -4,7 +4,7 @@ import type { nosotros as esNosotros } from '@/content/es/nosotros'
 export const nosotros = {
   eyebrow: 'Who we are',
   hero: {
-    subtitle: 'From the Siona people, for the memory of the Amazon.',
+    subtitle: 'From Siona knowledge, for the living memory of the Amazon.',
   },
   navAria: 'On this page',
   historia: {

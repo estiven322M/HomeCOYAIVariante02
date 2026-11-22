@@ -3,7 +3,7 @@
 export const nosotros = {
   eyebrow: 'Quiénes somos',
   hero: {
-    subtitle: 'Desde el pueblo Siona, para la memoria de la Amazonía.',
+    subtitle: 'Desde el saber Siona, para la memoria viva de la Amazonía.',
   },
   /** aria-label de la barra interna; los rótulos de los enlaces son los `label` de cada sección. */
   navAria: 'En esta página',
