@@ -5,6 +5,11 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
 
 ## Bloqueantes antes de publicar formularios o donaciones
 
+- **El formulario de Salud NO puede activarse en producción** (`VITE_FORMS_ENABLED`, hoy `"false"` en `netlify.toml`) hasta que
+  `/privacidad/` tenga la política real (Ley 1581 de 2012; los datos se guardan en Netlify, en EE. UU.: transferencia
+  internacional). Hoy `/privacidad/` (`/en/privacy/`) es una página provisional `noindex` que solo evita que el enlace del
+  consentimiento esté roto. Al activarlo: política real, quitar `privacidad` de `NOINDEX_ROUTES`, mostrar el enlace en el
+  pie y poner `"true"` en producción (ver ADR 0009).
 - **Política de tratamiento de datos personales (Ley 1581 de 2012).** Antes de publicar **cualquier formulario**
   (contacto) **o canal de donación** debe existir la política de tratamiento de datos, **redactada por la organización
   con asesoría legal**, publicada en `/privacidad/` (ruta nueva en la tabla de rutas, con su enlace en el pie). No se
@@ -57,6 +62,13 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
 
 ## Contenido
 
+- **Salud: pendientes.** (1) El texto del «Protocolo de preparación y salud» es una propuesta basada solo en los cuatro
+  puntos de los stakeholders: la organización debe validarlo antes del merge. (2) Las 7 imágenes de la página
+  (`assets-src/salud/`, ver ARCHITECTURE) aún no existen: se ven marcadores sin texto y sin `alt` descriptivo; al entregarlas
+  hay que escribir sus textos alternativos. (3) Netlify: activar en el panel la detección de formularios y la notificación
+  por correo; comprobar en una previsualización que el envío queda guardado y llega la notificación (no se ha verificado).
+  (4) La entrada escalonada del hero de Inicio y el resto de Salud no tienen aún revisión de accesibilidad con lector de
+  pantalla real (solo axe y pruebas automáticas).
 - **Marco legal retirado.** La página «Transparencia y Gobernanza» (marco legal, estatutos y documentos) y el cierre «Marco
   legal y estatutos» de Nosotros se retiraron por decisión de los stakeholders. No hay redirección (el sitio aún no está
   indexado). Su texto queda en el historial de git (commits anteriores al PR de este lote).
