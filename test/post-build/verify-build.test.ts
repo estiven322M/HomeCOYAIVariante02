@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { dict } from '@/content'
-import { LANGS, NAV_KEYS, NOT_FOUND, ROUTES, pathFor, type RouteKey } from '@/shared/i18n/routes'
+import { LANGS, NAV_KEYS, NOINDEX_ROUTES, NOT_FOUND, ROUTES, pathFor, type RouteKey } from '@/shared/i18n/routes'
 
 const BUILD = join(import.meta.dirname, '..', '..', 'build', 'client')
 
@@ -22,6 +22,8 @@ const h1Of = (key: RouteKey, lang: 'es' | 'en') => {
   if (key === 'proyectos') return t.home.proyecto.title
   if (key === 'colaborar') return t.home.colaborar.title
   if (key === 'salud') return t.salud.hero.title
+  if (key === 'privacidad') return t.common.privacy.title
+  if (key === 'gracias') return t.salud.solicitar.gracias.title
   return t.common.nav[(NAV_KEYS as readonly RouteKey[]).indexOf(key)]?.label
 }
 
@@ -185,7 +187,26 @@ describe('build/client', () => {
     const blocked = robotsTxt.includes('Disallow: /')
     for (const { key, lang } of pages) {
       const hasNoindex = read(pathFor(key, lang)).querySelector('meta[name="robots"]') !== null
-      expect(hasNoindex).toBe(blocked)
+      // Las páginas de NOINDEX_ROUTES (agradecimiento, privacidad provisional) siempre llevan noindex.
+      expect(hasNoindex).toBe(blocked || NOINDEX_ROUTES.includes(key))
     }
+  })
+
+  describe.each(LANGS)('agradecimiento y privacidad · %s', (lang) => {
+    it('la página de agradecimiento existe, lleva noindex y no está en el menú ni en el pie', () => {
+      const doc = read(pathFor('gracias', lang))
+      expect(doc.querySelector('meta[name="robots"]')?.getAttribute('content')).toContain('noindex')
+      expect(doc.querySelector('h1')?.textContent).toBe(dict[lang].salud.solicitar.gracias.title)
+      const home = read(pathFor('home', lang))
+      const hrefs = [...home.querySelectorAll('footer a, nav a')].map((a) => a.getAttribute('href'))
+      expect(hrefs).not.toContain(pathFor('gracias', lang))
+      expect(hrefs).not.toContain(pathFor('privacidad', lang))
+    })
+
+    it('la política de privacidad provisional existe y lleva noindex', () => {
+      const doc = read(pathFor('privacidad', lang))
+      expect(doc.querySelector('meta[name="robots"]')?.getAttribute('content')).toContain('noindex')
+      expect(doc.querySelector('h1')?.textContent).toBe(dict[lang].common.privacy.title)
+    })
   })
 })

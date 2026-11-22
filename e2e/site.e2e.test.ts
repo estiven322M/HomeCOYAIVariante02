@@ -445,6 +445,8 @@ describe('patrón lateral', () => {
     'galeria',
     'colaborar',
     'contacto',
+    'privacidad',
+    'gracias',
   ]
   const PAGES = [
     ...WITH_PATTERN.flatMap((key) =>

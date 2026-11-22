@@ -14,6 +14,8 @@ const MODULES: Record<RouteKey, string> = {
   galeria: 'routes/galeria.tsx',
   colaborar: 'routes/colaborar.tsx',
   contacto: 'routes/contacto.tsx',
+  privacidad: 'routes/privacidad.tsx',
+  gracias: 'routes/gracias.tsx',
 }
 
 // Se generan desde la tabla de rutas (shared/i18n/routes.ts): el slug de cada idioma sale de ahí.

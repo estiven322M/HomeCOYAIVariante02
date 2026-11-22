@@ -33,6 +33,7 @@ export const common = {
     // Redes: {name, url}. Mientras la lista esté vacía el bloque no se muestra (sin marcadores entre corchetes).
     socials: [] as Social[],
   },
+  privacy: { title: 'Privacy policy', description: 'ÉCOYAI’s personal data processing policy.' },
   soon: 'This section will be available soon',
   backHome: 'Back to home',
   notFound: {

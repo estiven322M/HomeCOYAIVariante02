@@ -73,4 +73,43 @@ export const salud = {
       'La medicina tradicional no reemplaza la atención médica.',
     ],
   },
+  solicitar: {
+    label: 'Próximos encuentros',
+    title: 'Solicitar información sobre próximos encuentros',
+    form: {
+      name: 'Nombre',
+      country: 'País',
+      contact: 'Correo o WhatsApp',
+      motivation: 'Motivación',
+      motivationHelp: 'No incluyas información médica; la conversaremos en privado.',
+      consentPre: 'Acepto la ',
+      consentLink: 'política de tratamiento de datos personales',
+      consentRequired: '(obligatorio)',
+      submit: 'Enviar solicitud',
+      note: 'El equipo de ÉCOYAI te contactará para una conversación previa antes de confirmar tu cupo.',
+      /** Campo trampa contra spam (oculto): las personas no lo ven. */
+      honeypot: 'No completes este campo',
+      summary: 'Revisa los campos marcados para continuar:',
+      sending: 'Enviando…',
+      success: 'Gracias. Recibimos tu solicitud; el equipo de ÉCOYAI te contactará.',
+      failure: 'No pudimos enviar tu solicitud. Inténtalo de nuevo o escríbenos desde la página de Contacto.',
+      errors: {
+        name: 'Escribe tu nombre.',
+        country: 'Escribe tu país.',
+        contact: 'Escribe un correo o un número de WhatsApp.',
+        motivation: 'Cuéntanos brevemente tu motivación.',
+        consent: 'Debes aceptar la política para enviar la solicitud.',
+      },
+    },
+    /** Con el formulario apagado (VITE_FORMS_ENABLED): mismo título y un botón a Contacto. */
+    off: {
+      text: 'Para pedir información sobre los próximos encuentros, escríbenos desde la página de Contacto.',
+      cta: 'Ir a Contacto',
+    },
+    /** Página de agradecimiento (/gracias/): destino del envío sin JavaScript. */
+    gracias: {
+      title: 'Gracias',
+      text: 'Recibimos tu solicitud. El equipo de ÉCOYAI te contactará para una conversación previa antes de confirmar tu cupo.',
+    },
+  },
 }

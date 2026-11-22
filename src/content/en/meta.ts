@@ -40,6 +40,14 @@ export const meta = {
       title: 'Gallery — ÉCOYAI',
       description: navDesc(4),
     },
+    privacidad: {
+      title: 'Privacy policy — ÉCOYAI',
+      description: common.privacy.description,
+    },
+    gracias: {
+      title: 'Thank you — ÉCOYAI',
+      description: salud.solicitar.gracias.text,
+    },
     colaborar: {
       title: 'Donations / Partnerships — ÉCOYAI',
       description: home.colaborar.text,

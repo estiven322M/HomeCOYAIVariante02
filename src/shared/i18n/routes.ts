@@ -23,6 +23,9 @@ export const ROUTES = {
   galeria: { es: '/galeria/', en: '/en/gallery/' },
   colaborar: { es: '/colaborar/', en: '/en/collaborate/' },
   contacto: { es: '/contacto/', en: '/en/contact/' },
+  // Fuera del menú (no están en NAV_KEYS):
+  privacidad: { es: '/privacidad/', en: '/en/privacy/' },
+  gracias: { es: '/gracias/', en: '/en/thank-you/' },
 } as const satisfies Record<string, Record<Lang, string>>
 
 export type RouteKey = keyof typeof ROUTES
@@ -40,6 +43,12 @@ export const NAV_KEYS = [
   'colaborar',
   'contacto',
 ] as const satisfies readonly RouteKey[]
+
+/**
+ * Páginas que siempre llevan `noindex` (aunque el sitio sea indexable): el agradecimiento del formulario y la política de
+ * datos mientras sea provisional (quitar `privacidad` de aquí cuando tenga la política real).
+ */
+export const NOINDEX_ROUTES: readonly RouteKey[] = ['gracias', 'privacidad']
 
 /**
  * Página 404. No está en `ROUTES` (no es una página del sitio: no lleva canonical ni hreflang y es noindex).
