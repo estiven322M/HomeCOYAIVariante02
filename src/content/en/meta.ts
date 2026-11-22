@@ -27,13 +27,17 @@ export const meta = {
       title: 'Projects — ÉCOYAI',
       description: cut(home.proyecto.text, ':'),
     },
+    salud: {
+      title: 'Health and traditional medicine — ÉCOYAI',
+      description: navDesc(2),
+    },
     colaborar: {
       title: 'Donations / Partnerships — ÉCOYAI',
       description: home.colaborar.text,
     },
     contacto: {
       title: 'Contact — ÉCOYAI',
-      description: navDesc(3),
+      description: navDesc(4),
     },
   },
   notFound: { title: 'Page not found — ÉCOYAI' },

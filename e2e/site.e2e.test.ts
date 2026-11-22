@@ -399,7 +399,7 @@ describe('Nosotros', () => {
 // Patrón lateral (shared/ui/PatternZone): solo en zonas claras, desde 1280 px, sin tapar nada.
 describe('patrón lateral', () => {
   /** Páginas con al menos una zona clara (la 404 es toda oscura y no lleva patrón). */
-  const WITH_PATTERN: RouteKey[] = ['home', 'nosotros', 'proyectos', 'colaborar', 'contacto']
+  const WITH_PATTERN: RouteKey[] = ['home', 'nosotros', 'proyectos', 'salud', 'colaborar', 'contacto']
   const PAGES = [
     ...WITH_PATTERN.flatMap((key) =>
       LANGS.map((lang) => ({ name: `${key} ${lang}`, path: pathFor(key, lang), has: true })),

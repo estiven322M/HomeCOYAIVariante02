@@ -8,6 +8,10 @@ export const common = {
   nav: [
     { label: 'About us', desc: 'Origin, purpose and team of ÉCOYAI.' },
     { label: 'Projects', desc: 'Initiatives around the Siona language, the territory and traditional knowledge.' },
+    {
+      label: 'Health and traditional medicine',
+      desc: 'Traditional medicine of the Siona people and its safeguarding.',
+    },
     { label: 'Donations / Partnerships', desc: 'Ways to support and strengthen the work of ÉCOYAI.' },
     { label: 'Contact', desc: 'Write to us to talk, collaborate or learn more.' },
   ],
