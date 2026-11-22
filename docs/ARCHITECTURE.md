@@ -174,8 +174,9 @@ nuevas en `shared/ui`: `SubTitle` con numeración (`n="01"`) y
   (`.nosotros-velo-*`) mantienen el contraste AA del texto en todos los anchos (medido sobre la foto).
 - **Valores**: siete tarjetas sin numeración ni imagen, en rejilla de 1 → 2 → 4 columnas; desde 520 px la última ocupa
   dos columnas, así que no queda ninguna celda vacía (2 columnas: 4.ª fila; 4 columnas: 2.ª fila = 1 + 1 + 2).
-- **Retratos de la junta**: la foto si existe (`members[].photoAlt` + una entrada en `PHOTOS` de `Equipo.tsx`, con derivados
-  de `pnpm images`); si no, iniciales (`members[].initials`) en un tono neutro, `aria-hidden` (el nombre va al lado).
+- **Retratos de la junta**: tres integrantes con iniciales (`members[].initials`) en un tono neutro, `aria-hidden` (el nombre
+  va al lado). Avatar en fila hasta `md`; desde `md`, rejilla de 3 columnas sin huecos. Cuando haya fotos, se añaden a
+  `members` y a `Portrait` (con derivados de `pnpm images`).
 - **Imágenes**: derivados de `pnpm images` en `public/nosotros/` (hero, río Putumayo y el Taita). Las tarjetas de Misión y
   Visión no llevan foto; solo el rombo ocre decorativo que las une.
 

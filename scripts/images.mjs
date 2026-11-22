@@ -28,15 +28,6 @@ const JOBS = [
     widths: [640, 1280],
     quality: 78,
   },
-  // Retrato 4:3 recortado alrededor del Taita (cara y busto) para la tarjeta de la junta directiva.
-  {
-    name: 'taita-junta',
-    src: 'public/taita/taita_victoriano.webp',
-    out: 'public/nosotros/taita-junta',
-    widths: [256, 512],
-    quality: 80,
-    crop: { left: 256, top: 0, width: 768, height: 576 },
-  },
   {
     name: 'taita',
     src: 'public/taita/taita_victoriano.webp',
