@@ -53,7 +53,16 @@ export function Practicas() {
                         <span className="font-serif text-lead-sm font-light md:text-lead">{item.title}</span>
                       </>
                     }
-                    indicator={<PlusMinus open={isOpen} />}
+                    indicator={
+                      open === 'all' ? undefined : isOpen ? (
+                        // La abierta no se puede cerrar: un rombo de estado (no un «−», que sugeriría una acción inexistente).
+                        <span className="grid size-7 place-items-center">
+                          <Diamond className="size-3 bg-ocre" />
+                        </span>
+                      ) : (
+                        <PlusMinus open={false} />
+                      )
+                    }
                   >
                     <div className="pb-6 pl-[3.25rem]">
                       <p className="text-body text-arena-clara/80">{item.text}</p>
@@ -84,7 +93,7 @@ export function Practicas() {
                   </div>
                 ))}
               </div>
-              <figcaption className="mt-5 flex items-center gap-3 text-caption uppercase tracking-[0.3em] text-arena-clara/80">
+              <figcaption className="mt-5 flex items-center gap-3 text-ui leading-snug text-ocre">
                 <Diamond className="size-2.5 flex-none bg-ocre" />
                 <span>
                   {number(current)} · {e.items[current]?.title}

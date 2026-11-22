@@ -73,6 +73,12 @@ describe('acordeón de prácticas', () => {
       expect(document.querySelectorAll('[aria-expanded="true"]')).toHaveLength(1)
       expect(caption()).toBe(`03 · ${items[2]?.title}`)
 
+      // Indicadores: las cerradas llevan «+»; la abierta, un rombo de estado (nunca un «−», que sugeriría cerrarla).
+      for (const i of [0, 1, 3]) expect(btn(i).querySelector('svg path')?.getAttribute('d')).toBe('M2 7H12M7 2V12')
+      expect(btn(2).querySelector('svg')).toBeNull()
+      expect(btn(2).querySelector('[class*="clip-path"]')).not.toBeNull()
+      // El pie de la imagen es texto normal (sin mayúsculas ni tracking amplio).
+      expect(document.querySelector('figcaption')?.className).not.toMatch(/uppercase|tracking/)
       // Con la práctica abierta no se puede cerrar (siempre queda una): aria-disabled y sin efecto.
       expect(btn(2)).toHaveAttribute('aria-disabled', 'true')
       await userEvent.click(btn(2))
