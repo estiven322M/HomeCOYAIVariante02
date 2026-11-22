@@ -12,6 +12,7 @@ export const common = {
       label: 'Health and traditional medicine',
       desc: 'Traditional medicine of the Siona people and its safeguarding.',
     },
+    { label: 'Events', desc: 'Gatherings, activities and dates of ÉCOYAI.' },
     { label: 'Donations / Partnerships', desc: 'Ways to support and strengthen the work of ÉCOYAI.' },
     { label: 'Contact', desc: 'Write to us to talk, collaborate or learn more.' },
   ],

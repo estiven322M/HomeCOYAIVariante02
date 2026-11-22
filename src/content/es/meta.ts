@@ -29,13 +29,17 @@ export const meta = {
       title: 'Salud y medicina tradicional — ÉCOYAI',
       description: navDesc(2),
     },
+    eventos: {
+      title: 'Eventos — ÉCOYAI',
+      description: navDesc(3),
+    },
     colaborar: {
       title: 'Donaciones / Alianzas — ÉCOYAI',
       description: home.colaborar.text,
     },
     contacto: {
       title: 'Contacto — ÉCOYAI',
-      description: navDesc(4),
+      description: navDesc(5),
     },
   },
   notFound: { title: 'Página no encontrada — ÉCOYAI' },
