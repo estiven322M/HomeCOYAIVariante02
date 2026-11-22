@@ -41,7 +41,7 @@ export function MisionVision() {
                   </h3>
                 </div>
                 <span aria-hidden className={`mt-8 block h-px w-10 ${rule}`} />
-                <p className="mt-8 text-body">{d.t}</p>
+                <p className="justificado mt-8 text-body">{d.t}</p>
               </article>
             ))}
           </div>

@@ -13,10 +13,12 @@ export function Historia() {
         <h2 className="mt-8 font-serif text-title-sm font-light text-huito md:text-title">{h.title}</h2>
         <div className="mt-14 grid items-start gap-10 md:grid-cols-[7fr_5fr] md:gap-16">
           <div>
-            <p className="font-serif text-lead font-light text-huito">{lead}</p>
+            <p className="justificado font-serif text-lead font-light text-huito">{lead}</p>
             <div className="mt-8 space-y-6 text-body text-huito/80">
               {rest.map((p) => (
-                <p key={p.slice(0, 24)}>{p}</p>
+                <p key={p.slice(0, 24)} className="justificado">
+                  {p}
+                </p>
               ))}
             </div>
           </div>

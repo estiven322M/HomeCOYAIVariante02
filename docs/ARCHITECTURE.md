@@ -213,6 +213,20 @@ Dónde está hoy: Nosotros (Historia–Misión–Valores y cierre legal), Inicio
 Transparencia (sus dos secciones), y el aviso `SoonNotice` de Proyectos, Colaborar y Contacto. La 404 es toda oscura y no
 lleva patrón.
 
+## Texto justificado (`justificado`)
+
+Clase explícita (`@utility justificado` en `shared/styles/index.css`): `text-align: justify`, `hyphens: auto` y `text-wrap: pretty`
+**solo desde `md`**; por debajo (móvil) el texto queda a la izquierda. El guionado usa el `lang` de cada página (es/en).
+**No es una regla global sobre `p`** (esa regla desalineó el eyebrow de Colaborar); un test
+(`shared/styles/justificado.test.ts`) falla si el justificado aparece fuera de la utilidad.
+
+Cuándo usarla: **solo párrafos de texto corrido** (cuerpo y entradillas largas) con una medida suficiente: Historia de
+Nosotros, descripciones de Misión y Visión, «¿Qué es ÉCOYAI?» (el párrafo largo), Proyecto de Inicio y el marco legal de
+Transparencia. Nunca en: títulos, etiquetas o eyebrows, citas destacadas (el banner del propósito), pies de foto, botones,
+enlaces, insignias, textos centrados (Colaborar), el hero ni tarjetas estrechas donde se verían huecos (Valores, perfiles de
+la junta, texto del Taita, la frase corta de «¿Qué es ÉCOYAI?»). Si los stakeholders lo piden también en móvil, basta quitar
+el `@media` de la utilidad.
+
 ## Estado y datos
 
 No hace falta librería de estado global.

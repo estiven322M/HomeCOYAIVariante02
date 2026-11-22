@@ -84,6 +84,16 @@
   }
 }
 
+/* Texto corrido justificado: clase explícita `justificado` (nunca una regla global sobre «p»). Solo desde md; en móvil queda
+   alineado a la izquierda. El guionado depende del `lang` de la página (es/en). Ver «Texto justificado» en ARCHITECTURE. */
+@utility justificado {
+  @media (min-width: 48rem) {
+    text-align: justify;
+    hyphens: auto;
+    text-wrap: pretty;
+  }
+}
+
 .reveal {
   opacity: 0;
   transform: translateY(24px);

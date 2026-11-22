@@ -26,7 +26,7 @@ export function Transparencia() {
           <Reveal className="lg:col-span-6">
             <SubTitle label={g.label} />
             <h2 className="mt-8 font-serif text-4xl font-light leading-[1.08] lg:text-5xl">{g.title}</h2>
-            <p className="mt-8 text-[17px] leading-relaxed text-carbon/80">{g.text}</p>
+            <p className="justificado mt-8 text-[17px] leading-relaxed text-carbon/80">{g.text}</p>
             <ul className="mt-8 flex flex-wrap gap-2">
               {g.badges.map((b) => (
                 <li
