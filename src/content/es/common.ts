@@ -9,7 +9,9 @@ export const common = {
   nav: [
     { label: 'Nosotros', desc: 'Origen, propósito y equipo de ÉCOYAI.' },
     { label: 'Proyectos', desc: 'Iniciativas en torno a la lengua Siona, el territorio y los saberes.' },
-    { label: 'Transparencia y Gobernanza', desc: 'Marco legal, estatutos y documentos de la asociación.' },
+    { label: 'Salud y medicina tradicional', desc: 'La medicina tradicional del pueblo Siona y su salvaguarda.' },
+    { label: 'Eventos', desc: 'Encuentros, actividades y fechas de ÉCOYAI.' },
+    { label: 'Galería', desc: 'Imágenes del territorio, la comunidad y los saberes.' },
     { label: 'Donaciones / Alianzas', desc: 'Formas de acompañar y fortalecer el trabajo de ÉCOYAI.' },
     { label: 'Contacto', desc: 'Escríbenos para conversar, colaborar o conocer más.' },
   ],

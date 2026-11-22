@@ -91,7 +91,7 @@ export function SideNav() {
         id="site-menu"
         aria-label={t.common.sideNav.aria}
         inert={!open}
-        className={`fixed inset-y-0 left-0 z-40 flex w-full max-w-md flex-col justify-between bg-selva px-8 pb-10 pt-28 transition-transform duration-500 ease-[cubic-bezier(.2,.7,.2,1)] ${open ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}`}
+        className={`fixed inset-y-0 left-0 z-40 flex w-full max-w-md flex-col justify-between gap-8 overflow-y-auto overscroll-contain bg-selva px-8 pb-10 pt-28 transition-transform duration-500 ease-[cubic-bezier(.2,.7,.2,1)] ${open ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}`}
       >
         <ul className="flex flex-col gap-1">
           {NAV.map((i) => {

@@ -18,6 +18,8 @@ describe('texto justificado', () => {
     expect(utility).toMatch(/@media \(min-width: 48rem\)/)
     expect(utility).toMatch(/text-align:\s*justify/)
     expect(utility).toMatch(/hyphens:\s*auto/)
+    expect(utility).toMatch(/hyphenate-limit-chars:\s*10 5 5/)
+    expect(utility).toMatch(/-webkit-hyphenate-limit-chars:\s*10 5 5/)
     expect(utility).toMatch(/text-wrap:\s*pretty/)
   })
 })

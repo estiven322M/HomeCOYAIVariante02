@@ -1,6 +1,5 @@
 import { useLang } from '@/shared/i18n'
 import { PatternZone } from '@/shared/ui/PatternZone'
-import { CierreLegal } from './CierreLegal'
 import { Equipo } from './Equipo'
 import { Historia } from './Historia'
 import { MisionVision } from './MisionVision'
@@ -23,14 +22,13 @@ export function Nosotros() {
       {/* El contenedor mantiene fija la barra interna hasta el final de la página. */}
       <div className="relative">
         <SectionNav items={items} label={n.navAria} />
-        {/* Zonas claras con el patrón lateral: Historia, Misión y Valores (consecutivas) y, tras el bloque oscuro de Equipo, el cierre. */}
+        {/* Zona clara con el patrón lateral: Historia, Misión y Valores (consecutivas). El bloque oscuro de Equipo cierra la página. */}
         <PatternZone>
           <Historia />
           <MisionVision />
           <Valores />
         </PatternZone>
         <Equipo />
-        <CierreLegal />
       </div>
     </>
   )

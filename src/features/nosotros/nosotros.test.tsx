@@ -1,10 +1,10 @@
-import { screen, within } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { renderAt } from '@test/render'
 import { dict } from '@/content'
 import { LangSwitch } from '@/shared/i18n'
-import { pathFor } from '@/shared/i18n/routes'
+import { NOMBRES_PROPIOS, TextoCorrido } from '@/shared/ui/TextoCorrido'
 import { Nosotros } from './components/Nosotros'
 
 const esTitle = dict.es.common.nav[0]?.label ?? ''
@@ -61,27 +61,19 @@ describe('feature nosotros', () => {
     expect(screen.getByText(dict[lang].home.queEs.quote)).toBeInTheDocument()
   })
 
-  it.each(['es', 'en'] as const)(
-    'el cierre enlaza a Transparencia y la junta son tres integrantes con iniciales (%s)',
-    (lang) => {
-      const { container } = renderNosotros(lang === 'es' ? '/' : '/en/')
-      const href = pathFor('transparencia', lang) + '#marco-legal'
-      expect(screen.getByRole('link', { name: new RegExp(dict[lang].nosotros.cierre.link) })).toHaveAttribute(
-        'href',
-        href,
-      )
-      const members = dict[lang].nosotros.equipo.junta.members
-      expect(members).toHaveLength(3)
-      for (const m of members) {
-        expect(screen.getByRole('heading', { level: 4, name: m.name })).toBeInTheDocument()
-        // Iniciales decorativas (el nombre ya está en el encabezado).
-        expect(screen.getByText(m.initials).parentElement).toHaveAttribute('aria-hidden', 'true')
-      }
-      // Victoriano figura como Taita (liderazgo), no como tarjeta de la junta.
-      expect(screen.getAllByRole('heading', { level: 4 })).toHaveLength(3)
-      expect(container.querySelectorAll('section#mision figure blockquote')).toHaveLength(1)
-    },
-  )
+  it.each(['es', 'en'] as const)('la junta son tres integrantes con iniciales (%s)', (lang) => {
+    const { container } = renderNosotros(lang === 'es' ? '/' : '/en/')
+    const members = dict[lang].nosotros.equipo.junta.members
+    expect(members).toHaveLength(3)
+    for (const m of members) {
+      expect(screen.getByRole('heading', { level: 4, name: m.name })).toBeInTheDocument()
+      // Iniciales decorativas (el nombre ya está en el encabezado).
+      expect(screen.getByText(m.initials).parentElement).toHaveAttribute('aria-hidden', 'true')
+    }
+    // Victoriano figura como Taita (liderazgo), no como tarjeta de la junta.
+    expect(screen.getAllByRole('heading', { level: 4 })).toHaveLength(3)
+    expect(container.querySelectorAll('section#mision figure blockquote')).toHaveLength(1)
+  })
 
   it.each(['es', 'en'] as const)(
     'valores: siete tarjetas, sin numeración ni imagen, la última ocupa dos columnas (%s)',
@@ -103,10 +95,46 @@ describe('feature nosotros', () => {
     },
   )
 
+  it('los nombres propios del contenido de Nosotros y Inicio quedan protegidos', () => {
+    for (const lang of ['es', 'en'] as const) {
+      const textos = [
+        ...dict[lang].nosotros.historia.paragraphs,
+        dict[lang].nosotros.mision.mision.t,
+        dict[lang].home.queEs.p2,
+      ]
+      const { container } = render(
+        <>
+          {textos.map((t) => (
+            <TextoCorrido key={t.slice(0, 20)}>{t}</TextoCorrido>
+          ))}
+        </>,
+      )
+      for (const span of container.querySelectorAll('span.hyphens-none')) {
+        expect(NOMBRES_PROPIOS).toContain(span.textContent)
+      }
+      // Ningún nombre propio queda fuera de un <span> protegido.
+      const sinProteger = [...container.querySelectorAll('p')].flatMap((p) =>
+        [...p.childNodes]
+          .filter((n) => n.nodeType === 3)
+          .filter((n) =>
+            NOMBRES_PROPIOS.filter((x) => x !== 'Zio Bain').some((x) => (n.textContent ?? '').includes(x)),
+          ),
+      )
+      expect(sinProteger).toHaveLength(0)
+    }
+  })
+
+  it('la entradilla de Historia no se justifica y los párrafos de cuerpo sí', () => {
+    const { container } = renderNosotros('/')
+    const ps = [...container.querySelectorAll('#historia p')].filter((p) => p.textContent && p.textContent.length > 120)
+    expect(ps[0]?.className).not.toContain('justificado')
+    expect(ps.slice(1, 4).every((p) => p.classList.contains('justificado'))).toBe(true)
+  })
+
   it('las zonas claras llevan el patrón y el bloque oscuro de Equipo no', () => {
     const { container } = renderNosotros('/')
     const zones = [...container.querySelectorAll('.patron-lateral')].map((s) => s.parentElement?.parentElement)
-    expect(new Set(zones).size).toBe(2) // Historia–Valores y el cierre legal
+    expect(new Set(zones).size).toBe(1) // Historia–Valores
     expect(zones.some((z) => z?.querySelector('#historia') && z.querySelector('#valores'))).toBe(true)
     expect(zones.every((z) => !z?.querySelector('#equipo'))).toBe(true)
   })

@@ -9,9 +9,11 @@ import { ContactoPage } from '@/pages/ContactoPage'
 import { HomePage } from '@/pages/HomePage'
 import { NosotrosPage } from '@/pages/NosotrosPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
+import { SaludPage } from '@/pages/SaludPage'
+import { EventosPage } from '@/pages/EventosPage'
+import { GaleriaPage } from '@/pages/GaleriaPage'
 import { ProyectosPage } from '@/pages/ProyectosPage'
-import { TransparenciaPage } from '@/pages/TransparenciaPage'
-import { LANGS, NOT_FOUND, ROUTES, pathFor, type RouteKey } from '@/shared/i18n/routes'
+import { LANGS, NAV_KEYS, NOT_FOUND, ROUTES, pathFor, type RouteKey } from '@/shared/i18n/routes'
 import { IntroProvider } from '@/shared/intro/intro-context'
 import { RootLayout } from './layout/RootLayout'
 
@@ -19,7 +21,9 @@ const PAGES: Record<RouteKey, ComponentType> = {
   home: HomePage,
   nosotros: NosotrosPage,
   proyectos: ProyectosPage,
-  transparencia: TransparenciaPage,
+  salud: SaludPage,
+  eventos: EventosPage,
+  galeria: GaleriaPage,
   colaborar: ColaborarPage,
   contacto: ContactoPage,
 }
@@ -27,14 +31,10 @@ const PAGES: Record<RouteKey, ComponentType> = {
 /** Texto que debe contener el h1 de cada página. */
 const h1Of = (key: RouteKey, lang: 'es' | 'en') => {
   const t = dict[lang]
-  return {
-    home: t.home.hero.title,
-    nosotros: t.common.nav[0]?.label,
-    proyectos: t.home.proyecto.title,
-    transparencia: t.common.nav[2]?.label,
-    colaborar: t.home.colaborar.title,
-    contacto: t.common.nav[4]?.label,
-  }[key]
+  if (key === 'home') return t.home.hero.title
+  if (key === 'proyectos') return t.home.proyecto.title
+  if (key === 'colaborar') return t.home.colaborar.title
+  return t.common.nav[(NAV_KEYS as readonly RouteKey[]).indexOf(key)]?.label
 }
 
 type Case = { name: string; path: string; Page: ComponentType; h1: string }
@@ -144,7 +144,7 @@ describe('enlaces internos', () => {
     collect()
     for (const lang of LANGS) {
       const hrefs = (linksByCase.get(`home · ${lang}`) ?? []).map((l) => l.href)
-      for (const key of ['nosotros', 'proyectos', 'transparencia', 'colaborar', 'contacto'] as const) {
+      for (const key of NAV_KEYS) {
         expect(hrefs, `${key} · ${lang}`).toContain(pathFor(key, lang))
       }
     }

@@ -18,7 +18,9 @@ export const ROUTES = {
   home: { es: '/', en: '/en/' },
   nosotros: { es: '/nosotros/', en: '/en/about/' },
   proyectos: { es: '/proyectos/', en: '/en/projects/' },
-  transparencia: { es: '/transparencia/', en: '/en/transparency/' },
+  salud: { es: '/salud-y-medicina-tradicional/', en: '/en/health-and-traditional-medicine/' },
+  eventos: { es: '/eventos/', en: '/en/events/' },
+  galeria: { es: '/galeria/', en: '/en/gallery/' },
   colaborar: { es: '/colaborar/', en: '/en/collaborate/' },
   contacto: { es: '/contacto/', en: '/en/contact/' },
 } as const satisfies Record<string, Record<Lang, string>>
@@ -32,7 +34,9 @@ export type RouteKey = keyof typeof ROUTES
 export const NAV_KEYS = [
   'nosotros',
   'proyectos',
-  'transparencia',
+  'salud',
+  'eventos',
+  'galeria',
   'colaborar',
   'contacto',
 ] as const satisfies readonly RouteKey[]

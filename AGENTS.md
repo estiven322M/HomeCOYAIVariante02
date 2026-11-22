@@ -24,9 +24,9 @@ Node >= 22.22 (`.node-version`) and pnpm 10 (`packageManager`). If `pnpm` is not
   module per page), `DocumentHead.tsx` (title, description, robots, canonical, hreflang, Open Graph), `ErrorBoundary.tsx`,
   `layout/` (`RootLayout` with `<main id="contenido">`, `SideNav`, global `Footer`, `FocusOnNavigate`, `Intro`).
 - `src/pages/` — one component per page; only assembles sections.
-- `src/features/<domain>/components/` — domain code (`home`, `nosotros`, `transparencia`). ESLint reads the folders to enforce layer rules. A feature never imports another feature.
+- `src/features/<domain>/components/` — domain code (`home`, `nosotros`). ESLint reads the folders to enforce layer rules. A feature never imports another feature.
 - `src/shared/` — `ui/`, `hooks/`, `lib/`, `i18n/` (language context, `LangSwitch`, **route table `routes.ts`**: pages, `NAV_KEYS`, 404), `intro/`, `styles/`.
-- `src/content/{es,en}/<domain>.ts` — typed copy, namespaced (`t.common`, `t.home`, `t.nosotros`, `t.transparencia`, `t.meta`); `es` defines the type, `en` must `satisfies` it. Leaf layer.
+- `src/content/{es,en}/<domain>.ts` — typed copy, namespaced (`t.common`, `t.home`, `t.nosotros`, `t.meta`); `es` defines the type, `en` must `satisfies` it. Leaf layer.
 - `src/env.ts` — typed `VITE_*` variables (`VITE_SITE_INDEXABLE`, `VITE_SITE_URL`).
 - `config/vite-plugins/` — `robots-txt.ts` and the Figma-only plugins (loaded only in a Figma environment).
 - `vite.config.ts` — Tailwind, React Router and robots plugins, plus the `@` alias for `src`.

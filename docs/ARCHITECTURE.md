@@ -7,8 +7,8 @@ se añade. Las decisiones y sus alternativas descartadas están en [`docs/adr/`]
 ## Estado actual (Fase 3)
 
 Sitio estático generado con **React Router 8.5.1 en modo framework** (`ssr: false` + `prerender`), sobre Vite 8,
-React 19.3 y Tailwind v4. Seis páginas en dos idiomas (inicio, nosotros, proyectos, transparencia, colaborar y
-contacto) más la 404; el build escribe un HTML por ruta en `build/client` y en el navegador React hidrata ese HTML.
+React 19.3 y Tailwind v4. Ocho páginas en dos idiomas (inicio, nosotros, proyectos, salud, eventos, galería,
+colaborar y contacto) más la 404; el build escribe un HTML por ruta en `build/client` y en el navegador React hidrata ese HTML.
 Todos los enlaces internos salen de la tabla de rutas.
 
 ## Estructura
@@ -18,12 +18,12 @@ src/
   app/              raíz de la aplicación (React Router)
     root.tsx          documento HTML de todas las rutas (Layout) + proveedores
     routes.ts         registro de rutas, generado desde la tabla de rutas
-    routes/           un módulo por página (home, nosotros, proyectos, transparencia, colaborar, contacto, not-found)
+    routes/           un módulo por página (home, nosotros, proyectos, salud, eventos, galeria, colaborar, contacto, not-found)
     DocumentHead.tsx  <title>, descripción, robots, canonical, hreflang, Open Graph
     ErrorBoundary.tsx pantalla de respaldo accesible
     layout/           RootLayout (<main id="contenido">), Intro (overlay), SideNav, Footer (global), FocusOnNavigate
   pages/            un componente por página; solo ensambla secciones
-  features/         un dominio por carpeta (hoy: home, nosotros, transparencia)
+  features/         un dominio por carpeta (hoy: home, nosotros)
     <dominio>/components/  componentes propios del dominio
   shared/
     ui/             componentes genéricos sin lógica de negocio (Button, Eyebrow, Reveal…)
@@ -44,7 +44,7 @@ test/               render con router, preparación común y verificación poste
 e2e/                pruebas de extremo a extremo con Playwright (menú, idioma, 404, intro)
 ```
 
-Solo existen las features que tienen contenido propio. `proyectos`, `colaborar` y `contacto` no tienen feature:
+Solo existen las features que tienen contenido propio. `proyectos`, `salud`, `eventos`, `galeria`, `colaborar` y `contacto` no tienen feature:
 sus páginas reutilizan secciones existentes (`Proyecto` y `Colaborar` de `home`, con `asPage`) o componentes de `shared/ui`.
 No se crean carpetas vacías.
 
@@ -80,21 +80,25 @@ Si una feature necesita algo de otra, ese algo es `shared` (súbelo) o se compon
   De ella salen el registro de rutas (`app/routes.ts`), la lista de prerender (`react-router.config.ts`), el
   selector de idioma, la cabecera del documento y **todos los enlaces internos** (`pathFor`, `useNav`, `usePathFor`):
 
-| Clave             | Español              | Inglés                     |
-| ----------------- | -------------------- | -------------------------- |
-| `home`            | `/`                  | `/en/`                     |
-| `nosotros`        | `/nosotros/`         | `/en/about/`               |
-| `proyectos`       | `/proyectos/`        | `/en/projects/`            |
-| `transparencia`   | `/transparencia/`    | `/en/transparency/`        |
-| `colaborar`       | `/colaborar/`        | `/en/collaborate/`         |
-| `contacto`        | `/contacto/`         | `/en/contact/`             |
-| 404 (`NOT_FOUND`) | `/404/` → `404.html` | `/en/404/` → `en/404.html` |
+| Clave             | Español                          | Inglés                                 |
+| ----------------- | -------------------------------- | -------------------------------------- |
+| `home`            | `/`                              | `/en/`                                 |
+| `nosotros`        | `/nosotros/`                     | `/en/about/`                           |
+| `proyectos`       | `/proyectos/`                    | `/en/projects/`                        |
+| `salud`           | `/salud-y-medicina-tradicional/` | `/en/health-and-traditional-medicine/` |
+| `eventos`         | `/eventos/`                      | `/en/events/`                          |
+| `galeria`         | `/galeria/`                      | `/en/gallery/`                         |
+| `colaborar`       | `/colaborar/`                    | `/en/collaborate/`                     |
+| `contacto`        | `/contacto/`                     | `/en/contact/`                         |
+| 404 (`NOT_FOUND`) | `/404/` → `404.html`             | `/en/404/` → `en/404.html`             |
 
-`NAV_KEYS` fija las páginas del menú, de «Explora» y del pie (en ese orden, igual que `common.nav`). «Colaborar»
+`NAV_KEYS` fija las páginas del menú, de «Explora» y del pie (en ese orden, igual que `common.nav`): Nosotros, Proyectos,
+Salud y medicina tradicional, Eventos, Galería, Donaciones / Alianzas y Contacto. El menú lateral con 7 entradas cabe sin
+scroll en 1280×720 y se desplaza (`overflow-y-auto`) en pantallas bajas; una e2e lo comprueba. «Colaborar»
 cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">` sin destino: un test los recorre todos.
 
 - **Anclas.** Los `id` de las anclas son **los mismos en español e inglés** (Nosotros: `#historia`, `#mision`,
-  `#valores`, `#equipo`; Transparencia: `#marco-legal`) porque el selector de idioma conserva el hash
+  `#valores`, `#equipo`) porque el selector de idioma conserva el hash
   (`/nosotros/#historia` ↔ `/en/about/#historia`). Al añadir un ancla, el `id` no se traduce.
 - **Navegación en el cliente.** Los enlaces internos son `<Link>` de React Router (sin recargar). Al navegar, el
   foco pasa al `<h1>` de la página (o al elemento del hash) con `FocusOnNavigate`; `ScrollRestoration` sube al
@@ -105,8 +109,9 @@ cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">
 - **Pie global** (`app/layout/Footer.tsx`): enlaces reales a todas las páginas, así que sin JavaScript basta para
   recorrer el sitio. «Aviso legal» y «Política de privacidad» no se muestran hasta que exista su contenido; las redes
   (`common.footer.socials`, lista `{name, url}`) tampoco mientras la lista esté vacía.
-- **Páginas con contenido por llegar** (`proyectos`, `colaborar`, `contacto`): título, el texto que ya existe y
-  `SoonNotice` («Esta sección estará disponible pronto» + enlace a la portada). Ningún botón apunta a la página en la
+- **Páginas con contenido por llegar** (`proyectos`, `colaborar`; y `salud`, `eventos`, `galeria` y `contacto`, que solo
+  tienen `ProvisionalPage`: su nombre y descripción de `common.nav` como título y entradilla): título, el texto que ya
+  existe y `SoonNotice` («Esta sección estará disponible pronto» + enlace a la portada). Ningún botón apunta a la página en la
   que está (un test lo comprueba).
 
 - **SEO bilingüe.** Cada página lleva `<html lang>` correcto, `<title>`, `meta description`, `canonical`,
@@ -123,20 +128,18 @@ cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">
 - `src/content/{es,en}/<dominio>.ts`: **`es` es la fuente de verdad y define el tipo**; `en` debe satisfacerlo
   (una clave que falte rompe `pnpm typecheck`). Sin librería de i18n: con dos idiomas y textos estáticos bastan
   diccionarios tipados.
-- **Un espacio de nombres por dominio:** `t.common.*`, `t.home.*`, `t.nosotros.*`, `t.transparencia.*`, `t.meta.*`
+- **Un espacio de nombres por dominio:** `t.common.*`, `t.home.*`, `t.nosotros.*`, `t.meta.*`
   (`content/{es,en}/index.ts`). Una clave repetida entre dominios no se sobrescribe en silencio.
 - `content/{es,en}/meta.ts` contiene los metadatos del documento por página (`meta.pages.<clave>`) y el título de la 404. Las descripciones **se derivan de textos que ya existen** (mismas claves, sin copiarlos); las dos que se recortan
   para no pasar de 160 caracteres usan `cut`. `DocumentHead` indexa con `RouteKey`: añadir una ruta sin sus metadatos
   rompe el typecheck. Una URL que no es una página es la 404: `noindex`, sin canonical ni hreflang.
-- Documentos legales: `{ name, url? }`. Sin `url` se muestran como texto («Documento por cargar»), sin enlace ni icono;
-  con `url` pasan a ser un enlace de descarga.
 
 ## Cómo añadir una página
 
 Ejemplo real: la página **Contacto** (`/contacto/` · `/en/contact/`).
 
 1. Si tiene contenido propio, crea la feature (ver abajo); `contacto` no la tiene todavía.
-2. `src/pages/ContactoPage.tsx`: ensambla secciones de `features/*` y `shared/*` (aquí `PageIntro` + `SoonNotice`).
+2. `src/pages/ContactoPage.tsx`: ensambla secciones de `features/*` y `shared/*` (aquí `ProvisionalPage`, que es `PageIntro` + `SoonNotice`; Salud, Eventos y Galería son iguales).
    La página no pone `<main>` (lo pone `RootLayout`) y su único `<h1>` es el título.
 3. `src/app/routes/contacto.tsx`: el módulo de ruta, que renderiza la página.
 4. Fila en `ROUTES` (`src/shared/i18n/routes.ts`) con el slug en español y en inglés (con barra final), la clave en
@@ -156,19 +159,18 @@ Ejemplo real: la página **Contacto** (`/contacto/` · `/en/contact/`).
 ## Página Nosotros (Fase 3)
 
 `features/nosotros/components/`: un componente por bloque (`NosotrosHero`, `SectionNav`, `Historia`,
-`MisionVision`, `Valores`, `Equipo`, `CierreLegal`) ensamblados por `Nosotros.tsx`. Piezas reutilizables
+`MisionVision`, `Valores`, `Equipo`) ensamblados por `Nosotros.tsx`. Piezas reutilizables
 nuevas en `shared/ui`: `SubTitle` con numeración (`n="01"`) y
 `PatternZone` (patrón lateral; ver «Patrón lateral» más abajo).
 
-- **Anclas** (iguales en es y en): `#historia`, `#mision`, `#valores`, `#equipo`. El marco legal **no** está aquí: vive en
-  `/transparencia/#marco-legal` y `CierreLegal` solo enlaza (y reutiliza título e insignias de `t.transparencia.legal`).
+- **Anclas** (iguales en es y en): `#historia`, `#mision`, `#valores`, `#equipo`. El marco legal se retiró del sitio por decisión de los stakeholders (su texto queda en el historial de git).
 - **Barra interna** (`SectionNav`): `<nav>` con enlaces `<a href="#id">` (no pestañas: todas las secciones están visibles).
   Fija bajo el encabezado desde `md` (`top: var(--header-h)`), en el flujo y desplazable en móvil con un velo en el borde
   derecho. Marca la sección actual con `aria-current="location"` (IntersectionObserver en un efecto; el HTML estático no
   marca ninguna). `--header-h` y `--sectionnav-h` (`index.css`) deben coincidir con el alto real del encabezado y de la
   barra; `.anchor-section` los usa en `scroll-margin-top` (una e2e lo comprueba).
-- **Patrón lateral**: en Nosotros hay dos zonas, Historia–Misión–Valores y el cierre legal (el bloque oscuro de Equipo
-  queda fuera). La barra interna fija no lleva patrón.
+- **Patrón lateral**: en Nosotros hay una zona, Historia–Misión–Valores (el bloque oscuro de Equipo
+  queda fuera y cierra la página, separado del pie por una línea ocre). La barra interna fija no lleva patrón.
 - **Hero**: la foto es la imagen principal (`fetchPriority="high"`, sin lazy, `srcset`/`sizes`); React emite su preload en
   el `<head>` a partir del propio `<img>` (no se declara aparte, para que no diverjan). Los velos de `index.css`
   (`.nosotros-velo-*`) mantienen el contraste AA del texto en todos los anchos (medido sobre la foto).
@@ -209,23 +211,30 @@ cubre su contenedor entero, sin fundido vertical y sin fondo propio (deja ver el
 puntero y oculto al imprimir. Queda por debajo de la barra interna fija (`z-20`) y del encabezado (`z-50`).
 Una e2e («patrón lateral») lo comprueba en todas las páginas a 1280, 1440 y 1920 px.
 
-Dónde está hoy: Nosotros (Historia–Misión–Valores y cierre legal), Inicio («¿Qué es ÉCOYAI?» y «Explora»),
-Transparencia (sus dos secciones), y el aviso `SoonNotice` de Proyectos, Colaborar y Contacto. La 404 es toda oscura y no
+Dónde está hoy: Nosotros (Historia–Misión–Valores), Inicio («¿Qué es ÉCOYAI?» y «Explora»),
+y el aviso `SoonNotice` de Proyectos, Salud, Eventos, Galería, Colaborar y Contacto. La 404 es toda oscura y no
 lleva patrón.
 
 ## Texto justificado (`justificado`)
 
-Clase explícita (`@utility justificado` en `shared/styles/index.css`): `text-align: justify`, `hyphens: auto` y `text-wrap: pretty`
-**solo desde `md`**; por debajo (móvil) el texto queda a la izquierda. El guionado usa el `lang` de cada página (es/en).
-**No es una regla global sobre `p`** (esa regla desalineó el eyebrow de Colaborar); un test
-(`shared/styles/justificado.test.ts`) falla si el justificado aparece fuera de la utilidad.
+Clase explícita (`@utility justificado` en `shared/styles/index.css`): `text-align: justify`, `hyphens: auto`,
+`hyphenate-limit-chars: 10 5 5` (con el prefijo `-webkit-` para Safari: solo parte palabras de 10 o más letras, con al
+menos 5 a cada lado; en la prueba visual salen ~1 corte cada 4–5 líneas) y `text-wrap: pretty`, **solo desde `md`**; por debajo
+(móvil) el texto queda a la izquierda. El guionado usa el `lang` de cada página (es/en). **No es una regla global sobre `p`**
+(esa regla desalineó el eyebrow de Colaborar); un test (`shared/styles/justificado.test.ts`) falla si el justificado aparece
+fuera de la utilidad.
 
-Cuándo usarla: **solo párrafos de texto corrido** (cuerpo y entradillas largas) con una medida suficiente: Historia de
-Nosotros, descripciones de Misión y Visión, «¿Qué es ÉCOYAI?» (el párrafo largo), Proyecto de Inicio y el marco legal de
-Transparencia. Nunca en: títulos, etiquetas o eyebrows, citas destacadas (el banner del propósito), pies de foto, botones,
-enlaces, insignias, textos centrados (Colaborar), el hero ni tarjetas estrechas donde se verían huecos (Valores, perfiles de
-la junta, texto del Taita, la frase corta de «¿Qué es ÉCOYAI?»). Si los stakeholders lo piden también en móvil, basta quitar
-el `@media` de la utilidad.
+**Cómo se aplica:** con el componente `<TextoCorrido className="…">{texto}</TextoCorrido>` (`shared/ui/TextoCorrido.tsx`), que
+pone la clase y **envuelve los nombres propios en `<span class="hyphens-none">`** al renderizar, para que nunca se partan
+(Victoriano, Piaguaje, Yaiguaje, ÉCOYAI, Asëcoyai, Zio Bain, Putumayo, Siona, Mocoa; lista `NOMBRES_PROPIOS`). Los textos de
+`src/content` quedan limpios, sin marcas. Un nombre nuevo se añade a esa lista.
+
+**Qué textos la llevan** (solo párrafos de texto corrido con medida suficiente): los párrafos de cuerpo de Historia (no su
+primer párrafo, la entradilla grande en serif: a ese tamaño deja espacios amplios), las descripciones de Misión y Visión, el
+párrafo largo de «¿Qué es ÉCOYAI?» y el texto de Proyecto de Inicio. Nunca en: títulos, etiquetas o eyebrows, entradillas
+destacadas en serif, citas (el banner del propósito), pies de foto, botones, enlaces, insignias, textos centrados (Colaborar),
+el hero ni tarjetas estrechas donde se verían huecos (Valores, perfiles de la junta, texto del Taita, la frase corta de
+«¿Qué es ÉCOYAI?»). Si los stakeholders lo piden también en móvil, basta quitar el `@media` de la utilidad.
 
 ## Estado y datos
 

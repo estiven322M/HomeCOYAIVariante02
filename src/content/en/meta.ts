@@ -2,11 +2,10 @@ import type { meta as esMeta } from '@/content/es/meta'
 
 // Contenido en inglés: debe satisfacer exactamente el tipo del español.
 // Metadatos del documento por página: <title>, meta description y Open Graph.
-// Las descripciones SALEN de textos que ya existen (mismas claves, sin copiarlos). Las dos que se recortan
-// (Proyectos y Transparencia, para no pasar de 160 caracteres) lo hacen con `cut`: son un prefijo literal.
+// Las descripciones SALEN de textos que ya existen (mismas claves, sin copiarlos). La que se recorta
+// (Proyectos, para no pasar de 160 caracteres) lo hace con `cut`: es un prefijo literal.
 import { common } from './common'
 import { home } from './home'
-import { transparencia } from './transparencia'
 
 /** Corta `text` antes de `marker` y cierra con punto. */
 const cut = (text: string, marker: string) => `${text.split(marker)[0]}.`
@@ -28,9 +27,17 @@ export const meta = {
       title: 'Projects — ÉCOYAI',
       description: cut(home.proyecto.text, ':'),
     },
-    transparencia: {
-      title: 'Transparency and Governance — ÉCOYAI',
-      description: cut(transparencia.legal.text, ', official'),
+    salud: {
+      title: 'Health and traditional medicine — ÉCOYAI',
+      description: navDesc(2),
+    },
+    eventos: {
+      title: 'Events — ÉCOYAI',
+      description: navDesc(3),
+    },
+    galeria: {
+      title: 'Gallery — ÉCOYAI',
+      description: navDesc(4),
     },
     colaborar: {
       title: 'Donations / Partnerships — ÉCOYAI',
@@ -38,7 +45,7 @@ export const meta = {
     },
     contacto: {
       title: 'Contact — ÉCOYAI',
-      description: navDesc(4),
+      description: navDesc(6),
     },
   },
   notFound: { title: 'Page not found — ÉCOYAI' },
