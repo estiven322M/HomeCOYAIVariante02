@@ -2,7 +2,7 @@
 // (404 real, sin fallback SPA). Uso: pnpm run build && pnpm run test:e2e
 import { spawn, type ChildProcess } from 'node:child_process'
 import AxeBuilder from '@axe-core/playwright'
-import { chromium, type Browser, type BrowserContext } from 'playwright'
+import { chromium, type Browser, type BrowserContext, type Page } from 'playwright'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { dict } from '@/content'
 import { LANGS, NAV_KEYS, NOT_FOUND, ROUTES, pathFor, type RouteKey } from '@/shared/i18n/routes'
@@ -75,8 +75,7 @@ describe.each(['es', 'en'] as const)('menú · %s', (lang) => {
 })
 
 describe('menú lateral con 7 entradas', () => {
-  const menuOf = (page: import('playwright').Page, lang: 'es' | 'en') =>
-    page.getByRole('navigation', { name: T[lang].common.sideNav.aria })
+  const menuOf = (page: Page, lang: 'es' | 'en') => page.getByRole('navigation', { name: T[lang].common.sideNav.aria })
 
   it.each(['es', 'en'] as const)('cabe sin scroll en 1280×720 (%s)', async (lang) => {
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 720 } })
@@ -621,4 +620,103 @@ describe('accesibilidad (axe, WCAG A/AA)', () => {
     },
     180_000,
   )
+})
+
+// Salud y medicina tradicional: acordeón en el navegador, sin JavaScript y formulario (si el build lo trae encendido).
+describe.each([
+  ['es', pathFor('salud', 'es')],
+  ['en', pathFor('salud', 'en')],
+] as const)('Salud · %s', (lang, path) => {
+  const items = dict[lang].salud.encuentros.items
+  const buttons = (page: Page) => page.locator('main button[id^="practica-"]')
+
+  it('escritorio: la 01 abierta al cargar, una sola abierta, la imagen y el pie siguen a la práctica abierta', async () => {
+    const page = await (await context()).newPage()
+    await page.goto(BASE + path, { waitUntil: 'networkidle' })
+    await expect.poll(() => buttons(page).first().getAttribute('aria-expanded')).toBe('true')
+    const caption = (i: number) => page.locator('figcaption').filter({ hasText: items[i]?.title ?? '' })
+    await expect.poll(() => caption(0).isVisible()).toBe(true)
+    await buttons(page).nth(2).click()
+    expect(await page.locator('main button[id^="practica-"][aria-expanded="true"]').count()).toBe(1)
+    await expect.poll(() => caption(2).isVisible()).toBe(true)
+    // La abierta no se puede cerrar.
+    await buttons(page).nth(2).click({ force: true })
+    expect(await buttons(page).nth(2).getAttribute('aria-expanded')).toBe('true')
+    // Solo el panel abierto es visible.
+    expect(await page.getByText(items[1]?.text ?? '').isVisible()).toBe(false)
+    expect(await page.getByText(items[2]?.text ?? '').isVisible()).toBe(true)
+    await page.context().close()
+  })
+
+  it('móvil: la imagen va dentro del panel abierto y no hay figura lateral', async () => {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } })
+    await ctx.addInitScript((k) => sessionStorage.setItem(k, '1'), SEEN)
+    const page = await ctx.newPage()
+    await page.goto(BASE + path, { waitUntil: 'networkidle' })
+    const panel = page.locator('#practica-1-panel')
+    await expect.poll(() => panel.isVisible()).toBe(true)
+    expect(await panel.locator('figure').isVisible()).toBe(true)
+    expect(await page.locator('#practica-2-panel').isVisible()).toBe(false)
+    expect(
+      await page
+        .locator('figcaption')
+        .filter({ hasText: items[0]?.title ?? '' })
+        .isVisible(),
+    ).toBe(false)
+    await buttons(page).nth(3).click()
+    expect(await page.locator('#practica-4-panel figure').isVisible()).toBe(true)
+    expect(await panel.isVisible()).toBe(false)
+    await ctx.close()
+  })
+
+  it('con teclado: una práctica enfocada se abre con Enter', async () => {
+    const page = await (await context()).newPage()
+    await page.goto(BASE + path, { waitUntil: 'networkidle' })
+    await buttons(page).nth(1).focus()
+    await page.keyboard.press('Enter')
+    expect(await buttons(page).nth(1).getAttribute('aria-expanded')).toBe('true')
+    expect(await buttons(page).first().getAttribute('aria-expanded')).toBe('false')
+    await page.context().close()
+  })
+
+  it('sin JavaScript todas las prácticas y el protocolo se ven con su texto', async () => {
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, javaScriptEnabled: false })
+    const page = await ctx.newPage()
+    await page.goto(BASE + path)
+    for (const item of items) expect(await page.getByText(item.text).isVisible(), item.title).toBe(true)
+    for (const point of dict[lang].salud.protocolo.points) expect(await page.getByText(point).isVisible()).toBe(true)
+    await ctx.close()
+  })
+
+  it('formulario: con el interruptor encendido valida y envía; apagado, muestra el botón a Contacto', async () => {
+    const page = await (await context()).newPage()
+    await page.goto(BASE + path, { waitUntil: 'networkidle' })
+    const f = dict[lang].salud.solicitar.form
+    if ((await page.locator('form[data-netlify]').count()) === 0) {
+      expect(await page.getByRole('link', { name: new RegExp(dict[lang].salud.solicitar.off.cta) }).count()).toBe(1)
+      await page.context().close()
+      return
+    }
+    let posted = ''
+    await page.route(BASE + '/', async (route) => {
+      if (route.request().method() === 'POST') {
+        posted = route.request().postData() ?? ''
+        await route.fulfill({ status: 200, body: 'ok' })
+      } else await route.continue()
+    })
+    await page.getByRole('button', { name: new RegExp(f.submit) }).click()
+    const summary = page.getByRole('group', { name: f.summary })
+    await expect.poll(() => summary.evaluate((e) => e === document.activeElement)).toBe(true)
+    expect(await page.getByLabel(new RegExp(f.name)).getAttribute('aria-invalid')).toBe('true')
+    await page.getByLabel(new RegExp(f.name)).fill('Ana Prueba')
+    await page.getByLabel(new RegExp(f.country)).fill('Chile')
+    await page.getByLabel(new RegExp(f.contact)).fill('ana@ejemplo.org')
+    await page.getByLabel(new RegExp(f.motivation)).fill('Quiero conocer los encuentros')
+    await page.getByRole('checkbox').check()
+    await page.getByRole('button', { name: new RegExp(f.submit) }).click()
+    await expect.poll(() => page.getByRole('status').innerText()).toContain(f.success)
+    expect(posted).toContain('form-name=solicitud-encuentros')
+    expect(posted).toContain(`idioma=${lang}`)
+    await page.context().close()
+  })
 })
