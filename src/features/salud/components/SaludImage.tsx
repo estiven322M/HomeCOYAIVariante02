@@ -3,7 +3,7 @@ import { IMAGES, srcSetOf, type SaludImageId } from '@/features/salud/images'
 
 /**
  * Imagen de Salud que rellena su contenedor (`absolute inset-0`): la real si ya existe o un marcador sin texto.
- * Decorativa (`alt=""`) hasta que se entreguen las fotos y su texto alternativo (ver `images.ts`).
+ * Decorativa (`alt=""`) salvo que se le pase su texto alternativo (ver `images.ts`).
  */
 export function SaludImage({
   id,

@@ -52,7 +52,7 @@ feature, y las reglas para el prerenderizado están en [`docs/ARCHITECTURE.md`](
 auto-orientados según EXIF, sin ampliar y sin metadatos. Cada trabajo de la lista `JOBS` toma un original (de
 `assets-src/<página>/` o una imagen ya publicada en `public/`) y un conjunto de anchos. Para añadir imágenes (retratos,
 proyectos…): copia el original a `assets-src/<página>/`, añade una entrada a `JOBS`, ejecuta `pnpm images` y usa los
-derivados con `srcset` y `sizes`. Los trabajos marcados `optional` (las imágenes de Salud) se omiten mientras falte su original. `pnpm images hero` regenera solo los trabajos cuyo nombre contiene «hero». Los
+derivados con `srcset` y `sizes`. Los trabajos marcados `optional` se omiten mientras falte su original. `grade` aplica un grado de color (`GRADES`: `selva` para fondos con velo, `serie` para fotos de contenido), `tilt` endereza, `crop` recorta y `denoise` alisa el ruido; `IMAGES_NO_GRADE=1` genera los derivados sin grado. `pnpm images hero` regenera solo los trabajos cuyo nombre contiene «hero». Los
 `.webp` van por Git LFS (ver `.gitattributes`). Si una foto sale girada y no trae EXIF, el trabajo admite `rotate` (grados).
 
 ### Git LFS y husky

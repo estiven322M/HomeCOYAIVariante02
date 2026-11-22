@@ -25,7 +25,7 @@ export function Llamado() {
           </blockquote>
         </div>
         <figure className="relative aspect-[4/5] w-full overflow-hidden bg-tierra-suave">
-          <SaludImage id="llamado" tone="claro" sizes="(min-width: 768px) 460px, calc(100vw - 48px)" />
+          <SaludImage id="llamado" tone="claro" sizes="(min-width: 768px) 460px, calc(100vw - 48px)" alt={l.imageAlt} />
         </figure>
       </div>
     </PatternZone>
