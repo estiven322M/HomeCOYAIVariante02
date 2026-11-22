@@ -21,8 +21,8 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
 - **Descripciones muy cortas.** Las de Nosotros y Contacto (`common.nav[*].desc`, ~40 caracteres) son honestas pero
   débiles para buscadores. Mejorarlas con el contenido definitivo.
 - **Páginas con contenido por llegar.** `/proyectos/` y `/colaborar/` reutilizan el texto del proyecto destacado y de
-  «Colaborar» más el aviso «Esta sección estará disponible pronto»; `/contacto/` solo tiene título, descripción y el
-  aviso.
+  «Colaborar» más el aviso «Esta sección estará disponible pronto»; `/salud-y-medicina-tradicional/`, `/eventos/`, `/galeria/` y
+  `/contacto/` solo tienen título, descripción y el aviso (`ProvisionalPage`); el diseño de Salud y Eventos llegará después.
 - **Pie de página incompleto a propósito.** «Aviso legal» y «Política de privacidad» están ocultos hasta que exista su
   contenido (ver el bloqueante de arriba). Las redes (`common.footer.socials`, lista `{name, url}`) están vacías y el
   bloque no se muestra: faltan las URL reales. Antes había marcadores `[Instagram] [Facebook] [YouTube]`.

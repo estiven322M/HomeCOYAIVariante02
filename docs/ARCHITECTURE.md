@@ -7,8 +7,8 @@ se añade. Las decisiones y sus alternativas descartadas están en [`docs/adr/`]
 ## Estado actual (Fase 3)
 
 Sitio estático generado con **React Router 8.5.1 en modo framework** (`ssr: false` + `prerender`), sobre Vite 8,
-React 19.3 y Tailwind v4. Seis páginas en dos idiomas (inicio, nosotros, proyectos, colaborar y
-contacto) más la 404; el build escribe un HTML por ruta en `build/client` y en el navegador React hidrata ese HTML.
+React 19.3 y Tailwind v4. Ocho páginas en dos idiomas (inicio, nosotros, proyectos, salud, eventos, galería,
+colaborar y contacto) más la 404; el build escribe un HTML por ruta en `build/client` y en el navegador React hidrata ese HTML.
 Todos los enlaces internos salen de la tabla de rutas.
 
 ## Estructura
@@ -18,7 +18,7 @@ src/
   app/              raíz de la aplicación (React Router)
     root.tsx          documento HTML de todas las rutas (Layout) + proveedores
     routes.ts         registro de rutas, generado desde la tabla de rutas
-    routes/           un módulo por página (home, nosotros, proyectos, colaborar, contacto, not-found)
+    routes/           un módulo por página (home, nosotros, proyectos, salud, eventos, galeria, colaborar, contacto, not-found)
     DocumentHead.tsx  <title>, descripción, robots, canonical, hreflang, Open Graph
     ErrorBoundary.tsx pantalla de respaldo accesible
     layout/           RootLayout (<main id="contenido">), Intro (overlay), SideNav, Footer (global), FocusOnNavigate
@@ -44,7 +44,7 @@ test/               render con router, preparación común y verificación poste
 e2e/                pruebas de extremo a extremo con Playwright (menú, idioma, 404, intro)
 ```
 
-Solo existen las features que tienen contenido propio. `proyectos`, `colaborar` y `contacto` no tienen feature:
+Solo existen las features que tienen contenido propio. `proyectos`, `salud`, `eventos`, `galeria`, `colaborar` y `contacto` no tienen feature:
 sus páginas reutilizan secciones existentes (`Proyecto` y `Colaborar` de `home`, con `asPage`) o componentes de `shared/ui`.
 No se crean carpetas vacías.
 
@@ -80,16 +80,21 @@ Si una feature necesita algo de otra, ese algo es `shared` (súbelo) o se compon
   De ella salen el registro de rutas (`app/routes.ts`), la lista de prerender (`react-router.config.ts`), el
   selector de idioma, la cabecera del documento y **todos los enlaces internos** (`pathFor`, `useNav`, `usePathFor`):
 
-| Clave             | Español              | Inglés                     |
-| ----------------- | -------------------- | -------------------------- |
-| `home`            | `/`                  | `/en/`                     |
-| `nosotros`        | `/nosotros/`         | `/en/about/`               |
-| `proyectos`       | `/proyectos/`        | `/en/projects/`            |
-| `colaborar`       | `/colaborar/`        | `/en/collaborate/`         |
-| `contacto`        | `/contacto/`         | `/en/contact/`             |
-| 404 (`NOT_FOUND`) | `/404/` → `404.html` | `/en/404/` → `en/404.html` |
+| Clave             | Español                          | Inglés                                 |
+| ----------------- | -------------------------------- | -------------------------------------- |
+| `home`            | `/`                              | `/en/`                                 |
+| `nosotros`        | `/nosotros/`                     | `/en/about/`                           |
+| `proyectos`       | `/proyectos/`                    | `/en/projects/`                        |
+| `salud`           | `/salud-y-medicina-tradicional/` | `/en/health-and-traditional-medicine/` |
+| `eventos`         | `/eventos/`                      | `/en/events/`                          |
+| `galeria`         | `/galeria/`                      | `/en/gallery/`                         |
+| `colaborar`       | `/colaborar/`                    | `/en/collaborate/`                     |
+| `contacto`        | `/contacto/`                     | `/en/contact/`                         |
+| 404 (`NOT_FOUND`) | `/404/` → `404.html`             | `/en/404/` → `en/404.html`             |
 
-`NAV_KEYS` fija las páginas del menú, de «Explora» y del pie (en ese orden, igual que `common.nav`). «Colaborar»
+`NAV_KEYS` fija las páginas del menú, de «Explora» y del pie (en ese orden, igual que `common.nav`): Nosotros, Proyectos,
+Salud y medicina tradicional, Eventos, Galería, Donaciones / Alianzas y Contacto. El menú lateral con 7 entradas cabe sin
+scroll en 1280×720 y se desplaza (`overflow-y-auto`) en pantallas bajas; una e2e lo comprueba. «Colaborar»
 cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">` sin destino: un test los recorre todos.
 
 - **Anclas.** Los `id` de las anclas son **los mismos en español e inglés** (Nosotros: `#historia`, `#mision`,
@@ -104,8 +109,9 @@ cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">
 - **Pie global** (`app/layout/Footer.tsx`): enlaces reales a todas las páginas, así que sin JavaScript basta para
   recorrer el sitio. «Aviso legal» y «Política de privacidad» no se muestran hasta que exista su contenido; las redes
   (`common.footer.socials`, lista `{name, url}`) tampoco mientras la lista esté vacía.
-- **Páginas con contenido por llegar** (`proyectos`, `colaborar`, `contacto`): título, el texto que ya existe y
-  `SoonNotice` («Esta sección estará disponible pronto» + enlace a la portada). Ningún botón apunta a la página en la
+- **Páginas con contenido por llegar** (`proyectos`, `colaborar`; y `salud`, `eventos`, `galeria` y `contacto`, que solo
+  tienen `ProvisionalPage`: su nombre y descripción de `common.nav` como título y entradilla): título, el texto que ya
+  existe y `SoonNotice` («Esta sección estará disponible pronto» + enlace a la portada). Ningún botón apunta a la página en la
   que está (un test lo comprueba).
 
 - **SEO bilingüe.** Cada página lleva `<html lang>` correcto, `<title>`, `meta description`, `canonical`,
@@ -133,7 +139,7 @@ cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">
 Ejemplo real: la página **Contacto** (`/contacto/` · `/en/contact/`).
 
 1. Si tiene contenido propio, crea la feature (ver abajo); `contacto` no la tiene todavía.
-2. `src/pages/ContactoPage.tsx`: ensambla secciones de `features/*` y `shared/*` (aquí `PageIntro` + `SoonNotice`).
+2. `src/pages/ContactoPage.tsx`: ensambla secciones de `features/*` y `shared/*` (aquí `ProvisionalPage`, que es `PageIntro` + `SoonNotice`; Salud, Eventos y Galería son iguales).
    La página no pone `<main>` (lo pone `RootLayout`) y su único `<h1>` es el título.
 3. `src/app/routes/contacto.tsx`: el módulo de ruta, que renderiza la página.
 4. Fila en `ROUTES` (`src/shared/i18n/routes.ts`) con el slug en español y en inglés (con barra final), la clave en
@@ -206,7 +212,7 @@ puntero y oculto al imprimir. Queda por debajo de la barra interna fija (`z-20`)
 Una e2e («patrón lateral») lo comprueba en todas las páginas a 1280, 1440 y 1920 px.
 
 Dónde está hoy: Nosotros (Historia–Misión–Valores), Inicio («¿Qué es ÉCOYAI?» y «Explora»),
-y el aviso `SoonNotice` de Proyectos, Colaborar y Contacto. La 404 es toda oscura y no
+y el aviso `SoonNotice` de Proyectos, Salud, Eventos, Galería, Colaborar y Contacto. La 404 es toda oscura y no
 lleva patrón.
 
 ## Texto justificado (`justificado`)

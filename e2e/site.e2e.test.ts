@@ -74,6 +74,43 @@ describe.each(['es', 'en'] as const)('menú · %s', (lang) => {
   }, 60_000)
 })
 
+describe('menú lateral con 7 entradas', () => {
+  const menuOf = (page: import('playwright').Page, lang: 'es' | 'en') =>
+    page.getByRole('navigation', { name: T[lang].common.sideNav.aria })
+
+  it.each(['es', 'en'] as const)('cabe sin scroll en 1280×720 (%s)', async (lang) => {
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 720 } })
+    await ctx.addInitScript((k) => sessionStorage.setItem(k, '1'), SEEN)
+    const page = await ctx.newPage()
+    await page.goto(BASE + pathFor('home', lang))
+    await page.getByRole('button', { name: T[lang].common.sideNav.menu }).click()
+    const menu = menuOf(page, lang)
+    await expect.poll(() => menu.getByRole('link').count()).toBe(NAV_KEYS.length + 1) // 7 páginas + «Colaborar»
+    const { scroll, client } = await menu.evaluate((n) => ({ scroll: n.scrollHeight, client: n.clientHeight }))
+    expect(scroll, 'sin scroll vertical').toBeLessThanOrEqual(client)
+    await ctx.close()
+  })
+
+  it.each(['es', 'en'] as const)(
+    'en un móvil bajo (390×568) se desplaza y se llega a la última entrada (%s)',
+    async (lang) => {
+      const ctx = await browser.newContext({ viewport: { width: 390, height: 568 } })
+      await ctx.addInitScript((k) => sessionStorage.setItem(k, '1'), SEEN)
+      const page = await ctx.newPage()
+      await page.goto(BASE + pathFor('home', lang))
+      await page.getByRole('button', { name: T[lang].common.sideNav.menu }).click()
+      const menu = menuOf(page, lang)
+      const last = menu.getByRole('link', { name: T[lang].common.nav[NAV_KEYS.length - 1]?.label ?? '', exact: true })
+      await last.scrollIntoViewIfNeeded()
+      const box = await last.boundingBox()
+      expect(box && box.y + box.height <= 568 && box.y >= 0).toBe(true)
+      await last.click()
+      await page.waitForURL(BASE + pathFor('contacto', lang))
+      await ctx.close()
+    },
+  )
+})
+
 describe('selector de idioma', () => {
   it('lleva a la misma página en el otro idioma y conserva el hash', async () => {
     const page = await (await context()).newPage()
