@@ -16,6 +16,17 @@ command = "pnpm run build && printf '/*\\n  X-Robots-Tag: noindex\\n' >> build/c
 [context.branch-deploy]
 command = "pnpm run build && printf '/*\\n  X-Robots-Tag: noindex\\n' >> build/client/_headers"
 
+# Formularios (Netlify Forms; ADR 0009): apagados en producción y ramas, encendidos en las previsualizaciones para poder
+# probarlos. Se activan en producción solo cuando /privacidad/ tenga la política real (ver docs/known-issues.md).
+[context.production.environment]
+VITE_FORMS_ENABLED = "false"
+
+[context.deploy-preview.environment]
+VITE_FORMS_ENABLED = "true"
+
+[context.branch-deploy.environment]
+VITE_FORMS_ENABLED = "false"
+
 # URLs con barra final (política del proyecto, ver docs/ARCHITECTURE.md): cada página es `ruta/index.html`.
 # NO se añade ninguna regla /en → /en/ ni /* → __spa-fallback.html:
 #  - Se espera que Netlify redirija una carpeta sin barra final a la versión con barra (301) cuando existe

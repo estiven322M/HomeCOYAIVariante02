@@ -12,4 +12,10 @@ export const env = {
    * hreflang y og:url. Si no está definido, esas URL salen relativas a la raíz (válidas, pero se recomienda definirlo).
    */
   SITE_URL: (import.meta.env.VITE_SITE_URL ?? '').replace(/\/+$/, ''),
+  /**
+   * Interruptor de los formularios (Netlify Forms). En `false` no se renderizan (ni salen en el HTML, así que Netlify no los
+   * detecta) y la sección muestra un botón a Contacto. `netlify.toml`: `false` en producción, `true` en previsualizaciones.
+   * No activar en producción hasta que `/privacidad/` tenga la política real (ver ADR 0009 y docs/known-issues.md).
+   */
+  FORMS_ENABLED: import.meta.env.VITE_FORMS_ENABLED === 'true',
 } as const

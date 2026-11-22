@@ -5,6 +5,7 @@ import { PatternZone } from '@/shared/ui/PatternZone'
 import { Cuidados } from './Cuidados'
 import { Llamado } from './Llamado'
 import { Protocolo } from './Protocolo'
+import { Solicitar } from './Solicitar'
 import { Practicas } from './Practicas'
 
 /** Página «Salud y medicina tradicional»: hero, el llamado, encuentros, cuidado y solicitud de información. */
@@ -20,6 +21,7 @@ export function Salud() {
         <Cuidados />
         <Protocolo />
       </PatternZone>
+      <Solicitar />
     </>
   )
 }

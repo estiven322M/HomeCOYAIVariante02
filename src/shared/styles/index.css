@@ -21,6 +21,7 @@
   /* Acento (10%) */
   --color-achiote: #9e3b22;
   --color-ocre: #d9a21b;
+  --color-error-claro: #f4b5a3; /* errores de formulario sobre fondo oscuro (≥ 8:1 sobre huito/noche) */
   --color-terracota: #c96a4a;
 
   /* Alias de nombres previos -> nueva paleta */
