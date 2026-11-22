@@ -184,6 +184,13 @@
 }
 
 @layer components {
+  /* Separador de rombos del acordeón de Salud (decorativo: el elemento lleva aria-hidden). */
+  .rombos-separador {
+    height: 12px;
+    opacity: 0.6;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='12'%3E%3Cpath d='M10 1.5 14.5 6 10 10.5 5.5 6Z' fill='none' stroke='%23d9a21b'/%3E%3C/svg%3E")
+      repeat-x;
+  }
   /* Sección con ancla: el destino queda bajo el encabezado (y bajo la barra interna, que es fija desde md). */
   .anchor-section {
     scroll-margin-top: calc(var(--header-h) + 1rem);

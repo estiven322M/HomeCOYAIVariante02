@@ -17,4 +17,28 @@ export const salud = {
     ],
     quote: '«Sanar el cuerpo físico requiere armonizar primero la mente y el espíritu.»',
   },
+  encuentros: {
+    label: 'Nuestros encuentros',
+    title: '¿Qué vivimos en nuestros encuentros?',
+    intro:
+      'Cada jornada es orientada directamente por autoridades tradicionales y médicos ancestrales del Putumayo, integrando prácticas milenarias de limpieza y aprendizaje.',
+    items: [
+      {
+        title: 'Ceremonias de yagé (ayahuasca)',
+        text: 'Espacios sagrados de oración, cantos tradicionales (ícaros) y toma ritual de la planta maestra, acompañados con rigor espiritual para la introspección, la limpieza energética y la sanación profunda.',
+      },
+      {
+        title: 'Terapias de purgas y baños medicinales',
+        text: 'Prácticas tradicionales de depuración física y espiritual mediante el uso de plantas sagradas de la selva y la chagra, preparadas según el conocimiento de los mayores para renovar la vitalidad del organismo.',
+      },
+      {
+        title: 'Conversatorios de botánica y medicina tradicional',
+        text: 'Espacios pedagógicos de diálogo abierto sobre el uso, el cultivo y el significado espiritual de las plantas medicinales amazónicas, comprendiendo la selva como una farmacia viva.',
+      },
+      {
+        title: 'Intercambio de saberes y cultura viva',
+        text: 'Encuentros comunitarios para compartir la palabra, la historia del pueblo Siona y las prácticas cotidianas de cuidado del territorio, fortaleciendo un puente de respeto entre culturas.',
+      },
+    ],
+  },
 }
