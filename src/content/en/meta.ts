@@ -6,6 +6,7 @@ import type { meta as esMeta } from '@/content/es/meta'
 // (Proyectos, para no pasar de 160 caracteres) lo hace con `cut`: es un prefijo literal.
 import { common } from './common'
 import { home } from './home'
+import { salud } from './salud'
 
 /** Corta `text` antes de `marker` y cierra con punto. */
 const cut = (text: string, marker: string) => `${text.split(marker)[0]}.`
@@ -29,7 +30,7 @@ export const meta = {
     },
     salud: {
       title: 'Health and traditional medicine — ÉCOYAI',
-      description: navDesc(2),
+      description: salud.hero.subtitle,
     },
     eventos: {
       title: 'Events — ÉCOYAI',

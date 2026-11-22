@@ -1,6 +1,6 @@
-import { ProvisionalPage } from '@/shared/ui/ProvisionalPage'
+import { Salud } from '@/features/salud/components/Salud'
 
-/** /salud-y-medicina-tradicional/ — provisional: su nombre, su descripción y el aviso (el diseño llegará después). */
+/** /salud-y-medicina-tradicional/ — hero, el llamado, encuentros, cuidado y solicitud de información. */
 export function SaludPage() {
-  return <ProvisionalPage pageKey="salud" />
+  return <Salud />
 }

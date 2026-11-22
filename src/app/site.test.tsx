@@ -34,6 +34,7 @@ const h1Of = (key: RouteKey, lang: 'es' | 'en') => {
   if (key === 'home') return t.home.hero.title
   if (key === 'proyectos') return t.home.proyecto.title
   if (key === 'colaborar') return t.home.colaborar.title
+  if (key === 'salud') return t.salud.hero.title
   return t.common.nav[(NAV_KEYS as readonly RouteKey[]).indexOf(key)]?.label
 }
 
