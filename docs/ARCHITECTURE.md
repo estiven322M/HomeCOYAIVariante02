@@ -173,7 +173,7 @@ nuevas en `shared/ui`: `SubTitle` con numeración (`n="01"`) y
   queda fuera y cierra la página, separado del pie por una línea ocre). La barra interna fija no lleva patrón.
 - **Hero**: la foto es la imagen principal (`fetchPriority="high"`, sin lazy, `srcset`/`sizes`); React emite su preload en
   el `<head>` a partir del propio `<img>` (no se declara aparte, para que no diverjan). Los velos de `index.css`
-  (`.nosotros-velo-*`) mantienen el contraste AA del texto en todos los anchos (medido sobre la foto).
+  (`.page-hero-velo-*`, en `PageHero`) mantienen el contraste AA del texto en todos los anchos (medido sobre la foto).
 - **Valores**: siete tarjetas sin numeración ni imagen, en rejilla de 1 → 2 → 4 columnas; desde 520 px la última ocupa
   dos columnas, así que no queda ninguna celda vacía (2 columnas: 4.ª fila; 4 columnas: 2.ª fila = 1 + 1 + 2).
 - **Retratos de la junta**: tres integrantes con iniciales (`members[].initials`) en un tono neutro, `aria-hidden` (el nombre

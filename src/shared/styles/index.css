@@ -204,8 +204,8 @@
     -webkit-mask-size: 40px 59px;
     mask-size: 40px 59px;
   }
-  /* Velos del hero de Nosotros: legibilidad del texto sobre la foto. */
-  .nosotros-velo-h {
+  /* Velos del hero de las páginas interiores (PageHero): legibilidad del texto sobre la foto. */
+  .page-hero-velo-h {
     background: linear-gradient(
       to right,
       color-mix(in srgb, var(--color-noche) 86%, transparent) 0%,
@@ -215,7 +215,7 @@
   }
   /* En pantallas estrechas el texto ocupa todo el ancho: el velo es casi uniforme para mantener el contraste AA. */
   @media (max-width: 1023px) {
-    .nosotros-velo-h {
+    .page-hero-velo-h {
       background: linear-gradient(
         to right,
         color-mix(in srgb, var(--color-noche) 80%, transparent),
@@ -224,14 +224,14 @@
     }
   }
   /* Detrás de «Putumayo · Colombia» (esquina inferior derecha, sobre la zona más clara de la foto). */
-  .nosotros-velo-esquina {
+  .page-hero-velo-esquina {
     background: radial-gradient(
       ellipse 22rem 12rem at 100% 100%,
       color-mix(in srgb, var(--color-noche) 82%, transparent) 0%,
       transparent 100%
     );
   }
-  .nosotros-velo-v {
+  .page-hero-velo-v {
     background: linear-gradient(
       to bottom,
       color-mix(in srgb, var(--color-noche) 35%, transparent) 0%,
