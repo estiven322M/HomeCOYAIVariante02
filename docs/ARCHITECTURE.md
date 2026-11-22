@@ -115,9 +115,8 @@ cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">
 - **Selector de idioma.** `LangSwitch` es un enlace (`<a hreflang>`) a la misma página en el otro idioma, **conservando
   el hash** (`alternatePath`). Conserva el aspecto del interruptor ES | EN y el punto de lectura (`preventScrollReset`).
   Navega en cliente, sin recargar. En una URL que no es una página (la 404) lleva a la **portada** del otro idioma (igual que el enlace «Read in English» de la 404).
-- **Netlify y la barra final.** Se espera que Netlify redirija `/en` a `/en/` (301) cuando existe `en/index.html`.
-  No se añade una regla propia (puede provocar un bucle). **No verificado:** comprobar `curl -I <previsualización>/en`
-  en el primer despliegue y, si no redirige, añadir la regla entonces.
+- **Netlify y la barra final.** Netlify redirige `/en` a `/en/` (301) porque existe `en/index.html`; verificado con
+  `curl -I` (2026-11-22). No hace falta una regla propia (puede provocar un bucle).
 
 ## Contenido
 
@@ -301,7 +300,7 @@ nofollow">`, ambos gobernados por `VITE_SITE_INDEXABLE` ([ADR 0007](./adr/0007-i
 3. `scripts/finalize-build.mjs` (encadenado en `pnpm build`) mueve esos HTML a `build/client/404.html` y
    `build/client/en/404.html` y borra las carpetas `404/`: `/404/` tampoco debe responder 200.
 4. `netlify.toml` añade `/en/* → /en/404.html` con estado 404 (según la documentación de Netlify, un archivo existente
-   tiene prioridad, así que no afecta a `/en/` ni a `/en/about/`). **No verificado en Netlify.** `pnpm preview` la imita.
+   tiene prioridad, así que no afecta a `/en/` ni a `/en/about/`). Verificado en Netlify con `curl -I` (2026-11-22); `pnpm preview` la imita.
 5. La 404 lleva `noindex`, sin canonical ni hreflang, y enlaza a la portada, a las páginas principales y a la 404
    del otro idioma.
 
