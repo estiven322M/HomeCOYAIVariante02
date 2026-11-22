@@ -211,16 +211,24 @@ lleva patrón.
 
 ## Texto justificado (`justificado`)
 
-Clase explícita (`@utility justificado` en `shared/styles/index.css`): `text-align: justify`, `hyphens: auto` y `text-wrap: pretty`
-**solo desde `md`**; por debajo (móvil) el texto queda a la izquierda. El guionado usa el `lang` de cada página (es/en).
-**No es una regla global sobre `p`** (esa regla desalineó el eyebrow de Colaborar); un test
-(`shared/styles/justificado.test.ts`) falla si el justificado aparece fuera de la utilidad.
+Clase explícita (`@utility justificado` en `shared/styles/index.css`): `text-align: justify`, `hyphens: auto`,
+`hyphenate-limit-chars: 10 5 5` (con el prefijo `-webkit-` para Safari: solo parte palabras de 10 o más letras, con al
+menos 5 a cada lado; en la prueba visual salen ~1 corte cada 4–5 líneas) y `text-wrap: pretty`, **solo desde `md`**; por debajo
+(móvil) el texto queda a la izquierda. El guionado usa el `lang` de cada página (es/en). **No es una regla global sobre `p`**
+(esa regla desalineó el eyebrow de Colaborar); un test (`shared/styles/justificado.test.ts`) falla si el justificado aparece
+fuera de la utilidad.
 
-Cuándo usarla: **solo párrafos de texto corrido** (cuerpo y entradillas largas) con una medida suficiente: Historia de
-Nosotros, descripciones de Misión y Visión, «¿Qué es ÉCOYAI?» (el párrafo largo), Proyecto de Inicio. Nunca en: títulos, etiquetas o eyebrows, citas destacadas (el banner del propósito), pies de foto, botones,
-enlaces, insignias, textos centrados (Colaborar), el hero ni tarjetas estrechas donde se verían huecos (Valores, perfiles de
-la junta, texto del Taita, la frase corta de «¿Qué es ÉCOYAI?»). Si los stakeholders lo piden también en móvil, basta quitar
-el `@media` de la utilidad.
+**Cómo se aplica:** con el componente `<TextoCorrido className="…">{texto}</TextoCorrido>` (`shared/ui/TextoCorrido.tsx`), que
+pone la clase y **envuelve los nombres propios en `<span class="hyphens-none">`** al renderizar, para que nunca se partan
+(Victoriano, Piaguaje, Yaiguaje, ÉCOYAI, Asëcoyai, Zio Bain, Putumayo, Siona, Mocoa; lista `NOMBRES_PROPIOS`). Los textos de
+`src/content` quedan limpios, sin marcas. Un nombre nuevo se añade a esa lista.
+
+**Qué textos la llevan** (solo párrafos de texto corrido con medida suficiente): los párrafos de cuerpo de Historia (no su
+primer párrafo, la entradilla grande en serif: a ese tamaño deja espacios amplios), las descripciones de Misión y Visión, el
+párrafo largo de «¿Qué es ÉCOYAI?» y el texto de Proyecto de Inicio. Nunca en: títulos, etiquetas o eyebrows, entradillas
+destacadas en serif, citas (el banner del propósito), pies de foto, botones, enlaces, insignias, textos centrados (Colaborar),
+el hero ni tarjetas estrechas donde se verían huecos (Valores, perfiles de la junta, texto del Taita, la frase corta de
+«¿Qué es ÉCOYAI?»). Si los stakeholders lo piden también en móvil, basta quitar el `@media` de la utilidad.
 
 ## Estado y datos
 

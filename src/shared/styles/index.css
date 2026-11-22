@@ -90,6 +90,9 @@
   @media (min-width: 48rem) {
     text-align: justify;
     hyphens: auto;
+    /* Solo parte palabras de 10 o más letras y deja al menos 5 a cada lado (menos cortes por párrafo). */
+    -webkit-hyphenate-limit-chars: 10 5 5;
+    hyphenate-limit-chars: 10 5 5;
     text-wrap: pretty;
   }
 }

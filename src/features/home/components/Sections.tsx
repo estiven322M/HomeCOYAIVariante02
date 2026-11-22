@@ -4,6 +4,7 @@ import { Button } from '@/shared/ui/Button'
 import { Eyebrow } from '@/shared/ui/Eyebrow'
 import { MediaPlaceholder } from '@/shared/ui/MediaPlaceholder'
 import { PatternZone } from '@/shared/ui/PatternZone'
+import { TextoCorrido } from '@/shared/ui/TextoCorrido'
 import { Reveal } from '@/shared/ui/Reveal'
 import { useScrollY } from '@/shared/hooks/useScrollY'
 import { prefersReducedMotion } from '@/shared/lib/reduced-motion'
@@ -181,7 +182,7 @@ export function QueEs() {
           <h2 className="mt-6 font-serif text-5xl font-light leading-[1.05] lg:text-6xl">{q.title}</h2>
           <div className="mt-10 space-y-5 text-[17px] leading-relaxed text-carbon/80">
             <p className="font-serif text-2xl italic leading-snug text-bosque">{q.p1}</p>
-            <p className="justificado">{q.p2}</p>
+            <TextoCorrido>{q.p2}</TextoCorrido>
           </div>
         </Reveal>
         <Reveal delay={200} className="lg:col-span-6 lg:col-start-7">
@@ -214,7 +215,7 @@ export function Proyecto({ asPage = false }: { asPage?: boolean }) {
           <Title className="mt-6 font-serif text-5xl font-light leading-[1.05] lg:text-7xl">
             {p.title} <em className="italic text-arena">{p.titleEm}</em>
           </Title>
-          <p className="justificado mt-8 max-w-lg text-[17px] leading-relaxed text-calido/80">{p.text}</p>
+          <TextoCorrido className="mt-8 max-w-lg text-[17px] leading-relaxed text-calido/80">{p.text}</TextoCorrido>
           {!asPage && (
             <div className="mt-10">
               <Button href={pathFor('proyectos')}>{p.cta}</Button>

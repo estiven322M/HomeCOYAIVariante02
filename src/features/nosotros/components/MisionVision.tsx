@@ -1,5 +1,6 @@
 import { useLang } from '@/shared/i18n'
 import { SubTitle } from '@/shared/ui/SubTitle'
+import { TextoCorrido } from '@/shared/ui/TextoCorrido'
 
 /** 02 · Misión y visión: la cita del propósito y las dos tarjetas (Hoy · Misión, Hacia 2030 · Visión). */
 export function MisionVision() {
@@ -41,7 +42,7 @@ export function MisionVision() {
                   </h3>
                 </div>
                 <span aria-hidden className={`mt-8 block h-px w-10 ${rule}`} />
-                <p className="justificado mt-8 text-body">{d.t}</p>
+                <TextoCorrido className="mt-8 text-body">{d.t}</TextoCorrido>
               </article>
             ))}
           </div>

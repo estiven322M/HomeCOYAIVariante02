@@ -1,9 +1,10 @@
-import { screen, within } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { renderAt } from '@test/render'
 import { dict } from '@/content'
 import { LangSwitch } from '@/shared/i18n'
+import { NOMBRES_PROPIOS, TextoCorrido } from '@/shared/ui/TextoCorrido'
 import { Nosotros } from './components/Nosotros'
 
 const esTitle = dict.es.common.nav[0]?.label ?? ''
@@ -93,6 +94,42 @@ describe('feature nosotros', () => {
       expect(items[6]?.className).toContain('last:col-span-2')
     },
   )
+
+  it('los nombres propios del contenido de Nosotros y Inicio quedan protegidos', () => {
+    for (const lang of ['es', 'en'] as const) {
+      const textos = [
+        ...dict[lang].nosotros.historia.paragraphs,
+        dict[lang].nosotros.mision.mision.t,
+        dict[lang].home.queEs.p2,
+      ]
+      const { container } = render(
+        <>
+          {textos.map((t) => (
+            <TextoCorrido key={t.slice(0, 20)}>{t}</TextoCorrido>
+          ))}
+        </>,
+      )
+      for (const span of container.querySelectorAll('span.hyphens-none')) {
+        expect(NOMBRES_PROPIOS).toContain(span.textContent)
+      }
+      // Ningún nombre propio queda fuera de un <span> protegido.
+      const sinProteger = [...container.querySelectorAll('p')].flatMap((p) =>
+        [...p.childNodes]
+          .filter((n) => n.nodeType === 3)
+          .filter((n) =>
+            NOMBRES_PROPIOS.filter((x) => x !== 'Zio Bain').some((x) => (n.textContent ?? '').includes(x)),
+          ),
+      )
+      expect(sinProteger).toHaveLength(0)
+    }
+  })
+
+  it('la entradilla de Historia no se justifica y los párrafos de cuerpo sí', () => {
+    const { container } = renderNosotros('/')
+    const ps = [...container.querySelectorAll('#historia p')].filter((p) => p.textContent && p.textContent.length > 120)
+    expect(ps[0]?.className).not.toContain('justificado')
+    expect(ps.slice(1, 4).every((p) => p.classList.contains('justificado'))).toBe(true)
+  })
 
   it('las zonas claras llevan el patrón y el bloque oscuro de Equipo no', () => {
     const { container } = renderNosotros('/')
