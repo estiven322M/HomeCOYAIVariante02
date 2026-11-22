@@ -25,7 +25,8 @@ export const nosotros = {
     label: 'Mission and vision',
     title: 'Mission and vision',
     purpose: {
-      quote: 'To build a bridge between the ancient knowledge of the elders and the tools of the contemporary world.',
+      quote:
+        'We build a bridge between the ancient knowledge of the elders and the science, education and technologies of the contemporary world, to carry Siona culture into the future.',
       cite: 'The purpose of ÉCOYAI',
     },
     mision: {

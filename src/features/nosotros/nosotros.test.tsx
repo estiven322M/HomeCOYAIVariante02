@@ -56,13 +56,6 @@ describe('feature nosotros', () => {
     expect(container.textContent).not.toMatch(/[[^]]+]/)
   })
 
-  it.each(['es', 'en'] as const)('la cita del propósito es un fragmento literal del tercer párrafo (%s)', (lang) => {
-    const n = dict[lang].nosotros
-    const quote = n.mision.purpose.quote
-    const fragment = quote.charAt(0).toLowerCase() + quote.slice(1)
-    expect(n.historia.paragraphs[2]).toContain(fragment)
-  })
-
   it.each(['es', 'en'] as const)('la frase del pie de foto reutiliza home.queEs.quote (%s)', (lang) => {
     renderNosotros(lang === 'es' ? '/' : '/en/')
     expect(screen.getByText(dict[lang].home.queEs.quote)).toBeInTheDocument()

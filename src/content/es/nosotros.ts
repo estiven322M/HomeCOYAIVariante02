@@ -24,9 +24,10 @@ export const nosotros = {
   mision: {
     label: 'Misión y visión',
     title: 'Misión y visión',
-    /** Cita del propósito: fragmento literal del tercer párrafo de la historia (un test lo comprueba). */
+    /** Banner del propósito (texto propio, ya no es un fragmento del párrafo de Historia). */
     purpose: {
-      quote: 'Tender un puente entre el saber milenario de los abuelos y las herramientas del mundo contemporáneo.',
+      quote:
+        'Tendemos un puente entre el saber milenario de los abuelos y la ciencia, la educación y las tecnologías del mundo contemporáneo para proyectar la cultura Siona hacia el futuro.',
       cite: 'El propósito de ÉCOYAI',
     },
     mision: {
