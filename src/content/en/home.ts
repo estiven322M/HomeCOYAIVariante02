@@ -4,7 +4,6 @@ import type { home as esHome } from '@/content/es/home'
 export const home = {
   hero: {
     aria: 'Territory',
-    eyebrow: 'From the territory, toward the future',
     title: 'The territory holds a',
     titleEm: 'living memory.',
     text: 'ÉCOYAI connects territory, knowledge and technology to help safeguard the Siona language and its memory.',

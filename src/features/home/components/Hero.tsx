@@ -87,19 +87,16 @@ export function Hero() {
         style={{ transform: `translateY(${p * -40}px)`, opacity: 1 - p * 1.2 }}
       >
         <div className="max-w-2xl lg:max-w-xl xl:max-w-2xl">
-          <p className="intro-item hero-eyebrow text-[11px] uppercase tracking-[0.3em]" style={item(0)}>
-            {h.eyebrow}
-          </p>
           <h1
             className="intro-item hero-title mt-6 font-serif text-5xl font-light leading-[1.02] tracking-tight sm:text-6xl xl:text-7xl"
-            style={item(1)}
+            style={item(0)}
           >
             {h.title} <em className="italic">{h.titleEm}</em>
           </h1>
-          <p className="intro-item hero-text mt-6 max-w-md text-base leading-relaxed" style={item(2)}>
+          <p className="intro-item hero-text mt-6 max-w-md text-base leading-relaxed" style={item(1)}>
             {h.text}
           </p>
-          <div className="intro-item mt-9 flex flex-col gap-3 sm:flex-row" style={item(3)}>
+          <div className="intro-item mt-9 flex flex-col gap-3 sm:flex-row" style={item(2)}>
             <Button href={pathFor('nosotros')} variant="hero">
               {h.cta1}
             </Button>
@@ -113,21 +110,21 @@ export function Hero() {
       {/* Context markers */}
       <div
         className="intro-item hero-meta absolute bottom-[150px] right-6 z-10 hidden text-right text-[10px] uppercase leading-5 tracking-[0.3em] md:block lg:right-16"
-        style={item(7)}
+        style={item(6)}
       >
         <p>Putumayo</p>
         <p>Colombia</p>
       </div>
       <p
         className="intro-item text-calido/45 absolute right-6 top-1/2 z-10 hidden origin-right -translate-y-1/2 translate-x-[calc(50%-6px)] rotate-90 text-[10px] uppercase tracking-[0.4em] xl:block"
-        style={item(7)}
+        style={item(6)}
       >
         {h.keywords}
       </p>
       <a
         href="#origen"
         className="intro-item hero-meta hero-link absolute bottom-[140px] left-1/2 z-10 flex min-h-14 min-w-14 -translate-x-1/2 flex-col items-center justify-center gap-1 px-3 text-[10px] uppercase tracking-[0.35em]"
-        style={item(6)}
+        style={item(5)}
       >
         {h.explore}{' '}
         <span aria-hidden className="bob text-base">

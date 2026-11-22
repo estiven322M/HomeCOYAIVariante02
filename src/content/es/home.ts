@@ -2,7 +2,6 @@
 export const home = {
   hero: {
     aria: 'Territorio',
-    eyebrow: 'Desde el territorio, hacia el futuro',
     title: 'El territorio guarda una',
     titleEm: 'memoria viva.',
     text: 'ÉCOYAI conecta territorio, saberes y tecnología para contribuir a la salvaguarda de la lengua Siona y su memoria.',
