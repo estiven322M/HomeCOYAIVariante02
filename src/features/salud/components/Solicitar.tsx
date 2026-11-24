@@ -1,8 +1,9 @@
 import { env } from '@/env'
 import { useLang, usePathFor } from '@/shared/i18n'
+import { IMAGES } from '@/features/salud/images'
 import { Button } from '@/shared/ui/Button'
+import { FillImage } from '@/shared/ui/FillImage'
 import { SubTitle } from '@/shared/ui/SubTitle'
-import { SaludImage } from './SaludImage'
 import { SolicitudForm } from './SolicitudForm'
 
 /**
@@ -15,7 +16,7 @@ export function Solicitar() {
   const s = t.salud.solicitar
   return (
     <section className="relative overflow-hidden bg-(--color-noche) px-6 py-28 text-arena-clara">
-      <SaludImage id="solicitar" tone="oscuro" sizes="100vw" />
+      <FillImage spec={IMAGES.solicitar} tone="oscuro" sizes="100vw" />
       <div aria-hidden className="absolute inset-0 bg-(--color-noche)/60" />
       <div className="relative mx-auto grid max-w-6xl items-start gap-12 md:grid-cols-[5fr_7fr] md:gap-16">
         <div>

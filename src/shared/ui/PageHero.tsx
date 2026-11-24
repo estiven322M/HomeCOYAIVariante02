@@ -1,8 +1,21 @@
 import type { ReactNode } from 'react'
 
+import { srcSetOf, type ImageSpec } from './FillImage'
 import { ImagePlaceholder } from './ImagePlaceholder'
 
 export type PageHeroImage = { src: string; srcSet: string; sizes: string; width: number; height: number }
+
+/** Imagen de hero (1280 px por defecto, con su srcset) a partir de un `ImageSpec`, o `null` mientras no exista (marcador). */
+export function pageHeroImage(spec: ImageSpec): PageHeroImage | null {
+  if (!spec.available) return null
+  return {
+    src: `${spec.base}-1280.webp`,
+    srcSet: srcSetOf(spec),
+    sizes: '(min-width: 1138px) 100vw, 1138px',
+    width: spec.width,
+    height: spec.height,
+  }
+}
 
 /**
  * Hero de las páginas interiores: foto a pantalla completa (imagen principal: prioridad alta, sin lazy), velos que
