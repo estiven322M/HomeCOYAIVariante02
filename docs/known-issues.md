@@ -63,8 +63,8 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
 ## Contenido
 
 - **Salud: pendientes.** (1) El texto del «Protocolo de preparación y salud» es una propuesta basada solo en los cuatro
-  puntos de los stakeholders: la organización debe validarlo antes del merge. (2) El fondo `solicitar` es un recorte de 1200 px (el original mide
-  1280×960): en pantallas de 1920 px se estira 1,6× y se ve algo blando bajo el velo. (3) Netlify: activar en el panel la detección de formularios y la notificación
+  puntos de los stakeholders: la organización debe validarlo antes del merge. (2) La foto del hero mide 1280×960 (enderezada,
+  1260×936) y no se amplía: en pantallas de 1920 px se estira 1,5× y se ve algo blanda bajo los velos. (3) Netlify: activar en el panel la detección de formularios y la notificación
   por correo; comprobar en una previsualización que el envío queda guardado y llega la notificación (no se ha verificado).
   (4) La entrada escalonada del hero de Inicio y el resto de Salud no tienen aún revisión de accesibilidad con lector de
   pantalla real (solo axe y pruebas automáticas).

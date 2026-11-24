@@ -3,13 +3,21 @@ import type { ReactNode } from 'react'
 import { srcSetOf, type ImageSpec } from './FillImage'
 import { ImagePlaceholder } from './ImagePlaceholder'
 
-export type PageHeroImage = { src: string; srcSet: string; sizes: string; width: number; height: number }
+export type PageHeroImage = {
+  src: string
+  srcSet: string
+  sizes: string
+  width: number
+  height: number
+  /** Clases `object-*` propias de una foto; sin ellas, el encuadre común. */
+  position?: string
+}
 
-/** Imagen de hero (1280 px por defecto, con su srcset) a partir de un `ImageSpec`, o `null` mientras no exista (marcador). */
+/** Imagen de hero (1280 px por defecto, o la mayor si no hay de ese ancho; con su srcset) a partir de un `ImageSpec`, o `null` mientras no exista (marcador). */
 export function pageHeroImage(spec: ImageSpec): PageHeroImage | null {
   if (!spec.available) return null
   return {
-    src: `${spec.base}-1280.webp`,
+    src: `${spec.base}-${spec.widths.includes(1280) ? 1280 : spec.widths.at(-1)}.webp`,
     srcSet: srcSetOf(spec),
     sizes: '(min-width: 1138px) 100vw, 1138px',
     width: spec.width,
@@ -55,7 +63,7 @@ export function PageHero({
           alt=""
           fetchPriority="high"
           decoding="async"
-          className="absolute inset-0 h-full w-full object-cover object-[55%_center] md:object-center"
+          className={`absolute inset-0 h-full w-full object-cover ${image.position ?? 'object-[55%_center] md:object-center'}`}
         />
       ) : (
         <ImagePlaceholder tone="oscuro" />

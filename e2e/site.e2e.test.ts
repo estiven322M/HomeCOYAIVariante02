@@ -630,7 +630,7 @@ describe.each([
   const items = dict[lang].salud.encuentros.items
   const buttons = (page: Page) => page.locator('main button[id^="practica-"]')
 
-  it('escritorio: la 01 abierta al cargar, una sola abierta, la imagen y el pie siguen a la práctica abierta', async () => {
+  it('escritorio: la primera abierta al cargar, una sola abierta, la imagen y el pie siguen a la práctica abierta', async () => {
     const page = await (await context()).newPage()
     await page.goto(BASE + path, { waitUntil: 'networkidle' })
     await expect.poll(() => buttons(page).first().getAttribute('aria-expanded')).toBe('true')

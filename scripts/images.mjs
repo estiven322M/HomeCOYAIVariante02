@@ -24,10 +24,22 @@ import sharp from 'sharp'
  *
  * - `selva`: para imágenes de FONDO (hero, llamado a la acción) con velo encima: baja luminosidad y saturación, tonos
  *   cálidos, algo más de contraste y viñeta suave, para parecerse al hero de Nosotros. Úsalo en futuras imágenes de fondo.
+ * - `rio`: SOLO el hero de Salud. La foto del río es nublada y oscura: con `selva`, bajo los velos del hero, no se
+ *   reconocía. Más brillo, viñeta suave y algo de calidez para que el agua no quede gris. Si se cambia, hay que volver a
+ *   medir el contraste AA del texto del hero a 1440 y 390.
  * - `serie`: ajuste leve y uniforme para retratos y fotos de contenido: conserva el color natural y las deja como una serie.
  * @type {Record<string, { brightness: number, saturation: number, warm: [number, number, number], contrast: number, vignette: number, vignetteStart: number, vignetteRight?: number }>}
  */
 const GRADES = {
+  rio: {
+    brightness: 0.95,
+    saturation: 0.87,
+    warm: [1.05, 1, 0.92],
+    contrast: 1.18,
+    vignette: 0.25,
+    vignetteStart: 0.55,
+    vignetteRight: 0.1,
+  },
   selva: {
     brightness: 0.58,
     saturation: 0.75,
@@ -92,10 +104,12 @@ const JOBS = [
     name: 'salud-hero',
     src: 'assets-src/salud/hero',
     out: 'public/salud/hero',
-    widths: [960, 1280, 1920],
+    widths: [960, 1260], // el original mide 1280×960; sin los bordes del giro quedan 1260 px: no se amplía
     quality: 72,
     optional: true,
-    grade: 'selva',
+    grade: 'rio',
+    tilt: -1, // endereza el horizonte (la orilla lejana está ~0,5° inclinada; la ribera cercana, más por perspectiva)
+    crop: { left: 18, top: 23, width: 1260, height: 936 }, // lo justo para quitar los bordes del giro (lienzo 1297×982)
   },
   {
     name: 'salud-llamado',
@@ -143,17 +157,6 @@ const JOBS = [
     quality: 52,
     optional: true,
     grade: 'serie',
-  },
-  {
-    name: 'salud-solicitar',
-    src: 'assets-src/salud/solicitar',
-    out: 'public/salud/solicitar',
-    widths: [960, 1200], // el recorte 16:9 mide 1200 px: no se amplía (ver docs/known-issues.md)
-    quality: 76,
-    optional: true,
-    grade: 'serie',
-    tilt: -1, // endereza el horizonte (la orilla lejana está ~0,5° inclinada; la ribera cercana, más por perspectiva)
-    crop: { left: 48, top: 153, width: 1200, height: 675 }, // 16:9 sobre el lienzo ya girado (1297×982)
   },
   // Proyectos (originales en assets-src/proyectos/; se omiten mientras falten: `optional`). Tras generarlos,
   // `available: true` en src/features/proyectos/images.ts. Hero y fondo del llamado: `selva`; el resto, `serie`.

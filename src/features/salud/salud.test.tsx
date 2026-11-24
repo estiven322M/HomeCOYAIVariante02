@@ -22,7 +22,7 @@ describe('feature salud', () => {
     expect(container.textContent).not.toMatch(/\[[^\]]+\]/)
   })
 
-  it.each(langs)('imágenes: hero y fondo decorativos; retrato y prácticas con texto alternativo (%s)', (lang, path) => {
+  it.each(langs)('imágenes: hero decorativo; retrato y prácticas con texto alternativo (%s)', (lang, path) => {
     const { container } = renderAt(<Salud />, path)
     const s = dict[lang].salud
     const imgs = [...container.querySelectorAll('img')]
@@ -31,9 +31,8 @@ describe('feature salud', () => {
     expect(alts).toContain(s.llamado.imageAlt)
     expect(s.llamado.imageAlt).toContain('Victoriano Piaguaje Yaiguaje')
     for (const a of s.encuentros.imageAlts) expect(alts).toContain(a)
-    // Hero y fondo de «Solicitar»: decorativos (los demás, con texto salvo las de opacidad 0 del acordeón de escritorio).
+    // El hero es decorativo (los demás, con texto salvo las de opacidad 0 del acordeón de escritorio).
     expect(imgs.filter((i) => i.getAttribute('src')?.includes('/salud/hero'))[0]?.getAttribute('alt')).toBe('')
-    expect(imgs.filter((i) => i.getAttribute('src')?.includes('/salud/solicitar'))[0]?.getAttribute('alt')).toBe('')
   })
 
   it.each(langs)('El llamado: dos párrafos justificados y una cita (%s)', (lang, path) => {
@@ -63,7 +62,7 @@ describe('acordeón de prácticas', () => {
   })
 
   it.each(langs)(
-    'al cargar solo la 01 está abierta; una sola abierta a la vez; la imagen sigue a la abierta (%s)',
+    'al cargar solo la primera está abierta; una sola abierta a la vez; la imagen sigue a la abierta (%s)',
     async (lang, path) => {
       renderAt(<Salud />, path)
       const items = dict[lang].salud.encuentros.items
@@ -77,13 +76,13 @@ describe('acordeón de prácticas', () => {
       expect(panel0).toHaveAttribute('role', 'region')
       // La figura lateral muestra el pie de la práctica abierta.
       const caption = () => document.querySelector('figcaption')?.textContent
-      expect(caption()).toBe(`01 · ${items[0]?.title}`)
+      expect(caption()).toBe(items[0]?.title)
 
       await userEvent.click(btn(2))
       expect(btn(2)).toHaveAttribute('aria-expanded', 'true')
       expect(btn(0)).toHaveAttribute('aria-expanded', 'false')
       expect(document.querySelectorAll('[aria-expanded="true"]')).toHaveLength(1)
-      expect(caption()).toBe(`03 · ${items[2]?.title}`)
+      expect(caption()).toBe(items[2]?.title)
 
       // Indicadores: las cerradas llevan «+»; la abierta, un rombo de estado (nunca un «−», que sugeriría cerrarla).
       for (const i of [0, 1, 3]) expect(btn(i).querySelector('svg path')?.getAttribute('d')).toBe('M2 7H12M7 2V12')
@@ -112,13 +111,16 @@ describe('acordeón de prácticas', () => {
     expect(second).toHaveAttribute('aria-expanded', 'false')
   })
 
-  it('los separadores y los rombos numerados son decorativos', () => {
+  it('los separadores y los rombos (sin número) son decorativos', () => {
     const { container } = renderAt(<Salud />, '/salud-y-medicina-tradicional/')
     const separadores = container.querySelectorAll('.rombos-separador')
     expect(separadores).toHaveLength(5)
     for (const s of separadores) expect(s.closest('[aria-hidden="true"]')).not.toBeNull()
     for (const b of container.querySelectorAll('button')) {
       expect(b.querySelector('[aria-hidden="true"]')).not.toBeNull()
+    }
+    for (const b of container.querySelectorAll('button[id^="practica-"]')) {
+      expect(b.textContent).not.toMatch(/\d/)
     }
   })
 })
