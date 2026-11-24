@@ -4,6 +4,13 @@
 // sin reescribir componentes. La geometría del mapa (ríos y posición de los resguardos) NO va aquí: está en
 // `features/proyectos/mapa.ts`; aquí solo lo traducible (nombres de ríos, leyenda y descripción accesible).
 
+/**
+ * Espacio de no separación: une «Zio» y «Bain» en los títulos para que el nombre no se parta entre dos líneas. Solo en
+ * títulos de la página; el <title> y la descripción para buscadores van en texto plano (con espacio normal).
+ * (Nota: oxfmt convierte la secuencia de escape en el carácter literal; por eso va en una constante con nombre.)
+ */
+export const NBSP = ' '
+
 export type Proyecto = {
   slug: string
   /** Título y descripción para buscadores (≤ 160 caracteres la descripción). */
@@ -62,7 +69,7 @@ export const proyectos: { items: [Proyecto, ...Proyecto[]] } = {
       },
       hero: {
         eyebrow: 'Saberes ancestrales y lengua materna',
-        title: 'Preservación y revitalización de la lengua Siona (Zio Bain)',
+        title: `Preservación y revitalización de la lengua Siona (Zio${NBSP}Bain)`,
         subtitle:
           'Articulando la sabiduría ancestral de los mayores en los resguardos del Putumayo con herramientas educativas y de inteligencia artificial para mantener viva la voz de la «Gente de la Chagra» en las nuevas generaciones.',
         // Oculta hasta que la organización confirme los estados (ver known-issues).

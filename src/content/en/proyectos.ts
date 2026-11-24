@@ -1,4 +1,4 @@
-import type { Proyecto } from '@/content/es/proyectos'
+import { NBSP, type Proyecto } from '@/content/es/proyectos'
 
 // Contenido en inglés: debe satisfacer exactamente el tipo del español. Nombres propios (Zio Bain, Putumayo, Puerto Asís,
 // Puerto Leguízamo, Piñuña Blanco, Cuehembí y los resguardos) sin traducir; «chagra» y «resguardos» llevan glosa en su
@@ -14,7 +14,7 @@ export const proyectos: { items: [Proyecto, ...Proyecto[]] } = {
       },
       hero: {
         eyebrow: 'Ancestral knowledge and mother tongue',
-        title: 'Preserving and revitalizing the Siona language (Zio Bain)',
+        title: `Preserving and revitalizing the Siona language (Zio${NBSP}Bain)`,
         subtitle:
           'Bringing together the ancestral wisdom of the elders in the Putumayo resguardos with educational and artificial intelligence tools, to keep the voice of the “People of the Chagra” alive for new generations.',
         estado: {
