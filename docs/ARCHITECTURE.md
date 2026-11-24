@@ -352,6 +352,21 @@ hidrató, el propio script marca el intro como visto y recorre `leaving` → `re
 hidratar, `IntroProvider` lee la fase de `data-intro` y continúa desde ahí, sin volver a mostrarlo. Sin intro también
 con `navigator.connection.saveData` o `effectiveType` `slow-2g`/`2g`/`3g` (mismas condiciones en ambos).
 
+### Videos de fondo
+
+Tres piezas en `shared`: `useBackgroundVideo` (estado), `ui/BackgroundVideo` (el `<video>` decorativo) y
+`ui/VideoToggle` (botón «Pausar» / «Reproducir», WCAG 2.2.2). El botón va aparte porque debe quedar por encima de los
+velos y fuera de la capa del video (en la portada, esa capa se escala y se desvanece al desplazarse).
+
+- El HTML prerenderizado lleva **solo el póster** (precargado): sin fuentes, sin `autoplay` y sin botón. Sin JavaScript
+  no se descarga el video.
+- Tras hidratar se carga y se reproduce, **salvo** con `prefers-reduced-motion`, `saveData` o `effectiveType`
+  `slow-2g`/`2g`/`3g` (`shared/lib/network.ts`, la misma regla que el intro). En esos casos no se descarga hasta que el
+  visitante pulsa «Reproducir».
+- La etiqueta del botón sale de los eventos `play` y `pause` del video (un `play()` rechazado la deja en «Reproducir»).
+  La pausa no se recuerda al salir de la página ni al cambiar de idioma.
+- `onReady` se llama con `canplay`, si el video falla o si no se va a cargar; la portada lo usa para cerrar el intro.
+
 ## Variables de entorno
 
 Se leen en un solo lugar, `src/env.ts` (tipadas en `src/vite-env.d.ts`); ver `.env.example`.

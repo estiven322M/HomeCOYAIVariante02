@@ -35,6 +35,13 @@ export const common = {
   privacy: { title: 'Política de privacidad', description: 'Política de tratamiento de datos personales de ÉCOYAI.' },
   soon: 'Esta sección estará disponible pronto',
   backHome: 'Volver al inicio',
+  /** Botón de pausa de los videos de fondo. El nombre accesible empieza por el texto visible. */
+  video: {
+    pause: 'Pausar',
+    play: 'Reproducir',
+    pauseAria: 'Pausar el video de fondo',
+    playAria: 'Reproducir el video de fondo',
+  },
   notFound: {
     title: 'Página no encontrada',
     text: 'La dirección no existe o fue movida.',

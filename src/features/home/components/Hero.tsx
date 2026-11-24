@@ -1,6 +1,8 @@
 import type { CSSProperties } from 'react'
 import { BackgroundVideo } from '@/shared/ui/BackgroundVideo'
 import { Button } from '@/shared/ui/Button'
+import { VideoToggle } from '@/shared/ui/VideoToggle'
+import { useBackgroundVideo } from '@/shared/hooks/useBackgroundVideo'
 import { useScrollY } from '@/shared/hooks/useScrollY'
 import { useViewportHeight } from '@/shared/hooks/useViewportHeight'
 import { useLang, usePathFor } from '@/shared/i18n'
@@ -14,7 +16,9 @@ const POSTER_SRC = '/video/video-poster.jpg'
 const item = (i: number) => ({ '--i': i }) as CSSProperties
 
 export function Hero() {
-  const h = useLang().t.home.hero
+  const { t } = useLang()
+  const h = t.home.hero
+  const video = useBackgroundVideo()
   const pathFor = usePathFor()
   const y = useScrollY()
   const { reportVideo } = useIntro()
@@ -50,7 +54,7 @@ export function Hero() {
             <path d="M-5 78 C 20 70, 30 88, 50 72 S 80 55, 105 62" stroke="#d8c8ac" strokeWidth="0.6" fill="none" />
           </svg>
         </div>
-        <BackgroundVideo sources={VIDEO_SOURCES} poster={POSTER_SRC} onReady={reportVideo} />
+        <BackgroundVideo video={video} sources={VIDEO_SOURCES} poster={POSTER_SRC} onReady={reportVideo} />
       </div>
       {/* Legibility gradients (the video keeps full opacity) */}
       <div className="hero-grad-v absolute inset-0" aria-hidden />
@@ -109,6 +113,13 @@ export function Hero() {
           ↓
         </span>
       </a>
+      {/* Pausa del video (WCAG 2.2.2): a la derecha, en la franja entre los botones del hero y «Explora» / «Putumayo · Colombia». */}
+      <VideoToggle
+        video={video}
+        labels={t.common.video}
+        className="intro-item absolute bottom-[206px] right-6 z-10 lg:right-16"
+        style={item(6)}
+      />
     </section>
   )
 }

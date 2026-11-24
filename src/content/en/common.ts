@@ -36,6 +36,12 @@ export const common = {
   privacy: { title: 'Privacy policy', description: 'ÉCOYAI’s personal data processing policy.' },
   soon: 'This section will be available soon',
   backHome: 'Back to home',
+  video: {
+    pause: 'Pause',
+    play: 'Play',
+    pauseAria: 'Pause background video',
+    playAria: 'Play background video',
+  },
   notFound: {
     title: 'Page not found',
     text: 'The address does not exist or has moved.',

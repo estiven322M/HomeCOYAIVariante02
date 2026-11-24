@@ -156,8 +156,10 @@ ninguna propia**; lo que sigue ya existía y está fuera del alcance de la Fase 
 - **ESLint fijado en 9.** `eslint-plugin-jsx-a11y` declara compatibilidad hasta ESLint 9; ESLint 9.39 aparece como
   «deprecated» en pnpm. Subir a ESLint 10 cuando el plugin lo soporte.
 - **Cobertura de pruebas.** Humo por página e idioma, enlaces y anclas, HTML generado y una suite corta de extremo a
-  extremo (menú, idioma, 404, intro al empezar en la portada; `pnpm test:e2e`). Siguen sin pruebas automáticas la
-  cronología completa del intro, el carrusel y el video (se verifican a mano).
+  extremo (menú, idioma, 404, intro al empezar en la portada, video de fondo y su botón; `pnpm test:e2e`). Siguen sin
+  pruebas automáticas la cronología completa del intro y el carrusel (se verifican a mano).
+- **Portada en móviles bajos (390×600).** El h1 queda en parte bajo el encabezado fijo: el hero tiene altura de pantalla
+  (mínimo 600 px) y el contenido se alinea abajo. Es anterior al botón de pausa del video. _Rediseño de Inicio._
 - **`console.error` en el `ErrorBoundary`.** No hay servicio de registro de errores.
 - **Figma Make.** Los scripts de `.figma/make` (`deploy` usa `--build-dir dist`) ya no coinciden con la salida
   `build/client`, y los plugins de Figma no se han probado con React Router. La detección del entorno Figma
