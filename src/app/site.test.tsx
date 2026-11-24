@@ -36,7 +36,7 @@ const PAGES: Record<RouteKey, ComponentType> = {
 const h1Of = (key: RouteKey, lang: 'es' | 'en') => {
   const t = dict[lang]
   if (key === 'home') return t.home.hero.title
-  if (key === 'proyectos') return t.home.proyecto.title
+  if (key === 'proyectos') return t.proyectos.items[0].hero.title
   if (key === 'colaborar') return t.home.colaborar.title
   if (key === 'salud') return t.salud.hero.title
   if (key === 'privacidad') return t.common.privacy.title
