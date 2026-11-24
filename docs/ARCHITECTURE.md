@@ -366,6 +366,11 @@ velos y fuera de la capa del video (en la portada, esa capa se escala y se desva
 - La etiqueta del botón sale de los eventos `play` y `pause` del video (un `play()` rechazado la deja en «Reproducir»).
   La pausa no se recuerda al salir de la página ni al cambiar de idioma.
 - `onReady` se llama con `canplay`, si el video falla o si no se va a cargar; la portada lo usa para cerrar el intro.
+- **Pruebas y Git LFS.** CI no descarga LFS (consume la cuota de ancho de banda), así que allí los medios de `public/`
+  son punteros. Las e2e responden a `/video/*.{webm,mp4}` con `e2e/fixtures/video-prueba.webm` (unos 3 KB, en git
+  normal: `.gitattributes` excluye `e2e/fixtures/` de LFS). Ninguna prueba debe depender del contenido de un archivo
+  LFS. Para reproducir CI en local: tras el build, sustituye el archivo en `build/client` por su puntero
+  (`git cat-file blob HEAD:public/video/video-hero.webm > build/client/video/video-hero.webm`).
 
 ## Variables de entorno
 

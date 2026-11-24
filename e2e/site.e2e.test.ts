@@ -1,6 +1,7 @@
 // Pruebas de extremo a extremo (Playwright + Vitest). Sirven build/client con scripts/preview.mjs, que imita a Netlify
 // (404 real, sin fallback SPA). Uso: pnpm run build && pnpm run test:e2e
 import { spawn, type ChildProcess } from 'node:child_process'
+import { readFileSync } from 'node:fs'
 import AxeBuilder from '@axe-core/playwright'
 import { chromium, type Browser, type BrowserContext, type Page } from 'playwright'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -315,6 +316,11 @@ describe('intro: solo si la sesión empieza en la portada', () => {
   })
 })
 
+// Los videos de public/ están en Git LFS y CI no los descarga (cuota): allí solo existe el puntero. Estas pruebas
+// comprueban el comportamiento, así que Playwright responde a /video/* con un video mínimo versionado en git normal
+// (64×36, 10 s; `ffmpeg -f lavfi -i testsrc=size=64x36:rate=5:duration=10 -c:v libvpx-vp9 -crf 55`).
+const VIDEO_PRUEBA = readFileSync(new URL('./fixtures/video-prueba.webm', import.meta.url))
+
 describe('video de fondo de la portada', () => {
   async function home(
     opts: { width?: number; height?: number; reducedMotion?: boolean; connection?: object; js?: boolean } = {},
@@ -328,6 +334,9 @@ describe('video de fondo de la portada', () => {
     await ctx.addInitScript(
       (c) => Object.defineProperty(navigator, 'connection', { value: c, configurable: true }),
       opts.connection ?? { saveData: false, effectiveType: '4g' },
+    )
+    await ctx.route('**/video/*.{webm,mp4}', (route) =>
+      route.fulfill({ body: VIDEO_PRUEBA, contentType: 'video/webm' }),
     )
     const page = await ctx.newPage()
     const requests: string[] = []
@@ -344,6 +353,8 @@ describe('video de fondo de la portada', () => {
   it('se reproduce solo y el botón lo pausa y lo reanuda', async () => {
     const { ctx, page, state } = await home()
     await expect.poll(async () => (await state()).time).toBeGreaterThan(0)
+    // Es el video de prueba: si la intercepción dejara de aplicarse, en local pasaría con el real y en CI fallaría.
+    expect(await page.locator('#inicio video').evaluate((v: HTMLVideoElement) => v.videoWidth)).toBe(64)
     await page.getByRole('button', { name: names.pauseAria }).click()
     expect((await state()).paused).toBe(true)
     const { time } = await state()
