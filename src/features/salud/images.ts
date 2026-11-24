@@ -10,17 +10,11 @@ import { pageHeroImage } from '@/shared/ui/PageHero'
 
 export type SaludImageId = 'hero' | 'llamado' | 'practica1' | 'practica2' | 'practica3' | 'practica4'
 
-const wide = (base: string): ImageSpec => ({
-  available: true,
-  base,
-  widths: [960, 1280, 1920],
-  width: 1920,
-  height: 1080,
-})
 const tall = (base: string): ImageSpec => ({ available: true, base, widths: [480, 900], width: 900, height: 1125 })
 
 export const IMAGES: Record<SaludImageId, ImageSpec> = {
-  hero: wide('/salud/hero'),
+  // El original mide 1280×960 y, enderezado, quedan 1260×936: no se amplía.
+  hero: { available: true, base: '/salud/hero', widths: [960, 1260], width: 1260, height: 936 },
   llamado: tall('/salud/llamado'),
   practica1: tall('/salud/practica-1-yage'),
   practica2: tall('/salud/practica-2-purgas-banos'),
@@ -32,5 +26,14 @@ export const PRACTICE_IMAGES = ['practica1', 'practica2', 'practica3', 'practica
 
 /** Imagen del hero para `PageHero`, o `null` mientras no exista (marcador). */
 export function heroImage() {
-  return pageHeroImage(IMAGES.hero)
+  const image = pageHeroImage(IMAGES.hero)
+  // En pantallas estrechas se ve la parte izquierda de la foto (la orilla, con el río detrás del texto).
+  // De 1024 a 1279 px el final del título cae sobre el cielo, donde el velo casi no cubre: se encuadra abajo y se
+  // atenúa un poco la foto para cumplir contraste AA.
+  return (
+    image && {
+      ...image,
+      position: 'object-[20%_center] md:object-center lg:max-xl:object-[center_bottom] lg:max-xl:brightness-90',
+    }
+  )
 }

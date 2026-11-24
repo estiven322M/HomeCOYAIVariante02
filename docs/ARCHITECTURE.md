@@ -256,14 +256,15 @@ organización antes de publicar. Sin textos entre corchetes (un test lo impide).
   un `useLayoutEffect` pasa a una sola abierta antes de pintar (mismo patrón que el intro). El **protocolo** es un acordeón
   que se puede cerrar y sale abierto sin JavaScript.
 - **Justificado:** solo los dos párrafos de «El llamado» (`TextoCorrido`); Seguridad, prácticas y protocolo van a la izquierda.
-- **Imágenes** (`features/salud/images.ts`): hero, llamado (4:5, el Taita Victoriano Piaguaje Yaiguaje), 4 prácticas (4:5);
+- **Imágenes** (`features/salud/images.ts`): hero, llamado (4:5, el Taita Victoriano Piaguaje Yaiguaje) y 4 prácticas (4:5);
   las 6 están activas (originales en `assets-src/salud/`, derivados en `public/salud/`).
   El hero es decorativo (`alt=""`); el retrato y las prácticas llevan `imageAlt`/`imageAlts` en `content/{es,en}/salud.ts`
   (en el acordeón de escritorio solo la imagen visible lleva alt). Si falta alguna (`available: false`) se ve
   `ImagePlaceholder`. `pnpm images` aplica un **grado de color** (`GRADES` en `scripts/images.mjs`, sin tocar los originales):
-  `selva` (hero, para parecerse al de Nosotros: menos brillo y saturación, viñeta con más peso a la derecha) y `serie`
-  (retrato y prácticas: ajuste leve). Recorte: retrato 4:5 desplazado a la derecha.
-  Pesos máximos: hero 1920 px ≈ 327 KB; el resto ≤ 150 KB (prácticas y retrato a 900 px; la práctica 3,
+  `rio` (solo este hero: la foto del río es oscura y con `selva` no se reconocía; más brillo, viñeta suave y algo de calidez;
+  el hero usa además `object-[20%_center]` en pantallas estrechas para que se vea la orilla y, de 1024 a 1279 px, encuadre abajo y `brightness-90` por contraste) y `serie`
+  (retrato y prácticas: ajuste leve). Recortes: retrato 4:5 desplazado a la derecha; hero (el río) girado 1° y recortado solo
+  lo necesario para quitar los bordes del giro (1260×936, no se amplía). Pesos máximos: hero 1260 px ≈ 38 KB; el resto ≤ 150 KB (prácticas y retrato a 900 px; la práctica 3,
   una foto ruidosa, usa `denoise`).
 - **Formulario** (`Solicitar`, `SolicitudForm`): Netlify Forms con interruptor `VITE_FORMS_ENABLED`; ver
   [ADR 0009](./adr/0009-formularios.md). Rutas `/gracias/` (`/en/thank-you/`) y `/privacidad/` (`/en/privacy/`) fuera de
