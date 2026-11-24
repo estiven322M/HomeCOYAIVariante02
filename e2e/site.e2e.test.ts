@@ -720,3 +720,74 @@ describe.each([
     await page.context().close()
   })
 })
+
+// Proyectos: desplegable de resguardos (abierto al cargar, con teclado, sin JavaScript), mapa con descripción, «Zio Bain»
+// sin partir en el título, sin scroll horizontal a 390 px y el llamado a la acción que lleva a Donaciones / Alianzas.
+describe.each([
+  ['es', pathFor('proyectos', 'es')],
+  ['en', pathFor('proyectos', 'en')],
+] as const)('Proyectos · %s', (lang, path) => {
+  const p = dict[lang].proyectos.items[0]
+  const toggle = (page: Page) => page.getByRole('button', { name: p.resguardos.disclosure })
+
+  it('el desplegable de resguardos está abierto al cargar y se opera con el teclado', async () => {
+    const page = await (await context()).newPage()
+    await page.goto(BASE + path, { waitUntil: 'networkidle' })
+    expect(await toggle(page).getAttribute('aria-expanded')).toBe('true')
+    expect(await page.locator('#resguardos-panel').isVisible()).toBe(true)
+    await toggle(page).focus()
+    await page.keyboard.press('Enter')
+    expect(await toggle(page).getAttribute('aria-expanded')).toBe('false')
+    expect(await page.locator('#resguardos-panel').isVisible()).toBe(false)
+    await page.keyboard.press('Space')
+    expect(await page.locator('#resguardos-panel').isVisible()).toBe(true)
+    await page.context().close()
+  })
+
+  it('sin JavaScript el desplegable está abierto con la lista de resguardos', async () => {
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, javaScriptEnabled: false })
+    const page = await ctx.newPage()
+    await page.goto(BASE + path)
+    expect(await page.locator('#resguardos-panel').isVisible()).toBe(true)
+    for (const name of ['Buenavista', 'Piñuña Blanco', 'El Hacha', 'Santa Cruz de Piñuña Blanco'])
+      expect(await page.locator('#resguardos-panel').getByText(name, { exact: true }).isVisible(), name).toBe(true)
+    await ctx.close()
+  })
+
+  it('el mapa es una imagen con su descripción accesible', async () => {
+    const page = await (await context()).newPage()
+    await page.goto(BASE + path, { waitUntil: 'networkidle' })
+    const map = page.getByRole('img', { name: p.resguardos.mapa.desc })
+    expect(await map.count()).toBe(1)
+    expect(await map.evaluate((e) => e.tagName.toLowerCase())).toBe('svg')
+    await page.context().close()
+  })
+
+  it('a 390 px: sin scroll horizontal, «Zio Bain» no se parte en el h1 y no hay textos entre corchetes', async () => {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } })
+    const page = await ctx.newPage()
+    await page.goto(BASE + path, { waitUntil: 'networkidle' })
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+    const lines = await page.evaluate(() => {
+      const t = document.querySelector('h1')?.firstChild
+      const i = t?.textContent?.indexOf('Zio') ?? -1
+      if (!t || i < 0) return -1
+      const r = document.createRange()
+      r.setStart(t, i)
+      r.setEnd(t, i + 8)
+      return r.getClientRects().length
+    })
+    expect(lines).toBe(1)
+    expect(await page.evaluate(() => /\[[^\]]+\]/.test(document.body.innerText))).toBe(false)
+    await ctx.close()
+  })
+
+  it('el botón del llamado a la acción lleva a Donaciones / Alianzas en el mismo idioma', async () => {
+    const page = await (await context()).newPage()
+    await page.goto(BASE + path, { waitUntil: 'networkidle' })
+    await page.getByRole('link', { name: new RegExp(p.cta.button) }).click()
+    await page.waitForURL(BASE + pathFor('colaborar', lang))
+    expect(await page.locator('h1').count()).toBe(1)
+    await page.context().close()
+  })
+})

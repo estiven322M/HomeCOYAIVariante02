@@ -23,7 +23,7 @@ src/
     ErrorBoundary.tsx pantalla de respaldo accesible
     layout/           RootLayout (<main id="contenido">), Intro (overlay), SideNav, Footer (global), FocusOnNavigate
   pages/            un componente por página; solo ensambla secciones
-  features/         un dominio por carpeta (hoy: home, nosotros, salud)
+  features/         un dominio por carpeta (hoy: home, nosotros, proyectos, salud)
     <dominio>/components/  componentes propios del dominio
   shared/
     ui/             componentes genéricos sin lógica de negocio (Button, Eyebrow, Reveal…)
@@ -44,8 +44,8 @@ test/               render con router, preparación común y verificación poste
 e2e/                pruebas de extremo a extremo con Playwright (menú, idioma, 404, intro)
 ```
 
-Solo existen las features que tienen contenido propio. `proyectos`, `salud`, `eventos`, `galeria`, `colaborar` y `contacto` no tienen feature:
-sus páginas reutilizan secciones existentes (`Proyecto` y `Colaborar` de `home`, con `asPage`) o componentes de `shared/ui`.
+Solo existen las features que tienen contenido propio. `eventos`, `galeria`, `colaborar` y `contacto` no tienen feature:
+sus páginas reutilizan secciones existentes (`Colaborar` de `home`, con `asPage`) o componentes de `shared/ui`.
 No se crean carpetas vacías.
 
 ## Reglas de dependencia
@@ -114,7 +114,7 @@ cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">
 - **Pie global** (`app/layout/Footer.tsx`): enlaces reales a todas las páginas, así que sin JavaScript basta para
   recorrer el sitio. «Aviso legal» y «Política de privacidad» no se muestran hasta que exista su contenido; las redes
   (`common.footer.socials`, lista `{name, url}`) tampoco mientras la lista esté vacía.
-- **Páginas con contenido por llegar** (`proyectos`, `colaborar`; y `eventos`, `galeria` y `contacto`, que solo
+- **Páginas con contenido por llegar** (`colaborar`; y `eventos`, `galeria` y `contacto`, que solo
   tienen `ProvisionalPage`: su nombre y descripción de `common.nav` como título y entradilla): título, el texto que ya
   existe y `SoonNotice` («Esta sección estará disponible pronto» + enlace a la portada). Ningún botón apunta a la página en la
   que está (un test lo comprueba).
@@ -268,6 +268,39 @@ organización antes de publicar. Sin textos entre corchetes (un test lo impide).
 - **Formulario** (`Solicitar`, `SolicitudForm`): Netlify Forms con interruptor `VITE_FORMS_ENABLED`; ver
   [ADR 0009](./adr/0009-formularios.md). Rutas `/gracias/` (`/en/thank-you/`) y `/privacidad/` (`/en/privacy/`) fuera de
   `NAV_KEYS` y con `noindex` (`NOINDEX_ROUTES`).
+
+## Página Proyectos (lengua Siona)
+
+`features/proyectos/components/`: `Proyectos.tsx` ensambla `PageHero` (con la línea de estado como `children`), `PorQue`, `Iniciativa`,
+una zona clara con `Resguardos` + `Compromiso` y `Llamado`. Contenido: `t.proyectos.items` (`content/{es,en}/proyectos.ts`).
+
+- **Modelo para varios proyectos.** `t.proyectos.items` es una LISTA (cada proyecto con su `slug`); `ProyectosPage` muestra
+  `items[0]`. Los componentes reciben el proyecto como dato (`<Proyectos project={…} />`), así que cuando llegue un segundo
+  proyecto `/proyectos/` podrá pasar a ser índice y cada proyecto tendrá su ruta sin reescribir componentes (el índice
+  NO está construido). Título y descripción para buscadores salen de `items[0].meta`.
+- **Línea de estado del hero.** Sale del contenido (`hero.estado.items`) y `hero.estado.visible` la oculta entera con un solo
+  cambio. Hoy es `false` hasta que la organización confirme los estados (ver known-issues).
+- **Zonas con patrón lateral.** «Por qué» (sola) y «Resguardos» + «Compromiso» (una sola `PatternZone`); la iniciativa
+  (oscura), el hero y el llamado quedan fuera.
+- **Justificado:** solo los dos párrafos de «Por qué» y la entradilla de «Compromiso» (`TextoCorrido`). La ficha, las tarjetas,
+  las referencias y la entradilla serif de la iniciativa van a la izquierda.
+- **Resguardos y mapa.** `Resguardos` usa el `Disclosure` compartido, abierto en el HTML y en el primer render (sin JavaScript se
+  ve la lista; abierto también en móvil). El mapa (`MapaResguardos`) es un SVG inline con `role="img"` y una descripción
+  (`mapa.desc`); la lista basta por sí sola. **La geometría** (trazados de los ríos y posición y rótulo de cada resguardo) está en
+  `features/proyectos/mapa.ts` (`MAPAS` por `slug`): **añadir un resguardo es añadir una fila** a `resguardos` (aparece en el mapa y en
+  la lista), más su mención en `mapa.desc` (una prueba lo comprueba). En `content` solo va lo traducible (nombre de cada río por `id`,
+  leyenda y descripción). Los nombres de los resguardos son nombres propios y viven en `mapa.ts`. En móvil el texto del SVG se
+  agranda (unidades del `viewBox`) y los rótulos se colocan con `label.{dx,dy,anchor}` para que no se solapen.
+- **«Zio Bain» sin partirse.** El título del hero usa un espacio de no separación (`NBSP`, exportada por `content/es/proyectos.ts`);
+  el `<title>` y la descripción para buscadores van en texto plano.
+- **Imágenes** (`features/proyectos/images.ts`): hero (16:9, `selva`), retrato (4:5, `serie`), 3 tarjetas (4:3, `serie`) y fondo del
+  llamado (16:9, `selva`), en `assets-src/proyectos/` (nombres y tamaños mínimos en ese archivo). Todas `available: false` por
+  ahora: se ve `ImagePlaceholder` sin texto. Al llegar: `pnpm images proyectos`, `available: true` y escribir `retratoAlt` e
+  `imageAlt` de las tarjetas (el hero y el fondo son decorativos).
+- **Componentes compartidos nuevos.** `shared/ui/FillImage` (imagen que rellena su contenedor o marcador; la usan Salud y Proyectos,
+  cada una con su `ImageSpec` en su `images.ts`) y `pageHeroImage` (de `PageHero`). `PageHero` tiene altura **mínima**, no fija: en móvil un
+  texto largo hace crecer el hero en vez de quedar bajo el encabezado fijo.
+- **Llamado a la acción:** el botón va a `pathFor('colaborar')` (Donaciones / Alianzas).
 
 ## Estado y datos
 
