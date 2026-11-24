@@ -22,7 +22,7 @@ describe('feature salud', () => {
     expect(container.textContent).not.toMatch(/\[[^\]]+\]/)
   })
 
-  it.each(langs)('imágenes: hero y fondo decorativos; retrato y prácticas con texto alternativo (%s)', (lang, path) => {
+  it.each(langs)('imágenes: hero decorativo; retrato y prácticas con texto alternativo (%s)', (lang, path) => {
     const { container } = renderAt(<Salud />, path)
     const s = dict[lang].salud
     const imgs = [...container.querySelectorAll('img')]
@@ -31,9 +31,8 @@ describe('feature salud', () => {
     expect(alts).toContain(s.llamado.imageAlt)
     expect(s.llamado.imageAlt).toContain('Victoriano Piaguaje Yaiguaje')
     for (const a of s.encuentros.imageAlts) expect(alts).toContain(a)
-    // Hero y fondo de «Solicitar»: decorativos (los demás, con texto salvo las de opacidad 0 del acordeón de escritorio).
+    // El hero es decorativo (los demás, con texto salvo las de opacidad 0 del acordeón de escritorio).
     expect(imgs.filter((i) => i.getAttribute('src')?.includes('/salud/hero'))[0]?.getAttribute('alt')).toBe('')
-    expect(imgs.filter((i) => i.getAttribute('src')?.includes('/salud/solicitar'))[0]?.getAttribute('alt')).toBe('')
   })
 
   it.each(langs)('El llamado: dos párrafos justificados y una cita (%s)', (lang, path) => {

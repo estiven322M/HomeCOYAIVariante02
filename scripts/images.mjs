@@ -144,17 +144,6 @@ const JOBS = [
     optional: true,
     grade: 'serie',
   },
-  {
-    name: 'salud-solicitar',
-    src: 'assets-src/salud/solicitar',
-    out: 'public/salud/solicitar',
-    widths: [960, 1200], // el recorte 16:9 mide 1200 px: no se amplía (ver docs/known-issues.md)
-    quality: 76,
-    optional: true,
-    grade: 'serie',
-    tilt: -1, // endereza el horizonte (la orilla lejana está ~0,5° inclinada; la ribera cercana, más por perspectiva)
-    crop: { left: 48, top: 153, width: 1200, height: 675 }, // 16:9 sobre el lienzo ya girado (1297×982)
-  },
   // Proyectos (originales en assets-src/proyectos/; se omiten mientras falten: `optional`). Tras generarlos,
   // `available: true` en src/features/proyectos/images.ts. Hero y fondo del llamado: `selva`; el resto, `serie`.
   {

@@ -1,14 +1,14 @@
 /**
  * Imágenes de Salud (derivados de `pnpm images` en `public/salud/`, originales en `assets-src/salud/`).
- * Las 7 están activas. Si alguna falta (`available: false`) la página muestra un marcador de la paleta, sin texto.
- * Hero y solicitar son decorativas (`alt=""`); el resto lleva su texto en `content/{es,en}/salud.ts` (`imageAlt`, `imageAlts`).
+ * Las 6 están activas. Si alguna falta (`available: false`) la página muestra un marcador de la paleta, sin texto.
+ * El hero es decorativo (`alt=""`); el resto lleva su texto en `content/{es,en}/salud.ts` (`imageAlt`, `imageAlts`).
  * Al añadir una imagen: copia el original a `assets-src/salud/`, ejecuta `pnpm images salud`, pon `available: true` y
  * añade su texto alternativo en `content/{es,en}/salud.ts` (las imágenes decorativas llevan `alt=""`).
  */
 import type { ImageSpec } from '@/shared/ui/FillImage'
 import { pageHeroImage } from '@/shared/ui/PageHero'
 
-export type SaludImageId = 'hero' | 'llamado' | 'practica1' | 'practica2' | 'practica3' | 'practica4' | 'solicitar'
+export type SaludImageId = 'hero' | 'llamado' | 'practica1' | 'practica2' | 'practica3' | 'practica4'
 
 const wide = (base: string): ImageSpec => ({
   available: true,
@@ -26,8 +26,6 @@ export const IMAGES: Record<SaludImageId, ImageSpec> = {
   practica2: tall('/salud/practica-2-purgas-banos'),
   practica3: tall('/salud/practica-3-botanica'),
   practica4: tall('/salud/practica-4-saberes'),
-  // Recorte 16:9 de 1200 px (el original es de 1280×960): no se amplía.
-  solicitar: { ...wide('/salud/solicitar'), widths: [960, 1200], width: 1200, height: 675 },
 }
 
 export const PRACTICE_IMAGES = ['practica1', 'practica2', 'practica3', 'practica4'] as const satisfies SaludImageId[]
