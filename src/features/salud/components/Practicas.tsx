@@ -6,10 +6,8 @@ import { SubTitle } from '@/shared/ui/SubTitle'
 import { FillImage } from '@/shared/ui/FillImage'
 import { IMAGES, PRACTICE_IMAGES } from '@/features/salud/images'
 
-const number = (i: number) => String(i + 1).padStart(2, '0')
-
 /**
- * ¿Qué vivimos en nuestros encuentros? Cuatro prácticas en acordeón: siempre una sola abierta (la 01 al cargar) y la
+ * ¿Qué vivimos en nuestros encuentros? Cuatro prácticas en acordeón: siempre una sola abierta (la primera al cargar) y la
  * imagen con su pie corresponde a la práctica abierta. En escritorio la imagen está a un lado y cambia con un fundido
  * (sin transición con movimiento reducido); en móvil y sin JavaScript cada panel lleva su propia imagen.
  *
@@ -48,7 +46,6 @@ export function Practicas() {
                       <>
                         <span aria-hidden className="relative grid size-9 flex-none place-items-center">
                           <Diamond className="absolute inset-0 bg-ocre" />
-                          <span className="relative text-caption text-huito">{number(i)}</span>
                         </span>
                         <span className="font-serif text-lead-sm font-light md:text-lead">{item.title}</span>
                       </>
@@ -106,9 +103,7 @@ export function Practicas() {
               </div>
               <figcaption className="mt-5 flex items-center gap-3 text-ui leading-snug text-ocre">
                 <Diamond className="size-2.5 flex-none bg-ocre" />
-                <span>
-                  {number(current)} · {e.items[current]?.title}
-                </span>
+                <span>{e.items[current]?.title}</span>
               </figcaption>
             </figure>
           )}

@@ -248,7 +248,7 @@ el hero ni tarjetas estrechas donde se verían huecos (Valores, perfiles de la j
 `Solicitar`. Contenido: `t.salud` (`content/{es,en}/salud.ts`); el protocolo de preparación y salud lo valida la
 organización antes de publicar. Sin textos entre corchetes (un test lo impide).
 
-- **Acordeón de prácticas** (`Practicas`, sobre `shared/ui/Disclosure`): siempre una sola abierta (la 01 al cargar, también en
+- **Acordeón de prácticas** (`Practicas`, sobre `shared/ui/Disclosure`): siempre una sola abierta (la primera al cargar, también en
   móvil); la abierta no se puede cerrar (`aria-disabled`, patrón de WAI-ARIA) y lleva un rombo de estado en vez de «−». Toda la
   fila es el botón (≥ 44 px, `aria-expanded`, `aria-controls`). En escritorio la imagen y su pie (texto normal) van a un lado y
   cambian con un fundido (sin transición con movimiento reducido); en móvil la imagen va dentro del panel abierto.
