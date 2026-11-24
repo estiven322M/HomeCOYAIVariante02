@@ -5,14 +5,21 @@
  * Al añadir una imagen: copia el original a `assets-src/salud/`, ejecuta `pnpm images salud`, pon `available: true` y
  * añade su texto alternativo en `content/{es,en}/salud.ts` (las imágenes decorativas llevan `alt=""`).
  */
+import type { ImageSpec } from '@/shared/ui/FillImage'
+import { pageHeroImage } from '@/shared/ui/PageHero'
+
 export type SaludImageId = 'hero' | 'llamado' | 'practica1' | 'practica2' | 'practica3' | 'practica4' | 'solicitar'
 
-type Spec = { available: boolean; base: string; widths: number[]; width: number; height: number }
+const wide = (base: string): ImageSpec => ({
+  available: true,
+  base,
+  widths: [960, 1280, 1920],
+  width: 1920,
+  height: 1080,
+})
+const tall = (base: string): ImageSpec => ({ available: true, base, widths: [480, 900], width: 900, height: 1125 })
 
-const wide = (base: string): Spec => ({ available: true, base, widths: [960, 1280, 1920], width: 1920, height: 1080 })
-const tall = (base: string): Spec => ({ available: true, base, widths: [480, 900], width: 900, height: 1125 })
-
-export const IMAGES: Record<SaludImageId, Spec> = {
+export const IMAGES: Record<SaludImageId, ImageSpec> = {
   hero: wide('/salud/hero'),
   llamado: tall('/salud/llamado'),
   practica1: tall('/salud/practica-1-yage'),
@@ -25,20 +32,7 @@ export const IMAGES: Record<SaludImageId, Spec> = {
 
 export const PRACTICE_IMAGES = ['practica1', 'practica2', 'practica3', 'practica4'] as const satisfies SaludImageId[]
 
-export function srcSetOf(id: SaludImageId) {
-  const s = IMAGES[id]
-  return s.widths.map((w) => `${s.base}-${w}.webp ${w}w`).join(', ')
-}
-
 /** Imagen del hero para `PageHero`, o `null` mientras no exista (marcador). */
 export function heroImage() {
-  const s = IMAGES.hero
-  if (!s.available) return null
-  return {
-    src: `${s.base}-1280.webp`,
-    srcSet: srcSetOf('hero'),
-    sizes: '(min-width: 1138px) 100vw, 1138px',
-    width: s.width,
-    height: s.height,
-  }
+  return pageHeroImage(IMAGES.hero)
 }

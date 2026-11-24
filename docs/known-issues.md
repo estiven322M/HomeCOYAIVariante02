@@ -25,8 +25,8 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
   ARCHITECTURE); el Taita aparece en «Liderazgo ancestral» con su foto.
 - **Descripciones muy cortas.** Las de Nosotros y Contacto (`common.nav[*].desc`, ~40 caracteres) son honestas pero
   débiles para buscadores. Mejorarlas con el contenido definitivo.
-- **Páginas con contenido por llegar.** `/proyectos/` y `/colaborar/` reutilizan el texto del proyecto destacado y de
-  «Colaborar» más el aviso «Esta sección estará disponible pronto»; `/salud-y-medicina-tradicional/`, `/eventos/`, `/galeria/` y
+- **Páginas con contenido por llegar.** `/colaborar/` reutiliza el texto de «Colaborar» más el aviso «Esta sección estará disponible
+  pronto» (`/proyectos/` ya tiene su contenido: ver «Proyectos: pendientes»); `/salud-y-medicina-tradicional/`, `/eventos/`, `/galeria/` y
   `/contacto/` solo tienen título, descripción y el aviso (`ProvisionalPage`); el diseño de Salud y Eventos llegará después.
 - **Pie de página incompleto a propósito.** «Aviso legal» y «Política de privacidad» están ocultos hasta que exista su
   contenido (ver el bloqueante de arriba). Las redes (`common.footer.socials`, lista `{name, url}`) están vacías y el
@@ -72,9 +72,26 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
   legal y estatutos» de Nosotros se retiraron por decisión de los stakeholders. No hay redirección (el sitio aún no está
   indexado). Su texto queda en el historial de git (commits anteriores al PR de este lote).
 
+- **Margen izquierdo de las secciones (fase 4).** `PageHero` (hero de Nosotros, Salud y Proyectos) y el `Llamado` de Proyectos
+  ponen el `px-6` DENTRO de `max-w-6xl`, de modo que a 1440 px su texto empieza en x=168; el resto de las secciones (incluidos
+  `Solicitar` de Salud y los bloques de Proyectos) lo ponen FUERA y empieza en x=144. Unificar en la fase 4 (elegir uno y
+  aplicarlo a `PageHero` y `Llamado`).
 - **Textos provisionales.** Ya no queda ningún texto entre corchetes en `src/content` (una prueba,
   `src/content/content.test.ts`, falla si aparece alguno). `MediaPlaceholder` sustituye fotografías en varias
   secciones. _Fase 3/5._
+
+- **Proyectos: pendientes.** (1) **Confirmar con los stakeholders** la cuarta referencia del «Marco de protección»: «Decenio
+  Internacional de las Lenguas Indígenas 2022–2032 (UNESCO)» / «International Decade of Indigenous Languages 2022–2032 (UNESCO)»
+  (sustituyó a «Directrices de la UNESCO», cuyo documento no estaba identificado). (2) **La línea de estado del hero está oculta**
+  (`hero.estado.visible: false` en `content/{es,en}/proyectos.ts`) hasta que se confirmen los estados («en construcción», «en
+  desarrollo», «en diseño»); basta cambiar ese valor para mostrarla. (3) **Faltan las 6 fotos** (`assets-src/proyectos/`: hero, retrato,
+  3 tarjetas y fondo del llamado): se ven marcadores sin texto; al llegar hay que escribir el texto alternativo del retrato y de las
+  tarjetas (hoy `''`). (4) «Ten-Year Plan for Native Languages 2022–2032» es una traducción propia de «Plan Decenal de Lenguas
+  Nativas»: no la hemos visto en una fuente oficial en inglés. (5) «At critical risk of disappearing» describe el estado de la lengua
+  sin usar una categoría oficial (p. ej. del Atlas de la UNESCO), que no hemos verificado. (6) El hero de Salud en móvil crece
+  25–58 px respecto a antes por el cambio de `PageHero` a altura mínima (corrige el eyebrow bajo el encabezado fijo); quedan unas
+  pocas diferencias de render (< 0,02 % de los píxeles) en esa página, aceptadas. (7) Sin revisión con lector de pantalla real
+  (solo axe y pruebas automáticas).
 
 ## Estilos y diseño
 

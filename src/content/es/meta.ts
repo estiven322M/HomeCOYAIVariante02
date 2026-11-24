@@ -1,13 +1,12 @@
 // Contenido en español (fuente de verdad: define el tipo que debe cumplir el inglés).
 // Metadatos del documento por página: <title>, meta description y Open Graph.
-// Las descripciones SALEN de textos que ya existen (mismas claves, sin copiarlos). La que se recorta
-// (Proyectos, para no pasar de 160 caracteres) lo hace con `cut`: es un prefijo literal.
+// Las descripciones SALEN de textos que ya existen (mismas claves, sin copiarlos). La de Proyectos es la del primer
+// proyecto de la lista (`content/*/proyectos.ts`).
 import { common } from './common'
 import { home } from './home'
+import { proyectos } from './proyectos'
 import { salud } from './salud'
 
-/** Corta `text` antes de `marker` y cierra con punto. */
-const cut = (text: string, marker: string) => `${text.split(marker)[0]}.`
 const navDesc = (i: number) => common.nav[i]?.desc ?? ''
 
 export const meta = {
@@ -23,8 +22,7 @@ export const meta = {
       description: navDesc(0),
     },
     proyectos: {
-      title: 'Proyectos — ÉCOYAI',
-      description: cut(home.proyecto.text, ':'),
+      ...proyectos.items[0].meta,
     },
     salud: {
       title: 'Salud y medicina tradicional — ÉCOYAI',

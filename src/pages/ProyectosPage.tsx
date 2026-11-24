@@ -1,12 +1,8 @@
-import { Proyecto } from '@/features/home/components/Sections'
-import { SoonNotice } from '@/shared/ui/SoonNotice'
+import { Proyectos } from '@/features/proyectos/components/Proyectos'
+import { useLang } from '@/shared/i18n'
 
-/** /proyectos/ — reutiliza el texto del proyecto destacado; el resto está por llegar. */
+/** /proyectos/ — hoy muestra el único proyecto de la lista (`t.proyectos.items`). */
 export function ProyectosPage() {
-  return (
-    <>
-      <Proyecto asPage />
-      <SoonNotice />
-    </>
-  )
+  const [project] = useLang().t.proyectos.items
+  return <Proyectos project={project} />
 }

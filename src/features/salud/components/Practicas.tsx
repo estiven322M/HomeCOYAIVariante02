@@ -3,8 +3,8 @@ import { useLang } from '@/shared/i18n'
 import { Diamond } from '@/shared/ui/Diamond'
 import { Disclosure, PlusMinus } from '@/shared/ui/Disclosure'
 import { SubTitle } from '@/shared/ui/SubTitle'
-import { PRACTICE_IMAGES } from '@/features/salud/images'
-import { SaludImage } from './SaludImage'
+import { FillImage } from '@/shared/ui/FillImage'
+import { IMAGES, PRACTICE_IMAGES } from '@/features/salud/images'
 
 const number = (i: number) => String(i + 1).padStart(2, '0')
 
@@ -70,8 +70,8 @@ export function Practicas() {
                       <figure
                         className={`relative mt-6 aspect-[4/5] w-full max-w-64 overflow-hidden bg-huito ${hydrated ? 'lg:hidden' : ''}`}
                       >
-                        <SaludImage
-                          id={PRACTICE_IMAGES[i] ?? 'practica1'}
+                        <FillImage
+                          spec={IMAGES[PRACTICE_IMAGES[i] ?? 'practica1']}
                           tone="huito"
                           sizes="256px"
                           alt={e.imageAlts[i]}
@@ -95,8 +95,8 @@ export function Practicas() {
                     className={`absolute inset-0 transition-opacity duration-700 motion-reduce:transition-none ${i === current ? 'opacity-100' : 'opacity-0'}`}
                   >
                     {/* Solo la imagen visible lleva texto alternativo; las otras (opacidad 0) son decorativas. */}
-                    <SaludImage
-                      id={PRACTICE_IMAGES[i] ?? 'practica1'}
+                    <FillImage
+                      spec={IMAGES[PRACTICE_IMAGES[i] ?? 'practica1']}
                       tone="huito"
                       sizes="460px"
                       alt={i === current ? e.imageAlts[i] : ''}

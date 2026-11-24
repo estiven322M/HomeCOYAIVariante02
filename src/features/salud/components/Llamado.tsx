@@ -1,9 +1,10 @@
 import { useLang } from '@/shared/i18n'
+import { IMAGES } from '@/features/salud/images'
 import { Diamond } from '@/shared/ui/Diamond'
+import { FillImage } from '@/shared/ui/FillImage'
 import { PatternZone } from '@/shared/ui/PatternZone'
 import { SubTitle } from '@/shared/ui/SubTitle'
 import { TextoCorrido } from '@/shared/ui/TextoCorrido'
-import { SaludImage } from './SaludImage'
 
 /** El llamado: texto justificado, cita destacada y retrato 4:5. Zona clara con el patrón lateral. */
 export function Llamado() {
@@ -25,7 +26,12 @@ export function Llamado() {
           </blockquote>
         </div>
         <figure className="relative aspect-[4/5] w-full overflow-hidden bg-tierra-suave">
-          <SaludImage id="llamado" tone="claro" sizes="(min-width: 768px) 460px, calc(100vw - 48px)" alt={l.imageAlt} />
+          <FillImage
+            spec={IMAGES.llamado}
+            tone="claro"
+            sizes="(min-width: 768px) 460px, calc(100vw - 48px)"
+            alt={l.imageAlt}
+          />
         </figure>
       </div>
     </PatternZone>

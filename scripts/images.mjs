@@ -155,6 +155,44 @@ const JOBS = [
     tilt: -1, // endereza el horizonte (la orilla lejana está ~0,5° inclinada; la ribera cercana, más por perspectiva)
     crop: { left: 48, top: 153, width: 1200, height: 675 }, // 16:9 sobre el lienzo ya girado (1297×982)
   },
+  // Proyectos (originales en assets-src/proyectos/; se omiten mientras falten: `optional`). Tras generarlos,
+  // `available: true` en src/features/proyectos/images.ts. Hero y fondo del llamado: `selva`; el resto, `serie`.
+  {
+    name: 'proyectos-hero',
+    src: 'assets-src/proyectos/hero',
+    out: 'public/proyectos/hero',
+    widths: [960, 1280, 1920],
+    quality: 72,
+    optional: true,
+    grade: 'selva',
+  },
+  {
+    name: 'proyectos-retrato',
+    src: 'assets-src/proyectos/retrato',
+    out: 'public/proyectos/retrato',
+    widths: [480, 900],
+    quality: 66,
+    optional: true,
+    grade: 'serie',
+  },
+  ...['1-corpus', '2-ia', '3-formacion'].map((n) => ({
+    name: `proyectos-frente-${n}`,
+    src: `assets-src/proyectos/frente-${n}`,
+    out: `public/proyectos/frente-${n}`,
+    widths: [480, 960],
+    quality: 66,
+    optional: true,
+    grade: 'serie',
+  })),
+  {
+    name: 'proyectos-llamado',
+    src: 'assets-src/proyectos/llamado',
+    out: 'public/proyectos/llamado',
+    widths: [960, 1280, 1920],
+    quality: 72,
+    optional: true,
+    grade: 'selva',
+  },
 ]
 
 /** El original tal cual o con una de las extensiones habituales (para los trabajos que dan solo el nombre base). */

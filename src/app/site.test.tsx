@@ -14,6 +14,7 @@ import { EventosPage } from '@/pages/EventosPage'
 import { GaleriaPage } from '@/pages/GaleriaPage'
 import { GraciasPage } from '@/pages/GraciasPage'
 import { PrivacidadPage } from '@/pages/PrivacidadPage'
+import { NBSP } from '@/content/es/proyectos'
 import { ProyectosPage } from '@/pages/ProyectosPage'
 import { LANGS, NAV_KEYS, NOT_FOUND, ROUTES, pathFor, type RouteKey } from '@/shared/i18n/routes'
 import { IntroProvider } from '@/shared/intro/intro-context'
@@ -36,7 +37,7 @@ const PAGES: Record<RouteKey, ComponentType> = {
 const h1Of = (key: RouteKey, lang: 'es' | 'en') => {
   const t = dict[lang]
   if (key === 'home') return t.home.hero.title
-  if (key === 'proyectos') return t.home.proyecto.title
+  if (key === 'proyectos') return t.proyectos.items[0].hero.title
   if (key === 'colaborar') return t.home.colaborar.title
   if (key === 'salud') return t.salud.hero.title
   if (key === 'privacidad') return t.common.privacy.title
@@ -83,7 +84,8 @@ describe('prueba de humo por página e idioma', () => {
     renderPage(c)
     const h1 = screen.getAllByRole('heading', { level: 1 })
     expect(h1).toHaveLength(1)
-    expect(h1[0]).toHaveTextContent(c.h1)
+    // El título de Proyectos lleva un espacio de no separación en «Zio Bain»: cuenta como un espacio.
+    expect(h1[0]).toHaveTextContent(c.h1.split(NBSP).join(' '))
     const mains = document.querySelectorAll('main')
     expect(mains).toHaveLength(1)
     expect(mains[0]).toHaveAttribute('id', 'contenido')
