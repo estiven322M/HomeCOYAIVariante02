@@ -72,6 +72,10 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
   legal y estatutos» de Nosotros se retiraron por decisión de los stakeholders. No hay redirección (el sitio aún no está
   indexado). Su texto queda en el historial de git (commits anteriores al PR de este lote).
 
+- **Margen izquierdo de las secciones (fase 4).** `PageHero` (hero de Nosotros, Salud y Proyectos) y el `Llamado` de Proyectos
+  ponen el `px-6` DENTRO de `max-w-6xl`, de modo que a 1440 px su texto empieza en x=168; el resto de las secciones (incluidos
+  `Solicitar` de Salud y los bloques de Proyectos) lo ponen FUERA y empieza en x=144. Unificar en la fase 4 (elegir uno y
+  aplicarlo a `PageHero` y `Llamado`).
 - **Textos provisionales.** Ya no queda ningún texto entre corchetes en `src/content` (una prueba,
   `src/content/content.test.ts`, falla si aparece alguno). `MediaPlaceholder` sustituye fotografías en varias
   secciones. _Fase 3/5._

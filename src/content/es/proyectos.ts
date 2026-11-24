@@ -53,7 +53,7 @@ export type Proyecto = {
     label: string
     title: string
     intro: string
-    refs: { icon: 'documento' | 'calendario' | 'globo'; title: string }[]
+    refs: { icon: 'documento' | 'calendario' | 'escudo' | 'globo'; title: string }[]
   }
   cta: { label: string; title: string; button: string }
 }
@@ -147,7 +147,7 @@ export const proyectos: { items: [Proyecto, ...Proyecto[]] } = {
         refs: [
           { icon: 'documento', title: 'Ley 1381 de 2010' },
           { icon: 'calendario', title: 'Plan Decenal de Lenguas Nativas 2022–2032' },
-          { icon: 'globo', title: 'Convenio 169 de la OIT' },
+          { icon: 'escudo', title: 'Convenio 169 de la OIT' },
           { icon: 'globo', title: 'Decenio Internacional de las Lenguas Indígenas 2022–2032 (UNESCO)' },
         ],
       },

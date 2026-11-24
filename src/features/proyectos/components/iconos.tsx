@@ -29,8 +29,8 @@ export function IconoFrente({ name }: { name: 'voz' | 'ia' | 'libro' }) {
   )
 }
 
-/** Icono de una referencia del marco de protección (28 px): documento, calendario o globo. */
-export function IconoReferencia({ name }: { name: 'documento' | 'calendario' | 'globo' }) {
+/** Icono de una referencia del marco de protección (28 px): documento (ley), calendario (plan), escudo (convenio) o globo. */
+export function IconoReferencia({ name }: { name: 'documento' | 'calendario' | 'escudo' | 'globo' }) {
   return (
     <svg width="28" height="28" viewBox="0 0 28 28" {...base}>
       {name === 'documento' && (
@@ -44,6 +44,12 @@ export function IconoReferencia({ name }: { name: 'documento' | 'calendario' | '
           <path d="M4 6 H 24 V 24 H 4 Z" />
           <path d="M4 11 H 24 M 9 3 V 8 M 19 3 V 8" />
           <path d="M9 16 H 19 M 9 20 H 15" />
+        </>
+      )}
+      {name === 'escudo' && (
+        <>
+          <path d="M14 3 L23 6.5 V13 C23 19 19 23 14 25 C9 23 5 19 5 13 V6.5 Z" />
+          <path d="M10 13.5 L13 16.5 L18.5 10.5" />
         </>
       )}
       {name === 'globo' && (

@@ -1,7 +1,22 @@
+import { Fragment } from 'react'
 import type { Proyecto } from '@/content/es/proyectos'
 import { SubTitle } from '@/shared/ui/SubTitle'
 import { TextoCorrido } from '@/shared/ui/TextoCorrido'
 import { IconoReferencia } from './iconos'
+
+/** Envuelve los rangos de años («2022–2032») en un `<span>` que no se parte; el texto sale de `content` tal cual. */
+function sinCortarRangos(text: string) {
+  // El split con grupo de captura deja los rangos en las posiciones impares.
+  return text.split(/(\d{4}–\d{4})/).map((part, i) =>
+    i % 2 === 1 ? (
+      <span key={i} className="whitespace-nowrap">
+        {part}
+      </span>
+    ) : (
+      <Fragment key={i}>{part}</Fragment>
+    ),
+  )
+}
 
 /**
  * «Nuestro compromiso»: la entradilla es texto corrido (justificado) y las referencias del marco de protección van a
@@ -20,7 +35,7 @@ export function Compromiso({ data }: { data: Proyecto['compromiso'] }) {
               <span className="text-chagra">
                 <IconoReferencia name={r.icon} />
               </span>
-              <p className="mt-5 font-serif text-body text-huito sm:text-lead-sm">{r.title}</p>
+              <p className="mt-5 font-serif text-body text-huito sm:text-lead-sm">{sinCortarRangos(r.title)}</p>
             </li>
           ))}
         </ul>

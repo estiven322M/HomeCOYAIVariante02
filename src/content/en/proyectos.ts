@@ -91,7 +91,7 @@ export const proyectos: { items: [Proyecto, ...Proyecto[]] } = {
         refs: [
           { icon: 'documento', title: 'Law 1381 of 2010' },
           { icon: 'calendario', title: 'Ten-Year Plan for Native Languages 2022–2032' },
-          { icon: 'globo', title: 'ILO Convention 169' },
+          { icon: 'escudo', title: 'ILO Convention 169' },
           { icon: 'globo', title: 'International Decade of Indigenous Languages 2022–2032 (UNESCO)' },
         ],
       },

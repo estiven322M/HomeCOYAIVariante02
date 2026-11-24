@@ -164,7 +164,14 @@ describe('compromiso y llamado a la acción', () => {
     const { container } = renderAt(<Pagina lang={lang} />, path)
     const refs = dict[lang].proyectos.items[0].compromiso.refs
     expect(refs).toHaveLength(4)
-    for (const r of refs) expect(screen.getByText(r.title)).toBeInTheDocument()
+    const textos = [...container.querySelectorAll('ul li p')].map((x) => x.textContent)
+    for (const r of refs) expect(textos).toContain(r.title)
+    // Los rangos de años («2022–2032») no se parten: van en un span con white-space: nowrap.
+    const rangos = [...container.querySelectorAll('ul li p span.whitespace-nowrap')].map((x) => x.textContent)
+    const conRango = refs.filter((r) => /\d{4}–\d{4}/.test(r.title))
+    expect(conRango.length).toBeGreaterThan(0) // la prueba no puede pasar en vacío
+    expect(rangos).toHaveLength(conRango.length)
+    for (const r of rangos) expect(r).toMatch(/^\d{4}–\d{4}$/)
     const icons = container.querySelectorAll('ul svg')
     expect(icons).toHaveLength(4)
     for (const svg of icons) expect(svg).toHaveAttribute('aria-hidden', 'true')
