@@ -51,14 +51,14 @@ const lenguaSiona: Mapa = {
     },
   ],
   resguardos: [
-    { id: 'buenavista', name: 'Buenavista', x: 150, y: 143, label: { dx: 10, dy: 52, anchor: 'end' } },
+    { id: 'buenavista', name: 'Buenavista', x: 150, y: 143, label: { dx: 10, dy: 33, anchor: 'end' } },
     { id: 'pinuna-blanco', name: 'Piñuña Blanco', x: 318, y: 95, label: { dx: 18, dy: 5, anchor: 'start' } },
     {
       id: 'el-hacha',
       name: 'El Hacha',
       x: 440,
       y: 264,
-      label: { dx: -12, dy: 40, anchor: 'end' },
+      label: { dx: -10, dy: 31, anchor: 'end' },
     },
     {
       id: 'santa-cruz',
