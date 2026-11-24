@@ -196,11 +196,9 @@ export function QueEs() {
   )
 }
 
-/** `asPage`: la misma sección como contenido de /proyectos/ (su título es el h1 y no enlaza a la página en la que está). */
-export function Proyecto({ asPage = false }: { asPage?: boolean }) {
+export function Proyecto() {
   const p = useLang().t.home.proyecto
   const pathFor = usePathFor()
-  const Title = asPage ? 'h1' : 'h2'
   return (
     <section id="proyecto" className="relative overflow-hidden bg-selva text-calido">
       <div className="absolute inset-0 opacity-60">
@@ -212,15 +210,13 @@ export function Proyecto({ asPage = false }: { asPage?: boolean }) {
       <div className="relative mx-auto grid min-h-[90vh] max-w-6xl items-center gap-12 px-6 py-28 lg:grid-cols-12">
         <Reveal className="lg:col-span-7">
           <Eyebrow light>{p.eyebrow}</Eyebrow>
-          <Title className="mt-6 font-serif text-5xl font-light leading-[1.05] lg:text-7xl">
+          <h2 className="mt-6 font-serif text-5xl font-light leading-[1.05] lg:text-7xl">
             {p.title} <em className="italic text-arena">{p.titleEm}</em>
-          </Title>
+          </h2>
           <TextoCorrido className="mt-8 max-w-lg text-[17px] leading-relaxed text-calido/80">{p.text}</TextoCorrido>
-          {!asPage && (
-            <div className="mt-10">
-              <Button href={pathFor('proyectos')}>{p.cta}</Button>
-            </div>
-          )}
+          <div className="mt-10">
+            <Button href={pathFor('proyectos')}>{p.cta}</Button>
+          </div>
         </Reveal>
         <Reveal delay={250} className="lg:col-span-4 lg:col-start-9">
           <ol className="space-y-5 border-l border-calido/20 pl-6 text-sm text-calido/75">

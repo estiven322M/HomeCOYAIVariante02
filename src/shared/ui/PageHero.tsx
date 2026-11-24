@@ -21,7 +21,7 @@ export function pageHeroImage(spec: ImageSpec): PageHeroImage | null {
  * Hero de las páginas interiores: foto a pantalla completa (imagen principal: prioridad alta, sin lazy), velos que
  * mantienen el contraste AA del texto, eyebrow, h1 y subtítulo. Lo usan Nosotros y Salud.
  * Sin `image` (aún no existe) se ve un marcador de la paleta, sin texto.
- * `size="long"` rebaja el tamaño del h1 para títulos largos. `aside` es un rótulo decorativo (aria-hidden) en la
+ * `children` va bajo el subtítulo. `size="long"` rebaja el tamaño del h1 para títulos largos. `aside` es un rótulo decorativo (aria-hidden) en la
  * esquina inferior derecha (desde `sm`).
  */
 export function PageHero({
@@ -31,6 +31,7 @@ export function PageHero({
   subtitle,
   aside,
   size = 'display',
+  children,
 }: {
   image: PageHeroImage | null
   eyebrow: string
@@ -38,6 +39,8 @@ export function PageHero({
   subtitle: string
   aside?: ReactNode
   size?: 'display' | 'long'
+  /** Contenido extra bajo el subtítulo (p. ej. una línea de estado). */
+  children?: ReactNode
 }) {
   const titleSize = size === 'long' ? 'max-w-3xl text-title-sm md:text-title-xl' : 'text-display-sm md:text-display'
   return (
@@ -66,6 +69,7 @@ export function PageHero({
         <p className="hero-text mt-6 max-w-[30rem] text-balance font-serif text-lead font-light italic lg:max-w-[42rem]">
           {subtitle}
         </p>
+        {children}
       </div>
       {aside && (
         <p
