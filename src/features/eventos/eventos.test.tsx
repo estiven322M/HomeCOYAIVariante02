@@ -9,6 +9,11 @@ import { HERO_MEDIA } from './media'
 const sources = () => [...document.querySelectorAll('video source')].map((s) => s.getAttribute('src'))
 
 describe('Eventos · hero', () => {
+  it('la textura de rombos es decorativa', () => {
+    renderAt(<EventosHero />, '/eventos/')
+    expect(document.querySelector('.eventos-textura')).toHaveAttribute('aria-hidden', 'true')
+  })
+
   it('el video está activado por defecto', () => {
     expect(HERO_MEDIA.video).toBe(true)
   })

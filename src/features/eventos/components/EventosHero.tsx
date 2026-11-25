@@ -22,10 +22,11 @@ export function EventosHero({ media = HERO_MEDIA }: { media?: HeroMedia }) {
       aria-labelledby="eventos-titulo"
       className="hero-scope relative overflow-hidden bg-huito pt-(--header-h) xl:h-[clamp(31rem,39.3vw,42.5rem)] xl:pt-0"
     >
+      <div aria-hidden className="eventos-textura" />
       <div className="relative aspect-[3/2] md:aspect-video xl:absolute xl:inset-y-0 xl:right-0 xl:left-[42%] xl:aspect-auto">
         {media.video ? <HeroVideo media={media} /> : <HeroFijo media={media} />}
       </div>
-      <div className="mx-auto max-w-6xl px-6 pb-16 pt-8 xl:flex xl:h-full xl:flex-col xl:justify-end xl:pb-20 xl:pt-0">
+      <div className="relative mx-auto max-w-6xl px-6 pb-16 pt-8 xl:flex xl:h-full xl:flex-col xl:justify-end xl:pb-20 xl:pt-0">
         {/* Desde xl el texto termina antes de la caja del video (42 % de la ventana menos el margen izquierdo). */}
         <div className="xl:max-w-[min(28rem,calc(42vw-max(1.5rem,50vw-34.5rem)))]">
           <div aria-hidden className="rombos-separador w-[7.5rem] opacity-100" />

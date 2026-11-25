@@ -317,6 +317,15 @@ sin idioma (fechas, imágenes, enlaces) en `content/agenda.ts`. Un bloque sin te
 | Encuadre (`object-position`)       | `72% 35%` en escritorio, `70% 30%` en móvil | `33% center` en todos los anchos                                |
 | Botón de pausa en móvil            | sobre el video                              | debajo del video, hasta `xl`                                    |
 
+Otros ajustes aprobados desde `xl`:
+
+- **Textura del panel de texto** (`.eventos-textura`, no está en la maqueta): sin ella, en pantallas anchas el bloque
+  huito se veía plano y vacío, y otra foto competiría con el video. Es el motivo del patrón lateral con relleno uniforme
+  (`shared/styles/patron-rombos.svg`) en ocre al 7 %, sin imagen raster, decorativa; se desvanece desde el 30 % del
+  panel y termina donde empieza el video. El contraste del texto sigue muy por encima de AA.
+- **Borde izquierdo del video** (`.eventos-velo`): degradado de varios pasos (6,5 rem) cuya pendiente llega a cero. El
+  lineal de la maqueta dejaba una franja clara visible donde terminaba.
+
 **Por qué.** La cámara se desplaza: en el bucle, las tres bailarinas ocupan del 6 % al 89 % del ancho del video. Con
 680 px de alto a 1440 solo se veía el 69 % y siempre quedaba cortada alguna. La organización prefiere verlas completas a
 conservar la altura. Por eso la caja del video nunca es más estrecha que ~3:2 (`aspect-[3/2]` en móvil, 16:9 desde
