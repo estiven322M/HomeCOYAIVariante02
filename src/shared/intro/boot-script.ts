@@ -1,5 +1,6 @@
 import { ROUTES } from '@/shared/i18n/routes'
-import { LEAVE_MS, MAX_MS, REVEAL_MS, SEEN_KEY, SLOW_CONNECTION_TYPES } from './intro-context'
+import { SLOW_CONNECTION_TYPES } from '@/shared/lib/network'
+import { LEAVE_MS, MAX_MS, REVEAL_MS, SEEN_KEY } from './intro-context'
 
 /**
  * Script mínimo y bloqueante para el <head>. Se ejecuta ANTES del primer pintado y marca

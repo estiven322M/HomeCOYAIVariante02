@@ -152,3 +152,6 @@
 # Los hooks de husky deben conservar LF (si no, fallan en shell al clonar en Windows)
 .husky/* text eol=lf
 .node-version text eol=lf
+
+# Excepción a LFS: los medios mínimos de las pruebas van en git normal (CI no descarga LFS).
+e2e/fixtures/** -filter -diff -merge -text

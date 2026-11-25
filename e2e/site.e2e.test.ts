@@ -1,6 +1,7 @@
 // Pruebas de extremo a extremo (Playwright + Vitest). Sirven build/client con scripts/preview.mjs, que imita a Netlify
 // (404 real, sin fallback SPA). Uso: pnpm run build && pnpm run test:e2e
 import { spawn, type ChildProcess } from 'node:child_process'
+import { readFileSync } from 'node:fs'
 import AxeBuilder from '@axe-core/playwright'
 import { chromium, type Browser, type BrowserContext, type Page } from 'playwright'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -312,6 +313,116 @@ describe('intro: solo si la sesión empieza en la portada', () => {
     await page.goto(BASE + '/no-existe/', { waitUntil: 'domcontentloaded' })
     expect(await overlayVisible(page)).toBe(false)
     await page.context().close()
+  })
+})
+
+// Los videos de public/ están en Git LFS y CI no los descarga (cuota): allí solo existe el puntero. Estas pruebas
+// comprueban el comportamiento, así que Playwright responde a /video/* con un video mínimo versionado en git normal
+// (64×36, 10 s; `ffmpeg -f lavfi -i testsrc=size=64x36:rate=5:duration=10 -c:v libvpx-vp9 -crf 55`).
+const VIDEO_PRUEBA = readFileSync(new URL('./fixtures/video-prueba.webm', import.meta.url))
+
+describe('video de fondo de la portada', () => {
+  async function home(
+    opts: { width?: number; height?: number; reducedMotion?: boolean; connection?: object; js?: boolean } = {},
+  ) {
+    const ctx = await browser.newContext({
+      viewport: { width: opts.width ?? 1280, height: opts.height ?? 800 },
+      reducedMotion: opts.reducedMotion ? 'reduce' : 'no-preference',
+      javaScriptEnabled: opts.js ?? true,
+    })
+    await ctx.addInitScript((k) => sessionStorage.setItem(k, '1'), SEEN)
+    await ctx.addInitScript(
+      (c) => Object.defineProperty(navigator, 'connection', { value: c, configurable: true }),
+      opts.connection ?? { saveData: false, effectiveType: '4g' },
+    )
+    await ctx.route('**/video/*.{webm,mp4}', (route) =>
+      route.fulfill({ body: VIDEO_PRUEBA, contentType: 'video/webm' }),
+    )
+    const page = await ctx.newPage()
+    const requests: string[] = []
+    page.on('request', (r) => {
+      if (/\.(webm|mp4)$/.test(r.url())) requests.push(r.url())
+    })
+    await page.goto(BASE + '/', { waitUntil: 'networkidle' })
+    const state = () =>
+      page.locator('#inicio video').evaluate((v: HTMLVideoElement) => ({ paused: v.paused, time: v.currentTime }))
+    return { ctx, page, requests, state }
+  }
+  const names = T.es.common.video
+
+  it('se reproduce solo y el botón lo pausa y lo reanuda', async () => {
+    const { ctx, page, state } = await home()
+    await expect.poll(async () => (await state()).time).toBeGreaterThan(0)
+    // Es el video de prueba: si la intercepción dejara de aplicarse, en local pasaría con el real y en CI fallaría.
+    expect(await page.locator('#inicio video').evaluate((v: HTMLVideoElement) => v.videoWidth)).toBe(64)
+    await page.getByRole('button', { name: names.pauseAria }).click()
+    expect((await state()).paused).toBe(true)
+    const { time } = await state()
+    await page.waitForTimeout(500)
+    expect((await state()).time).toBe(time)
+    await page.getByRole('button', { name: names.playAria }).click()
+    await expect.poll(async () => (await state()).time).toBeGreaterThan(time)
+    await ctx.close()
+  })
+
+  it.each([
+    ['movimiento reducido', { reducedMotion: true }],
+    ['ahorro de datos', { connection: { saveData: true, effectiveType: '4g' } }],
+    ['conexión 2g', { connection: { effectiveType: '2g' } }],
+    ['conexión 3g', { connection: { effectiveType: '3g' } }],
+  ])('con %s no descarga el video hasta que se pide', async (_name, opts) => {
+    const { ctx, page, requests, state } = await home(opts)
+    expect(requests).toEqual([])
+    await page.getByRole('button', { name: names.playAria }).click()
+    await expect.poll(async () => (await state()).time).toBeGreaterThan(0)
+    expect(requests.length).toBeGreaterThan(0)
+    await ctx.close()
+  })
+
+  it('sin JavaScript queda el póster: no descarga el video ni muestra el botón', async () => {
+    const { ctx, page, requests } = await home({ js: false })
+    expect(requests).toEqual([])
+    expect(await page.locator('#inicio video').getAttribute('poster')).toBeTruthy()
+    expect(await page.locator('#inicio button').count()).toBe(0)
+    await ctx.close()
+  })
+
+  // «Pausar» y «Reproducir» no miden lo mismo: se comprueban los dos estados.
+  it.each([
+    [320, 640],
+    [390, 844],
+    [390, 600],
+    [768, 1024],
+    [1024, 768],
+    [1280, 720],
+    [1440, 900],
+  ])('a %i×%i el botón mide al menos 44 px y no choca con nada, pausado o reproduciendo', async (width, height) => {
+    const { ctx, page } = await home({ width, height })
+    const check = async (name: string) => {
+      const button = page.getByRole('button', { name })
+      await button.waitFor()
+      const result = await button.evaluate((b) => {
+        const box = b.getBoundingClientRect()
+        const overlaps = [...document.querySelectorAll('#inicio h1, #inicio p, #inicio a, header a, header button')]
+          .filter((el) => {
+            const r = el.getBoundingClientRect()
+            return r.width > 0 && box.left < r.right && box.right > r.left && box.top < r.bottom && box.bottom > r.top
+          })
+          .map((el) => el.textContent?.trim().slice(0, 30))
+        const inside = box.left >= 0 && box.right <= window.innerWidth && box.bottom <= window.innerHeight
+        // Nada lo tapa: en su centro está el propio botón.
+        const top = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2)
+        return { height: box.height, overlaps, inside, onTop: b.contains(top) }
+      })
+      expect(result.height, name).toBeGreaterThanOrEqual(44)
+      expect(result.overlaps, name).toEqual([])
+      expect(result.inside, name).toBe(true)
+      expect(result.onTop, name).toBe(true)
+    }
+    await check(names.pauseAria)
+    await page.getByRole('button', { name: names.pauseAria }).click()
+    await check(names.playAria)
+    await ctx.close()
   })
 })
 

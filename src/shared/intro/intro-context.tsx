@@ -1,4 +1,5 @@
 import { isHomePath } from '@/shared/i18n/routes'
+import { saveDataOrSlow } from '@/shared/lib/network'
 import { prefersReducedMotion } from '@/shared/lib/reduced-motion'
 import { useLocation } from 'react-router'
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useState, type ReactNode } from 'react'
@@ -13,15 +14,6 @@ export const MAX_MS = 4000
 /** Duración de la disolución del velo y de la entrada escalonada del hero (deben coincidir con el CSS). */
 export const LEAVE_MS = 500
 export const REVEAL_MS = 1500
-/** Con estas conexiones, o con ahorro de datos, no hay intro (mismas condiciones en el script de <head>). */
-export const SLOW_CONNECTION_TYPES = ['slow-2g', '2g', '3g']
-
-type NetworkInfo = { saveData?: boolean; effectiveType?: string }
-const saveDataOrSlow = () => {
-  const c = (navigator as unknown as { connection?: NetworkInfo }).connection
-  return !!c && (!!c.saveData || SLOW_CONNECTION_TYPES.includes(c.effectiveType ?? ''))
-}
-
 const seen = () => {
   try {
     return sessionStorage.getItem(SEEN_KEY) === '1'

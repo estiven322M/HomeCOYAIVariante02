@@ -270,6 +270,16 @@
   .hero-link:hover {
     color: var(--turquesa);
   }
+  /* Botón de pausa de un video de fondo (shared/ui/VideoToggle). Fondo propio: se lee sobre cualquier fotograma. */
+  .video-toggle {
+    color: var(--niebla);
+    background: color-mix(in srgb, var(--color-noche) 70%, transparent);
+    border: 1px solid var(--niebla-60);
+  }
+  .video-toggle:hover {
+    background: var(--color-noche);
+    border-color: var(--niebla);
+  }
   .hero-btn {
     background: var(--niebla);
     color: var(--color-noche);
