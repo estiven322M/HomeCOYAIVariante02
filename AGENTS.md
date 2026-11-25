@@ -13,6 +13,7 @@ Node >= 22.22 (`.node-version`) and pnpm 10 (`packageManager`). If `pnpm` is not
 
 - `pnpm dev` — `react-router dev` on `$PORT` (default 8443). It does not prerender.
 - `pnpm build` — static output in `build/client` (one `index.html` per route and language). `pnpm preview` serves it.
+- `pnpm video <original>` — derivados del video de Eventos; el original no se versiona (ver ARCHITECTURE). `EVENTOS_DEMO=1 pnpm build` = demo con ejemplos, solo local.
 - `pnpm images` — genera los derivados `.webp` (sharp) a partir de `assets-src/` o `public/`; ver README.
 - `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm test`, `pnpm verify:build` and `pnpm test:e2e` (both after a build; e2e needs Chromium), `pnpm check` (all).
 - Conventional Commits; husky + lint-staged run oxfmt and ESLint on staged files.
@@ -24,9 +25,9 @@ Node >= 22.22 (`.node-version`) and pnpm 10 (`packageManager`). If `pnpm` is not
   module per page), `DocumentHead.tsx` (title, description, robots, canonical, hreflang, Open Graph), `ErrorBoundary.tsx`,
   `layout/` (`RootLayout` with `<main id="contenido">`, `SideNav`, global `Footer`, `FocusOnNavigate`, `Intro`).
 - `src/pages/` — one component per page; only assembles sections.
-- `src/features/<domain>/components/` — domain code (`home`, `nosotros`, `proyectos`, `salud`). ESLint reads the folders to enforce layer rules. A feature never imports another feature.
+- `src/features/<domain>/components/` — domain code (`home`, `nosotros`, `proyectos`, `salud`, `eventos`). ESLint reads the folders to enforce layer rules. A feature never imports another feature.
 - `src/shared/` — `ui/`, `hooks/`, `lib/`, `i18n/` (language context, `LangSwitch`, **route table `routes.ts`**: pages, `NAV_KEYS`, 404), `intro/`, `styles/`.
-- `src/content/{es,en}/<domain>.ts` — typed copy, namespaced (`t.common`, `t.home`, `t.nosotros`, `t.proyectos`, `t.salud`, `t.meta`); `es` defines the type, `en` must `satisfies` it. Leaf layer.
+- `src/content/{es,en}/<domain>.ts` — typed copy, namespaced (`t.common`, `t.home`, `t.nosotros`, `t.proyectos`, `t.salud`, `t.eventos`, `t.meta`); `es` defines the type, `en` must `satisfies` it. Leaf layer.
 - `src/env.ts` — typed `VITE_*` variables (`VITE_SITE_INDEXABLE`, `VITE_SITE_URL`).
 - `config/vite-plugins/` — `robots-txt.ts` and the Figma-only plugins (loaded only in a Figma environment).
 - `vite.config.ts` — Tailwind, React Router and robots plugins, plus the `@` alias for `src`.

@@ -1,6 +1,18 @@
-import { ProvisionalPage } from '@/shared/ui/ProvisionalPage'
+import { Agenda } from '@/features/eventos/components/Agenda'
+import { EventosHero } from '@/features/eventos/components/EventosHero'
+import { Introduccion } from '@/features/eventos/components/Introduccion'
+import { Llamado } from '@/features/eventos/components/Llamado'
+import { Memoria } from '@/features/eventos/components/Memoria'
 
-/** /eventos/ — provisional: su nombre, su descripción y el aviso (el diseño llegará después). */
+/** /eventos/ */
 export function EventosPage() {
-  return <ProvisionalPage pageKey="eventos" />
+  return (
+    <>
+      <EventosHero />
+      <Introduccion />
+      <Agenda />
+      <Memoria />
+      <Llamado />
+    </>
+  )
 }

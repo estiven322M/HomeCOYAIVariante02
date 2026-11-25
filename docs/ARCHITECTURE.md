@@ -23,7 +23,7 @@ src/
     ErrorBoundary.tsx pantalla de respaldo accesible
     layout/           RootLayout (<main id="contenido">), Intro (overlay), SideNav, Footer (global), FocusOnNavigate
   pages/            un componente por página; solo ensambla secciones
-  features/         un dominio por carpeta (hoy: home, nosotros, proyectos, salud)
+  features/         un dominio por carpeta (hoy: home, nosotros, proyectos, salud, eventos)
     <dominio>/components/  componentes propios del dominio
   shared/
     ui/             componentes genéricos sin lógica de negocio (Button, Eyebrow, Reveal…)
@@ -44,7 +44,7 @@ test/               render con router, preparación común y verificación poste
 e2e/                pruebas de extremo a extremo con Playwright (menú, idioma, 404, intro)
 ```
 
-Solo existen las features que tienen contenido propio. `eventos`, `galeria`, `colaborar` y `contacto` no tienen feature:
+Solo existen las features que tienen contenido propio. `galeria`, `colaborar` y `contacto` no tienen feature:
 sus páginas reutilizan secciones existentes (`Colaborar` de `home`, con `asPage`) o componentes de `shared/ui`.
 No se crean carpetas vacías.
 
@@ -114,7 +114,7 @@ cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">
 - **Pie global** (`app/layout/Footer.tsx`): enlaces reales a todas las páginas, así que sin JavaScript basta para
   recorrer el sitio. «Aviso legal» y «Política de privacidad» no se muestran hasta que exista su contenido; las redes
   (`common.footer.socials`, lista `{name, url}`) tampoco mientras la lista esté vacía.
-- **Páginas con contenido por llegar** (`colaborar`; y `eventos`, `galeria` y `contacto`, que solo
+- **Páginas con contenido por llegar** (`colaborar`; y `galeria` y `contacto`, que solo
   tienen `ProvisionalPage`: su nombre y descripción de `common.nav` como título y entradilla): título, el texto que ya
   existe y `SoonNotice` («Esta sección estará disponible pronto» + enlace a la portada). Ningún botón apunta a la página en la
   que está (un test lo comprueba).
@@ -144,7 +144,7 @@ cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">
 Ejemplo real: la página **Contacto** (`/contacto/` · `/en/contact/`).
 
 1. Si tiene contenido propio, crea la feature (ver abajo); `contacto` no la tiene todavía.
-2. `src/pages/ContactoPage.tsx`: ensambla secciones de `features/*` y `shared/*` (aquí `ProvisionalPage`, que es `PageIntro` + `SoonNotice`; Salud, Eventos y Galería son iguales).
+2. `src/pages/ContactoPage.tsx`: ensambla secciones de `features/*` y `shared/*` (aquí `ProvisionalPage`, que es `PageIntro` + `SoonNotice`; Galería es igual).
    La página no pone `<main>` (lo pone `RootLayout`) y su único `<h1>` es el título.
 3. `src/app/routes/contacto.tsx`: el módulo de ruta, que renderiza la página.
 4. Fila en `ROUTES` (`src/shared/i18n/routes.ts`) con el slug en español y en inglés (con barra final), la clave en
@@ -217,8 +217,8 @@ puntero y oculto al imprimir. Queda por debajo de la barra interna fija (`z-20`)
 Una e2e («patrón lateral») lo comprueba en todas las páginas a 1280, 1440 y 1920 px.
 
 Dónde está hoy: Nosotros (Historia–Misión–Valores), Inicio («¿Qué es ÉCOYAI?» y «Explora»),
-y el aviso `SoonNotice` de Proyectos, Salud, Eventos, Galería, Colaborar y Contacto. La 404 es toda oscura y no
-lleva patrón.
+la introducción y la memoria de Eventos, y el aviso `SoonNotice` de Proyectos, Galería, Colaborar y Contacto. La 404
+es toda oscura y no lleva patrón; Eventos tampoco mientras no tenga introducción ni fotos.
 
 ## Texto justificado (`justificado`)
 
@@ -303,6 +303,69 @@ una zona clara con `Resguardos` + `Compromiso` y `Llamado`. Contenido: `t.proyec
   texto largo hace crecer el hero en vez de quedar bajo el encabezado fijo.
 - **Llamado a la acción:** el botón va a `pathFor('colaborar')` (Donaciones / Alianzas).
 
+## Página Eventos
+
+Maqueta: «Variante B · Tarjetas y memoria por año». `features/eventos/` y textos en `content/{es,en}/eventos.ts`; los datos
+sin idioma (fechas, imágenes, enlaces) en `content/agenda.ts`. Un bloque sin texto aprobado no se muestra.
+
+### Hero: cambios frente a la maqueta (aprobados)
+
+|                                    | Maqueta                                     | Sitio                                                           |
+| ---------------------------------- | ------------------------------------------- | --------------------------------------------------------------- |
+| Altura en escritorio               | 680 px fijos                                | sigue al ancho: `clamp(31rem, 39.3vw, 42.5rem)` (566 px a 1440) |
+| Video a la derecha (desde el 42 %) | desde 900 px                                | desde `xl` (1280 px); antes, video arriba y texto debajo        |
+| Encuadre (`object-position`)       | `72% 35%` en escritorio, `70% 30%` en móvil | `33% center` en todos los anchos                                |
+| Botón de pausa en móvil            | sobre el video                              | debajo del video, hasta `xl`                                    |
+
+Otros ajustes aprobados desde `xl`:
+
+- **Textura del panel de texto** (`.eventos-textura`, no está en la maqueta): sin ella, en pantallas anchas el bloque
+  huito se veía plano y vacío, y otra foto competiría con el video. Es el motivo del patrón lateral con relleno uniforme
+  (`shared/styles/patron-rombos.svg`) en ocre al 7 %, sin imagen raster, decorativa; se desvanece desde el 30 % del
+  panel y termina donde empieza el video. El contraste del texto sigue muy por encima de AA.
+- **Marca de agua del tigre** (`.eventos-tigre`, no está en la maqueta):
+  desde 1440 px, detrás de los rombos, asomando por la izquierda y terminando 1 rem antes del texto (su contraste no
+  cambia). SVG de 13 KB (`node scripts/tigre-marca.mjs` lo genera desde `favicon.svg`); la imagen se declara dentro de
+  la media query, así que por debajo de 1440 px no se pide. Interruptor `MARCA_TIGRE` (opción de diseño).
+- **Borde izquierdo del video** (`.eventos-velo`): degradado de varios pasos (6,5 rem) cuya pendiente llega a cero. El
+  lineal de la maqueta dejaba una franja clara visible donde terminaba.
+
+**Por qué.** La cámara se desplaza: en el bucle, las tres bailarinas ocupan del 6 % al 89 % del ancho del video. Con
+680 px de alto a 1440 solo se veía el 69 % y siempre quedaba cortada alguna. La organización prefiere verlas completas a
+conservar la altura. Por eso la caja del video nunca es más estrecha que ~3:2 (`aspect-[3/2]` en móvil, 16:9 desde
+`md`). Además, con la maqueta a todo el ancho el `72%` horizontal no tenía efecto, y dentro del video el botón tapaba a
+una bailarina en móvil. La e2e «Eventos · encuadre del hero» lo comprueba de 320 a 1920 px. **Si cambia el fragmento
+del video, hay que volver a medir esa franja** y ajustar `.eventos-encuadre` y la prueba.
+
+### Agenda (próximos eventos)
+
+- **Datos:** `content/agenda.ts` (id, `fecha` ISO con año, `fechaFin`, `imagen`, `enlace`) y, por idioma,
+  `agenda.items[id]` en `content/{es,en}/eventos.ts`; el typecheck exige los textos en los dos. Para publicar un evento:
+  añadirlo en esos tres archivos.
+- **Columna:** todas las secciones usan la del texto del hero (`max-w-6xl` con el `px-6` dentro).
+- **Vencidos:** un evento es «próximo» hasta que termina su último día en `America/Bogota`. El prerender filtra con la
+  fecha del build (`__FECHA_BUILD__`, definida en `vite.config.ts`), el cliente usa esa misma en su primer render y
+  justo después recalcula con el día real (`useHoy`), también al navegar. No hay script en `<head>`: sin JavaScript,
+  o hasta que hidrata, un evento vencido desde el último despliegue sigue visible (la insignia lleva el año).
+- **Fechas:** la insignia es visual; la fecha completa va para lectores de pantalla dentro del mismo `<time datetime>`.
+  En eventos de varios días la insignia (primer día) es decorativa y el intervalo se ve en la tarjeta en formato
+  compacto (`intervalo` en `features/eventos/agenda.ts`), con un `<time>` por extremo.
+- **Imagen opcional:** sin ella (o con `available: false`) no hay bloque de imagen y la insignia encabeza el texto.
+- **«Más información»:** el `enlace` del evento o, si no tiene, Contacto.
+- **Build de demostración, solo local:** `EVENTOS_DEMO=1 pnpm build` (en PowerShell, `$env:EVENTOS_DEMO='1'`) sustituye
+  `features/eventos/fuente.ts` por `fuente.demo.ts` (ejemplos marcados `[EJEMPLO]`). Después hay que volver a
+  construir sin la variable. `verify:build` falla si un ejemplo llega al build.
+
+### Memoria, llamado y separador
+
+- **Memoria** (`content/agenda.ts` → `MEMORIA`; pie y texto alternativo en `memoria.fotos[id]`): del año más reciente al
+  más antiguo, hasta 6 fotos por año (4 en móvil, en 2 columnas, sin carrusel). Las fotos no son enlaces; hay un solo
+  enlace a la Galería. Sin fotos, la sección entera no se muestra. Las fotos **no** salen solas de los eventos pasados.
+- **Llamado** (verde chagra): todo el texto en crema al 100 % (`SubTitle light="full"`), botón `sobreChagra` con borde
+  pleno y un hover que oscurece, y foco crema (`.sobre-chagra`): el 70 % de opacidad, el hover de `ghost` y los focos
+  achiote u ocre no llegan a AA sobre chagra. La frase se oculta mientras no esté aprobada.
+- **Sin introducción**, una fila de rombos (`.eventos-separador`) separa el hero de la agenda, ambos huito.
+
 ## Estado y datos
 
 No hace falta librería de estado global.
@@ -371,6 +434,29 @@ velos y fuera de la capa del video (en la portada, esa capa se escala y se desva
   normal: `.gitattributes` excluye `e2e/fixtures/` de LFS). Ninguna prueba debe depender del contenido de un archivo
   LFS. Para reproducir CI en local: tras el build, sustituye el archivo en `build/client` por su puntero
   (`git cat-file blob HEAD:public/video/video-hero.webm > build/client/video/video-hero.webm`).
+
+#### Origen de los medios de Eventos (`pnpm video`)
+
+`public/video/eventos-hero.{webm,mp4}` y `eventos-poster.jpg` son derivados de un original que **no se versiona** (ni en
+LFS): muestra personas identificables, posibles menores, y tiene audio. La organización entregó el material y autorizó
+su uso. Hoy está en el equipo de desarrollo:
+
+```
+C:\Users\jhons\OneDrive\Documents\Freelance\Seguimiento\Imágenes\videos\eventos-hero-original.mp4
+```
+
+(36 s, 1024×576, H.264 + AAC; SHA-256 `90a242c0775b2f3f…`). Para regenerarlos (`scripts/video.mjs`):
+
+```
+pnpm video "C:\Users\jhons\OneDrive\Documents\Freelance\Seguimiento\Imágenes\videos\eventos-hero-original.mp4"
+# o con la variable de entorno EVENTOS_VIDEO_ORIGINAL y `pnpm video`
+```
+
+Toma de 16,0 a 24,0 s (bucle de 8 s con corte seco: un fundido superponía dos encuadres, porque la cámara se desplaza),
+sin audio ni metadatos, sin ajuste de color y sin ampliar los 1024×576.
+VP9 CRF 40 y H.264 CRF 29; el póster es el primer fotograma del bucle. El script falla si algún archivo tiene audio o si
+los tres pesan 3 000 000 bytes o más. Necesita ffmpeg (PATH, `FFMPEG_DIR` o la instalación de Shutter Encoder). No
+forma parte del build; si cambian los medios, cámbiales el nombre (`/video/*` se cachea 30 días).
 
 ## Variables de entorno
 

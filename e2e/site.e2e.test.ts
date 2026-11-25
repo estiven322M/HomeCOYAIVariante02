@@ -321,8 +321,11 @@ describe('intro: solo si la sesión empieza en la portada', () => {
 // (64×36, 10 s; `ffmpeg -f lavfi -i testsrc=size=64x36:rate=5:duration=10 -c:v libvpx-vp9 -crf 55`).
 const VIDEO_PRUEBA = readFileSync(new URL('./fixtures/video-prueba.webm', import.meta.url))
 
-describe('video de fondo de la portada', () => {
-  async function home(
+describe.each([
+  ['la portada', pathFor('home', 'es')],
+  ['Eventos', pathFor('eventos', 'es')],
+])('video de fondo de %s', (_page, path) => {
+  async function open(
     opts: { width?: number; height?: number; reducedMotion?: boolean; connection?: object; js?: boolean } = {},
   ) {
     const ctx = await browser.newContext({
@@ -343,18 +346,18 @@ describe('video de fondo de la portada', () => {
     page.on('request', (r) => {
       if (/\.(webm|mp4)$/.test(r.url())) requests.push(r.url())
     })
-    await page.goto(BASE + '/', { waitUntil: 'networkidle' })
+    await page.goto(BASE + path, { waitUntil: 'networkidle' })
     const state = () =>
-      page.locator('#inicio video').evaluate((v: HTMLVideoElement) => ({ paused: v.paused, time: v.currentTime }))
+      page.locator('main video').evaluate((v: HTMLVideoElement) => ({ paused: v.paused, time: v.currentTime }))
     return { ctx, page, requests, state }
   }
   const names = T.es.common.video
 
   it('se reproduce solo y el botón lo pausa y lo reanuda', async () => {
-    const { ctx, page, state } = await home()
+    const { ctx, page, state } = await open()
     await expect.poll(async () => (await state()).time).toBeGreaterThan(0)
     // Es el video de prueba: si la intercepción dejara de aplicarse, en local pasaría con el real y en CI fallaría.
-    expect(await page.locator('#inicio video').evaluate((v: HTMLVideoElement) => v.videoWidth)).toBe(64)
+    expect(await page.locator('main video').evaluate((v: HTMLVideoElement) => v.videoWidth)).toBe(64)
     await page.getByRole('button', { name: names.pauseAria }).click()
     expect((await state()).paused).toBe(true)
     const { time } = await state()
@@ -371,7 +374,7 @@ describe('video de fondo de la portada', () => {
     ['conexión 2g', { connection: { effectiveType: '2g' } }],
     ['conexión 3g', { connection: { effectiveType: '3g' } }],
   ])('con %s no descarga el video hasta que se pide', async (_name, opts) => {
-    const { ctx, page, requests, state } = await home(opts)
+    const { ctx, page, requests, state } = await open(opts)
     expect(requests).toEqual([])
     await page.getByRole('button', { name: names.playAria }).click()
     await expect.poll(async () => (await state()).time).toBeGreaterThan(0)
@@ -380,10 +383,10 @@ describe('video de fondo de la portada', () => {
   })
 
   it('sin JavaScript queda el póster: no descarga el video ni muestra el botón', async () => {
-    const { ctx, page, requests } = await home({ js: false })
+    const { ctx, page, requests } = await open({ js: false })
     expect(requests).toEqual([])
-    expect(await page.locator('#inicio video').getAttribute('poster')).toBeTruthy()
-    expect(await page.locator('#inicio button').count()).toBe(0)
+    expect(await page.locator('main video').getAttribute('poster')).toBeTruthy()
+    expect(await page.locator('.video-toggle').count()).toBe(0)
     await ctx.close()
   })
 
@@ -397,13 +400,13 @@ describe('video de fondo de la portada', () => {
     [1280, 720],
     [1440, 900],
   ])('a %i×%i el botón mide al menos 44 px y no choca con nada, pausado o reproduciendo', async (width, height) => {
-    const { ctx, page } = await home({ width, height })
+    const { ctx, page } = await open({ width, height })
     const check = async (name: string) => {
       const button = page.getByRole('button', { name })
       await button.waitFor()
       const result = await button.evaluate((b) => {
         const box = b.getBoundingClientRect()
-        const overlaps = [...document.querySelectorAll('#inicio h1, #inicio p, #inicio a, header a, header button')]
+        const overlaps = [...document.querySelectorAll('main h1, main p, main a, header a, header button')]
           .filter((el) => {
             const r = el.getBoundingClientRect()
             return r.width > 0 && box.left < r.right && box.right > r.left && box.top < r.bottom && box.bottom > r.top
@@ -424,6 +427,202 @@ describe('video de fondo de la portada', () => {
     await check(names.playAria)
     await ctx.close()
   })
+})
+
+// La cámara se mueve: durante el bucle, las bailarinas ocupan del 6 % al 89 % del ancho del video de Eventos (medido
+// cada 0,5 s). La caja debe enseñar esa franja en cualquier ancho (con 1 punto de margen) y ningún texto va encima.
+describe('Eventos · encuadre del hero', () => {
+  it.each([
+    [320, 640],
+    [390, 844],
+    [768, 1024],
+    [1024, 768],
+    [1280, 800],
+    [1440, 900],
+    [1920, 1080],
+  ])('a %i×%i se ven las bailarinas y el texto no pisa el video', async (width, height) => {
+    const ctx = await browser.newContext({ viewport: { width, height }, reducedMotion: 'reduce' })
+    const page = await ctx.newPage()
+    await page.goto(BASE + pathFor('eventos', 'es'), { waitUntil: 'networkidle' })
+    const r = await page.locator('main video').evaluate((v) => {
+      const box = v.getBoundingClientRect()
+      const x = parseFloat(getComputedStyle(v).objectPosition) / 100
+      // object-fit: cover de un video 16:9.
+      const shown = Math.min(1, box.width / box.height / (16 / 9))
+      const hero = v.closest('section')!
+      const texts = [...hero.querySelectorAll('h1, p')]
+        .filter((el) => {
+          const t = el.getBoundingClientRect()
+          return t.left < box.right && t.right > box.left && t.top < box.bottom && t.bottom > box.top
+        })
+        .map((el) => el.textContent)
+      const button = hero.querySelector('.video-toggle')!.getBoundingClientRect()
+      return {
+        buttonTop: button.top,
+        videoBottom: box.bottom,
+        left: x * (1 - shown),
+        right: x * (1 - shown) + shown,
+        texts,
+        scroll: document.documentElement.scrollWidth - window.innerWidth,
+        heroBottom: hero.getBoundingClientRect().bottom,
+        subtitleBottom: hero.querySelector('h1 + p')!.getBoundingClientRect().bottom,
+      }
+    })
+    expect(r.left).toBeLessThanOrEqual(0.07)
+    expect(r.right).toBeGreaterThanOrEqual(0.88)
+    expect(r.texts).toEqual([])
+    // Hasta xl, el botón tampoco va sobre el video.
+    if (width < 1280) expect(r.buttonTop).toBeGreaterThanOrEqual(r.videoBottom)
+    expect(r.scroll).toBeLessThanOrEqual(0)
+    expect(r.subtitleBottom).toBeLessThan(r.heroBottom)
+    await ctx.close()
+  })
+})
+
+// Marca de agua del tigre: solo desde 1440 px (por debajo ni se ve ni se descarga), decorativa y sin tocar el texto.
+describe('Eventos · marca de agua del tigre', () => {
+  it.each([
+    [390, false],
+    [1280, false],
+    [1439, false],
+    [1440, true],
+    [1600, true],
+    [1920, true],
+    [2560, true],
+  ])('a %i px: visible y descargada = %s', async (width, shown) => {
+    const ctx = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: 'reduce' })
+    const page = await ctx.newPage()
+    const requests: string[] = []
+    page.on('request', (r) => {
+      if (r.url().includes('tigre-marca')) requests.push(r.url())
+    })
+    await page.goto(BASE + pathFor('eventos', 'es'), { waitUntil: 'networkidle' })
+    const mark = page.locator('.eventos-tigre')
+    expect(await mark.getAttribute('aria-hidden')).toBe('true')
+    expect(await mark.isVisible()).toBe(shown)
+    // Si Vite la incrustara en el CSS no habría petición; hoy es un archivo aparte (más de 4 KB).
+    expect(requests.length).toBe(shown ? 1 : 0)
+    if (shown) {
+      const gap = await mark.evaluate((el) => {
+        const range = document.createRange()
+        const lines = [...document.querySelectorAll('main section:first-of-type :is(h1, p)')].flatMap((t) => {
+          range.selectNodeContents(t)
+          return [...range.getClientRects()]
+        })
+        return Math.min(...lines.map((l) => l.left)) - el.getBoundingClientRect().right
+      })
+      expect(gap).toBeGreaterThanOrEqual(15)
+    }
+    await ctx.close()
+  })
+})
+
+describe.each(['es', 'en'] as const)('Eventos · agenda publicada (%s)', (lang) => {
+  const a = T[lang].eventos.agenda
+
+  it('estado vacío, sin errores de hidratación aunque el día no sea el del build', async () => {
+    const page = await (await context()).newPage()
+    const errors: string[] = []
+    page.on('pageerror', (err) => errors.push(err.message))
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') errors.push(msg.text())
+    })
+    await page.clock.setFixedTime(new Date('2031-06-01T12:00:00Z'))
+    await page.goto(BASE + pathFor('eventos', lang), { waitUntil: 'networkidle' })
+    await page.getByRole('heading', { level: 2, name: a.title }).waitFor()
+    expect(await page.getByText(a.empty.title).isVisible()).toBe(true)
+    expect(await page.locator('main article').count()).toBe(0)
+    expect(errors).toEqual([])
+    await page.context().close()
+  })
+
+  it('página completa: sin memoria ni aviso provisional; el llamado lleva a Colaborar y a Contacto', async () => {
+    const page = await (await context()).newPage()
+    await page.goto(BASE + pathFor('eventos', lang))
+    const main = page.locator('main')
+    expect(await main.getByRole('heading', { level: 2 }).allInnerTexts()).toEqual([
+      a.title,
+      T[lang].eventos.llamado.title,
+    ])
+    expect(await main.getByText(T[lang].common.soon).count()).toBe(0)
+    const cta = page.locator('section[aria-labelledby="eventos-participa"]')
+    expect(await cta.getByRole('link').evaluateAll((els) => els.map((el) => el.getAttribute('href')))).toEqual([
+      pathFor('colaborar', lang),
+      pathFor('contacto', lang),
+    ])
+    await page.context().close()
+  })
+
+  it('llamado: foco crema y, al pasar el cursor, texto con contraste AA en los dos botones', async () => {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' })
+    await ctx.addInitScript((k) => sessionStorage.setItem(k, '1'), SEEN)
+    const page = await ctx.newPage()
+    await page.goto(BASE + pathFor('eventos', lang))
+    const links = page.locator('section[aria-labelledby="eventos-participa"] a')
+    /** Contraste del texto contra el fondo ya compuesto (el del botón sobre el de la sección). */
+    const contrast = (i: number) =>
+      links.nth(i).evaluate((el) => {
+        const g = document.createElement('canvas').getContext('2d', { willReadFrequently: true })!
+        const paint = (...colors: string[]) => {
+          g.clearRect(0, 0, 1, 1)
+          for (const c of colors) {
+            g.fillStyle = c
+            g.fillRect(0, 0, 1, 1)
+          }
+          return [...g.getImageData(0, 0, 1, 1).data].slice(0, 3)
+        }
+        const lum = (c: number[]) => {
+          const f = (v: number) => ((v /= 255) <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)
+          return 0.2126 * f(c[0]!) + 0.7152 * f(c[1]!) + 0.0722 * f(c[2]!)
+        }
+        const section = getComputedStyle(el.closest('section')!).backgroundColor
+        const background = paint(section, getComputedStyle(el).backgroundColor)
+        const text = paint(getComputedStyle(el).color)
+        const [hi, lo] = [lum(text), lum(background)].sort((x, y) => y - x) as [number, number]
+        return (hi + 0.05) / (lo + 0.05)
+      })
+    for (const i of [0, 1]) {
+      expect(await contrast(i), `reposo ${i}`).toBeGreaterThanOrEqual(4.5)
+      await links.nth(i).hover()
+      await page.waitForTimeout(600)
+      expect(await contrast(i), `hover ${i}`).toBeGreaterThanOrEqual(4.5)
+      await links.nth(i).focus()
+      await page.keyboard.press('Shift+Tab')
+      await page.keyboard.press('Tab')
+      // El contorno entra con la misma transición de colores del botón (0,5 s): se espera su valor final.
+      await expect
+        .poll(() => links.nth(i).evaluate((el) => getComputedStyle(el).outlineColor))
+        .toBe('rgb(245, 239, 227)')
+    }
+    await ctx.close()
+  })
+
+  it('sin introducción, una fila de rombos separa el hero de la agenda', async () => {
+    const page = await (await context()).newPage()
+    await page.goto(BASE + pathFor('eventos', lang))
+    const row = page.locator('.eventos-separador .rombos-separador')
+    expect(await row.isVisible()).toBe(true)
+    const box = (selector: string) => page.locator(selector).evaluate((el) => el.getBoundingClientRect().toJSON())
+    const separator = await box('.eventos-separador .rombos-separador')
+    expect(separator.top).toBeGreaterThanOrEqual((await box('main > section:first-of-type')).bottom)
+    expect(separator.bottom).toBeLessThanOrEqual((await box('#eventos-proximos')).top)
+    expect(Math.abs(separator.left - (await box('main h1')).left)).toBeLessThanOrEqual(1)
+    await page.context().close()
+  })
+
+  it.each([320, 390, 1024, 1440, 1920])(
+    'a %i px los textos de la agenda empiezan en la columna del hero y no hay scroll horizontal',
+    async (width) => {
+      const ctx = await browser.newContext({ viewport: { width, height: 800 }, reducedMotion: 'reduce' })
+      const page = await ctx.newPage()
+      await page.goto(BASE + pathFor('eventos', lang), { waitUntil: 'networkidle' })
+      const left = (selector: string) => page.locator(selector).evaluate((el) => el.getBoundingClientRect().left)
+      const hero = await left('main h1')
+      expect(Math.abs((await left('#eventos-proximos')) - hero)).toBeLessThanOrEqual(1)
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0)
+      await ctx.close()
+    },
+  )
 })
 
 describe('encabezado y anclas', () => {
@@ -545,13 +744,15 @@ describe('Nosotros', () => {
 
 // Patrón lateral (shared/ui/PatternZone): solo en zonas claras, desde 1280 px, sin tapar nada.
 describe('patrón lateral', () => {
-  /** Páginas con al menos una zona clara (la 404 es toda oscura y no lleva patrón). */
+  /**
+   * Páginas con al menos una zona clara. No llevan patrón la 404 (toda oscura) ni, por ahora, Eventos: su introducción y
+   * su memoria, las zonas claras, no se muestran hasta tener textos y fotos.
+   */
   const WITH_PATTERN: RouteKey[] = [
     'home',
     'nosotros',
     'proyectos',
     'salud',
-    'eventos',
     'galeria',
     'colaborar',
     'contacto',
@@ -562,6 +763,7 @@ describe('patrón lateral', () => {
     ...WITH_PATTERN.flatMap((key) =>
       LANGS.map((lang) => ({ name: `${key} ${lang}`, path: pathFor(key, lang), has: true })),
     ),
+    ...LANGS.map((lang) => ({ name: `eventos ${lang}`, path: pathFor('eventos', lang), has: false })),
     ...LANGS.map((lang) => ({
       name: `404 ${lang}`,
       path: lang === 'es' ? '/no-existe/' : '/en/no-existe/',

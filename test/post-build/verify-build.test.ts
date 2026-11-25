@@ -1,6 +1,6 @@
 // Verificación POSTERIOR AL BUILD: comprueba el HTML estático realmente generado en build/client.
 // Se ejecuta con `pnpm run verify:build` (después de `pnpm run build`); no forma parte de `pnpm test`.
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { dict } from '@/content'
@@ -26,6 +26,74 @@ const h1Of = (key: RouteKey, lang: 'es' | 'en') => {
   if (key === 'gracias') return t.salud.solicitar.gracias.title
   return t.common.nav[(NAV_KEYS as readonly RouteKey[]).indexOf(key)]?.label
 }
+
+/**
+ * Peso real de un medio. CI no descarga Git LFS: allí el archivo es el puntero, que declara el tamaño en su línea
+ * `size`; en local es el archivo real.
+ */
+function mediaSize(file: string) {
+  const data = readFileSync(file)
+  const pointer = /^version https:\/\/git-lfs[^\n]*\noid sha256:[0-9a-f]{64}\nsize (\d+)\n/.exec(
+    data.subarray(0, 200).toString(),
+  )
+  return pointer ? Number(pointer[1]) : data.length
+}
+
+describe('Eventos: video del hero', () => {
+  const media = ['video/eventos-hero.webm', 'video/eventos-hero.mp4', 'video/eventos-poster.jpg']
+
+  it('los tres medios existen y juntos pesan menos de 3 000 000 bytes', () => {
+    const sizes = media.map((f) => mediaSize(join(BUILD, f)))
+    for (const size of sizes) expect(size).toBeGreaterThan(10_000)
+    expect(sizes.reduce((a, b) => a + b, 0)).toBeLessThan(3_000_000)
+  })
+
+  it.each(LANGS)('el HTML lleva solo el póster: sin fuentes, autoplay ni botón (%s)', (lang) => {
+    const doc = read(pathFor('eventos', lang))
+    const video = doc.querySelector('main video')
+    expect(video?.getAttribute('poster')).toBe('/video/eventos-poster.jpg')
+    expect(video?.getAttribute('preload')).toBe('none')
+    expect(video?.hasAttribute('autoplay')).toBe(false)
+    expect(video?.querySelector('source')).toBeNull()
+    expect(doc.querySelector('.video-toggle')).toBeNull()
+    const preloads = [...doc.head.querySelectorAll('link[rel="preload"][as="image"]')]
+    expect(preloads.map((l) => l.getAttribute('href'))).toContain('/video/eventos-poster.jpg')
+  })
+
+  it.each(LANGS)('la página publicada no tiene marcadores de ejemplo (%s)', (lang) => {
+    expect(readFileSync(fileFor(pathFor('eventos', lang)), 'utf8')).not.toMatch(
+      /\[(EJEMPLO|PENDIENTE|EXAMPLE|PENDING)/i,
+    )
+  })
+})
+
+describe('Eventos: agenda publicada', () => {
+  it.each(LANGS)('hoy no hay eventos: el HTML trae el estado vacío con enlace a Contacto (%s)', (lang) => {
+    const doc = read(pathFor('eventos', lang))
+    const empty = dict[lang].eventos.agenda.empty
+    expect(doc.querySelector('main')?.textContent).toContain(empty.title)
+    const cta = [...doc.querySelectorAll('main a')].find((a) => a.textContent?.includes(empty.cta))
+    expect(cta?.getAttribute('href')).toBe(pathFor('contacto', lang))
+  })
+
+  it.each(LANGS)('sin fotos no hay memoria ni aviso provisional; el llamado está completo (%s)', (lang) => {
+    const main = read(pathFor('eventos', lang)).querySelector('main')
+    const t = dict[lang].eventos
+    const titles = [...(main?.querySelectorAll('h2') ?? [])].map((h) => h.textContent)
+    expect(titles).toEqual([t.agenda.title, t.llamado.title])
+    expect(main?.textContent).not.toContain(dict[lang].common.soon)
+    expect(main?.querySelector('.eventos-separador')).not.toBeNull()
+  })
+
+  it('ningún archivo publicado contiene datos de ejemplo (el build de demostración es solo local)', () => {
+    const files = readdirSync(BUILD, { recursive: true, encoding: 'utf8' }).filter((f) =>
+      /\.(html|js|data|json|css)$/.test(f),
+    )
+    expect(files.length).toBeGreaterThan(20)
+    const dirty = files.filter((f) => /\[(EJEMPLO|EXAMPLE)\]/.test(readFileSync(join(BUILD, f), 'utf8')))
+    expect(dirty).toEqual([])
+  })
+})
 
 describe('build/client', () => {
   it('existe el build (ejecuta pnpm run build antes)', () => {
@@ -166,7 +234,7 @@ describe('build/client', () => {
         expect(img.getAttribute('alt')?.length).toBeGreaterThan(0)
       }
       const text = doc.querySelector('main')?.textContent ?? ''
-      expect(text).not.toMatch(/[[^]]+]/)
+      expect(text).not.toMatch(/\[[^\]]+\]/)
       expect(text).not.toContain('PDF')
     })
 

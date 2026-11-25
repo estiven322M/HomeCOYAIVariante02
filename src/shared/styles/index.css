@@ -248,6 +248,101 @@
       color-mix(in srgb, var(--color-noche) 70%, transparent) 100%
     );
   }
+  /* Hero de Eventos: encuadre común a todos los anchos (ver EventosHero) y velos de la caja del video. */
+  .eventos-encuadre video,
+  .eventos-encuadre-img {
+    object-position: 33% center;
+  }
+  /* Hasta xl: solo el borde inferior se funde con el texto (los pies de las bailarinas quedan por encima). */
+  .eventos-velo {
+    background: linear-gradient(to bottom, transparent 90%, var(--color-huito) 100%);
+  }
+  /* Desde xl: además, el borde izquierdo se funde con el panel del texto. Varios pasos y pendiente que llega a cero:
+     un degradado lineal dejaba una franja clara visible donde terminaba, sobre todo contra el cielo. */
+  @media (min-width: 80rem) {
+    .eventos-velo {
+      background:
+        linear-gradient(
+          to right,
+          var(--color-huito) 0rem,
+          color-mix(in srgb, var(--color-huito) 96%, transparent) 0.65rem,
+          color-mix(in srgb, var(--color-huito) 85%, transparent) 1.3rem,
+          color-mix(in srgb, var(--color-huito) 68%, transparent) 1.95rem,
+          color-mix(in srgb, var(--color-huito) 50%, transparent) 2.6rem,
+          color-mix(in srgb, var(--color-huito) 34%, transparent) 3.25rem,
+          color-mix(in srgb, var(--color-huito) 21%, transparent) 3.9rem,
+          color-mix(in srgb, var(--color-huito) 12%, transparent) 4.55rem,
+          color-mix(in srgb, var(--color-huito) 6%, transparent) 5.2rem,
+          color-mix(in srgb, var(--color-huito) 2%, transparent) 5.85rem,
+          transparent 6.5rem
+        ),
+        linear-gradient(
+          to bottom,
+          color-mix(in srgb, var(--color-huito) 35%, transparent) 0%,
+          transparent 22%,
+          transparent 88%,
+          color-mix(in srgb, var(--color-huito) 80%, transparent) 100%
+        );
+    }
+  }
+  /* Textura del panel de texto del hero de Eventos (desde xl): los rombos del patrón lateral en ocre muy tenue, que se
+     desvanecen hacia el video. Decorativa (el elemento lleva aria-hidden). La máscara del elemento desvanece; la del
+     pseudoelemento recorta el motivo. */
+  .eventos-textura {
+    display: none;
+  }
+  @media (min-width: 80rem) {
+    .eventos-textura {
+      display: block;
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 42%;
+      pointer-events: none;
+      -webkit-mask-image: linear-gradient(to right, #000 30%, transparent);
+      mask-image: linear-gradient(to right, #000 30%, transparent);
+    }
+    .eventos-textura::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--color-ocre);
+      opacity: 0.07;
+      -webkit-mask-image: url('./patron-rombos.svg');
+      mask-image: url('./patron-rombos.svg');
+      -webkit-mask-size: 60px 88.5px;
+      mask-size: 60px 88.5px;
+    }
+  }
+  /* Marca de agua del tigre (EventosHero; interruptor MARCA_TIGRE). Solo desde 1440 px: la imagen se declara dentro de
+     la media query, así que por debajo no se pide. Se asoma por el borde izquierdo y termina 1 rem antes de la columna
+     del texto (max-w-6xl con px-6 dentro: empieza en 50 % − 34,5 rem), así que no cambia su contraste. Las medidas
+     salen del viewBox de tigre-marca.svg (ver scripts/tigre-marca.mjs): cabeza = 80,57 % del alto del hero. */
+  .eventos-tigre {
+    display: none;
+  }
+  @media (min-width: 90rem) {
+    .eventos-tigre {
+      display: block;
+      position: absolute;
+      top: calc(var(--header-h) / 2 + 9.13%);
+      right: calc(50% + 35.5rem);
+      height: 80.57%;
+      aspect-ratio: 1768 / 1928;
+      pointer-events: none;
+      opacity: 0.12;
+      background: url('./tigre-marca.svg') center / contain no-repeat;
+    }
+  }
+  /* Secciones huito: el foco achiote global apenas se ve sobre este fondo; el ocre tiene 6,9:1. */
+  .sobre-huito :focus-visible {
+    outline: 2px solid var(--color-ocre);
+    outline-offset: 3px;
+  }
+  /* Sección chagra: el foco achiote (1,1:1) y el ocre (2,6:1) no llegan a 3:1; el crema tiene 5,3:1. */
+  .sobre-chagra :focus-visible {
+    outline: 2px solid var(--color-arena-clara);
+    outline-offset: 3px;
+  }
   .hero-scope :focus-visible {
     outline: 2px solid var(--turquesa);
     outline-offset: 3px;

@@ -26,8 +26,8 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
 - **Descripciones muy cortas.** Las de Nosotros y Contacto (`common.nav[*].desc`, ~40 caracteres) son honestas pero
   débiles para buscadores. Mejorarlas con el contenido definitivo.
 - **Páginas con contenido por llegar.** `/colaborar/` reutiliza el texto de «Colaborar» más el aviso «Esta sección estará disponible
-  pronto» (`/proyectos/` ya tiene su contenido: ver «Proyectos: pendientes»); `/salud-y-medicina-tradicional/`, `/eventos/`, `/galeria/` y
-  `/contacto/` solo tienen título, descripción y el aviso (`ProvisionalPage`); el diseño de Salud y Eventos llegará después.
+  pronto» (`/proyectos/`, `/salud-y-medicina-tradicional/` y `/eventos/` ya tienen su diseño); `/galeria/` y `/contacto/` solo
+  tienen título, descripción y el aviso (`ProvisionalPage`).
 - **Pie de página incompleto a propósito.** «Aviso legal» y «Política de privacidad» están ocultos hasta que exista su
   contenido (ver el bloqueante de arriba). Las redes (`common.footer.socials`, lista `{name, url}`) están vacías y el
   bloque no se muestra: faltan las URL reales. Antes había marcadores `[Instagram] [Facebook] [YouTube]`.
@@ -92,6 +92,24 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
   25–58 px respecto a antes por el cambio de `PageHero` a altura mínima (corrige el eyebrow bajo el encabezado fijo); quedan unas
   pocas diferencias de render (< 0,02 % de los píxeles) en esa página, aceptadas. (7) Sin revisión con lector de pantalla real
   (solo axe y pruebas automáticas).
+
+## Eventos: pendientes
+
+- **Contacto no ofrece todavía un canal para escribir.** «Más información» (de un evento sin enlace propio), «Escríbenos»
+  (agenda vacía y llamado) llevan a `/contacto/`, que dice «disponible pronto». También «Ver la Galería» y «Colaborar»
+  llevan a páginas provisionales. _Contacto es la siguiente fase: resolverlo antes de publicar eventos._
+- **Textos de la organización** (ocultos hasta tenerlos, en `content/{es,en}/eventos.ts`): título y párrafos de la
+  introducción, cita y autoría y frase del llamado. Se recomienda **no publicar sin la introducción**.
+- **Eventos y fotos:** las listas de `content/agenda.ts` están vacías. Cada foto necesita año, derivados (`pnpm images`),
+  pie y texto alternativo en los dos idiomas.
+- **SEO:** se mantienen el título y la descripción actuales hasta que exista memoria. Propuesta pendiente: «Eventos y
+  encuentros — ÉCOYAI» / «Agenda y memoria de los encuentros y celebraciones de ÉCOYAI.» (en: «Events and gatherings —
+  ÉCOYAI» / «Upcoming and past gatherings and celebrations of ÉCOYAI.»). Sin `og:image` ni datos estructurados.
+- **Sin probar** en Safari ni en iPhone (incluido el modo de bajo consumo), ni con un lector de pantalla real.
+- **Reconstrucción diaria en Netlify (mejora pendiente).** El HTML estático se filtra con la fecha del último build: sin
+  JavaScript, o antes de hidratar, un evento ya terminado sigue apareciendo hasta el siguiente despliegue (al hidratar
+  se quita, y la página se desplaza un poco). Solución: un _build hook_ de Netlify disparado cada día después de
+  medianoche en Colombia (p. ej. con una GitHub Action programada). La URL del hook es un secreto.
 
 ## Estilos y diseño
 

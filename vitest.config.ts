@@ -5,6 +5,8 @@ import { defineConfig } from 'vitest/config'
 // Configuración de pruebas aparte de vite.config.ts: no carga los plugins del sitio ni los de Figma.
 export default defineConfig({
   plugins: [react()],
+  // Las pruebas pasan su propio «hoy»; esta es la fecha de build que ven los componentes.
+  define: { __FECHA_BUILD__: JSON.stringify('2027-01-15') },
   resolve: {
     alias: {
       '@test': path.resolve(import.meta.dirname, './test'),
