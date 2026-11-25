@@ -29,7 +29,15 @@ export function eventosDeEjemplo(lang: Lang): EventoPublicado[] {
   return [
     // Desordenados a propósito: la página los ordena por fecha.
     { id: 'ejemplo-2', fecha: '2027-04-02', ...comun, tipo: t.tipos[1] ?? '' },
-    { id: 'ejemplo-1', fecha: '2027-03-14', ...comun, tipo: t.tipos[0] ?? '' },
+    {
+      id: 'ejemplo-1',
+      fecha: '2027-03-14',
+      ...comun,
+      tipo: t.tipos[0] ?? '',
+      // Para revisar la tarjeta con imagen.
+      imagen: { available: true, base: '/nosotros/rio-putumayo', widths: [640, 1280], width: 1280, height: 960 },
+      imageAlt: lang === 'es' ? '[EJEMPLO] Texto alternativo de la imagen' : '[EXAMPLE] Image alternative text',
+    },
     { id: 'ejemplo-3', fecha: '2027-05-07', fechaFin: '2027-05-09', ...comun, tipo: t.tipos[2] ?? '' },
     { id: 'ejemplo-pasado', fecha: '2026-03-01', ...comun, nombre: t.pasado, tipo: t.tipos[0] ?? '' },
   ]

@@ -29,8 +29,6 @@ export const eventos = {
     more: 'Más información',
     /** Nombre accesible del enlace: «{moreAbout} {nombre}». Empieza por el texto visible. */
     moreAbout: 'Más información sobre',
-    /** Fecha completa (solo lectores de pantalla) de un evento de varios días: «{from} … {to} …». */
-    range: { from: 'Del', to: 'al' },
     empty: {
       title: 'Pronto anunciaremos los próximos encuentros.',
       text: 'Mientras tanto, escríbenos si quieres participar, proponer un encuentro o recibir noticias de ÉCOYAI.',

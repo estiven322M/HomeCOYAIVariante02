@@ -69,8 +69,28 @@ describe.each([
     renderAt(<Agenda eventos={ejemplos} />, path)
     const tarjeta = tarjetas()[2] as HTMLElement
     expect(tarjeta.querySelector('p[aria-hidden="true"]')).toHaveTextContent('07')
-    expect(tarjeta).toHaveTextContent(`${a.range.from} `)
+    expect(tarjeta).toHaveTextContent(lang === 'es' ? 'Del 7 al 9 de mayo de 2027' : 'May 7–9, 2027')
     expect(tarjeta.querySelectorAll('time')).toHaveLength(2)
+  })
+
+  it('sin imagen no hay bloque de imagen y la insignia encabeza el texto; con imagen va sobre ella', () => {
+    reloj('2027-01-20T15:00:00Z')
+    const imagen = { available: true, base: '/x', widths: [640], width: 640, height: 480 }
+    renderAt(<Agenda eventos={[{ ...ejemplos[1]!, imagen, imageAlt: 'Texto alternativo' }, ejemplos[0]!]} />, path)
+    const [con, sin] = tarjetas() as [HTMLElement, HTMLElement]
+    expect(within(con).getByRole('img', { name: 'Texto alternativo' })).toBeInTheDocument()
+    expect(con.querySelector('time')?.parentElement).toHaveClass('absolute')
+    expect(sin.querySelector('img, .aspect-video')).toBeNull()
+    expect(sin.querySelector('time')?.parentElement).not.toHaveClass('absolute')
+    // La insignia es lo primero del bloque de texto.
+    expect(sin.firstElementChild?.firstElementChild?.querySelector('time')).not.toBeNull()
+  })
+
+  it('una imagen aún no disponible cuenta como sin imagen', () => {
+    reloj('2027-01-20T15:00:00Z')
+    const imagen = { available: false, base: '/x', widths: [640], width: 640, height: 480 }
+    renderAt(<Agenda eventos={[{ ...ejemplos[1]!, imagen }]} />, path)
+    expect(document.querySelector('article .aspect-video')).toBeNull()
   })
 
   it('con enlace propio, «Más información» lo usa', () => {

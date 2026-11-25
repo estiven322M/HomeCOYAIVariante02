@@ -69,13 +69,17 @@ describe('Eventos · introducción', () => {
     paragraphs: ['[EJEMPLO] Primer párrafo.', '[EJEMPLO] Segundo párrafo.'],
   }
 
-  it.each(['es', 'en'] as const)('sin textos aprobados no se muestra (%s)', (lang) => {
+  it.each(['es', 'en'] as const)('sin textos aprobados solo queda el separador decorativo (%s)', (lang) => {
     const { container } = renderAt(<Introduccion />, lang === 'es' ? '/eventos/' : '/en/events/')
-    expect(container).toBeEmptyDOMElement()
+    expect(container.querySelector('section, h2, p')).toBeNull()
+    expect(container.textContent).toBe('')
+    expect(container.querySelector('.eventos-separador')).toHaveAttribute('aria-hidden', 'true')
+    expect(container.querySelector('.rombos-separador')).not.toBeNull()
   })
 
-  it('con textos muestra título y párrafos; sin cita no hay columna de cita', () => {
+  it('con textos muestra título y párrafos; sin cita no hay columna de cita ni separador', () => {
     renderAt(<Introduccion texts={prueba} />, '/eventos/')
+    expect(document.querySelector('.eventos-separador')).toBeNull()
     expect(screen.getByRole('heading', { level: 2, name: prueba.title })).toBeInTheDocument()
     expect(screen.getByText(base.label)).toBeInTheDocument()
     expect(document.querySelectorAll('p.justificado')).toHaveLength(2)

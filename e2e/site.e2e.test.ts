@@ -536,6 +536,19 @@ describe.each(['es', 'en'] as const)('Eventos · agenda publicada (%s)', (lang) 
     await page.context().close()
   })
 
+  it('sin introducción, una fila de rombos separa el hero de la agenda', async () => {
+    const page = await (await context()).newPage()
+    await page.goto(BASE + pathFor('eventos', lang))
+    const row = page.locator('.eventos-separador .rombos-separador')
+    expect(await row.isVisible()).toBe(true)
+    const box = (selector: string) => page.locator(selector).evaluate((el) => el.getBoundingClientRect().toJSON())
+    const separator = await box('.eventos-separador .rombos-separador')
+    expect(separator.top).toBeGreaterThanOrEqual((await box('main > section:first-of-type')).bottom)
+    expect(separator.bottom).toBeLessThanOrEqual((await box('#eventos-proximos')).top)
+    expect(Math.abs(separator.left - (await box('main h1')).left)).toBeLessThanOrEqual(1)
+    await page.context().close()
+  })
+
   it.each([320, 390, 1024, 1440, 1920])(
     'a %i px los textos de la agenda empiezan en la columna del hero y no hay scroll horizontal',
     async (width) => {

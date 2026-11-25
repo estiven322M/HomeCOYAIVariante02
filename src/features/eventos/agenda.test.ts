@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { EVENTOS } from '@/content/agenda'
-import { fechaCompleta, hoyEnBogota, insignia, proximos } from './agenda'
+import { fechaCompleta, hoyEnBogota, insignia, intervalo, proximos } from './agenda'
 
 describe('agenda: hoy en Bogotá (UTC−5)', () => {
   it.each([
@@ -50,6 +50,28 @@ describe('agenda: formato', () => {
   it('fecha completa en cada idioma', () => {
     expect(fechaCompleta('2027-04-02', 'es')).toBe('2 de abril de 2027')
     expect(fechaCompleta('2027-04-02', 'en')).toBe('April 2, 2027')
+  })
+
+  it.each([
+    ['mismo mes', '2027-05-07', '2027-05-09', 'Del 7 al 9 de mayo de 2027', 'May 7–9, 2027'],
+    ['distinto mes', '2027-04-30', '2027-05-02', 'Del 30 de abril al 2 de mayo de 2027', 'April 30 – May 2, 2027'],
+    [
+      'distinto año',
+      '2026-12-28',
+      '2027-01-03',
+      'Del 28 de diciembre de 2026 al 3 de enero de 2027',
+      'December 28, 2026 – January 3, 2027',
+    ],
+  ])('intervalo compacto: %s', (_caso, inicio, fin, es, en) => {
+    for (const [lang, esperado] of [
+      ['es', es],
+      ['en', en],
+    ] as const) {
+      const trozos = intervalo(inicio, fin, lang)
+      expect(trozos.map((t) => t.texto).join('')).toBe(esperado)
+      // Cada extremo es una fecha con su ISO completo, aunque el texto no repita el mes o el año.
+      expect(trozos.flatMap((t) => t.iso ?? [])).toEqual([inicio, fin])
+    }
   })
 
   it('rechaza una fecha sin año', () => {

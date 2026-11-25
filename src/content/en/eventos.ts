@@ -22,7 +22,6 @@ export const eventos = {
     place: 'Location:',
     more: 'More information',
     moreAbout: 'More information about',
-    range: { from: 'From', to: 'to' },
     empty: {
       title: 'We will announce the next gatherings soon.',
       text: 'In the meantime, write to us if you would like to take part, propose a gathering or receive news from ÉCOYAI.',

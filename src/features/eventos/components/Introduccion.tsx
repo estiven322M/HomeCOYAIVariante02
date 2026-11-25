@@ -5,14 +5,25 @@ import { SubTitle } from '@/shared/ui/SubTitle'
 import { TextoCorrido } from '@/shared/ui/TextoCorrido'
 import { useIntroduccion } from '@/features/eventos/fuente'
 
+/** Sin introducción, el hero y la agenda son ambos huito: esta fila de rombos marca dónde acaba uno y empieza la otra. */
+function Separador() {
+  return (
+    <div aria-hidden className="eventos-separador bg-huito">
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="rombos-separador" />
+      </div>
+    </div>
+  )
+}
+
 /**
- * Introducción y cita. Sus textos dependen de la organización: sin título ni párrafos no se muestra la sección, y sin
+ * Introducción y cita. Sus textos dependen de la organización: sin título ni párrafos no se muestra la sección (queda un separador), y sin
  * cita no se muestra la columna de la cita. `texts` permite probarla con textos de prueba.
  */
 export function Introduccion({ texts }: { texts?: Content['eventos']['intro'] }) {
   const publicada = useIntroduccion()
   const intro = texts ?? publicada
-  if (!intro.title || intro.paragraphs.length === 0) return null
+  if (!intro.title || intro.paragraphs.length === 0) return <Separador />
 
   return (
     <PatternZone as="section" className="bg-crema py-20 lg:py-28">

@@ -1,14 +1,14 @@
 import { Link } from 'react-router'
 import { useLang, usePathFor } from '@/shared/i18n'
 import { FillImage } from '@/shared/ui/FillImage'
-import { ImagePlaceholder } from '@/shared/ui/ImagePlaceholder'
-import { fechaCompleta, insignia } from '@/features/eventos/agenda'
+import { fechaCompleta, insignia, intervalo } from '@/features/eventos/agenda'
 import type { EventoPublicado } from '@/features/eventos/fuente'
 
 /**
- * Tarjeta de un próximo evento. La insignia («14 / MAR / 2027») es visual; para lectores de pantalla va la fecha
- * completa dentro del mismo `<time>`. Si dura varios días, la insignia (primer día) es decorativa y el intervalo se lee
- * entero, visible, bajo el lugar.
+ * Tarjeta de un próximo evento. Con imagen, la insignia va sobre ella; sin imagen no hay bloque de imagen y la insignia
+ * encabeza el texto. La insignia («14 / MAR / 2027») es visual; para lectores de pantalla va la fecha completa dentro
+ * del mismo `<time>`. Si dura varios días, la insignia (primer día) es decorativa y el intervalo se lee, visible, bajo
+ * el lugar.
  */
 export function TarjetaEvento({ evento }: { evento: EventoPublicado }) {
   const { lang, t } = useLang()
@@ -28,6 +28,13 @@ export function TarjetaEvento({ evento }: { evento: EventoPublicado }) {
     </>
   )
 
+  const conImagen = !!evento.imagen?.available
+  const insigniaFecha = (posicion: string) => (
+    <p aria-hidden={varios || undefined} className={`${posicion} w-21 bg-ocre py-3 text-center text-huito`}>
+      {varios ? fecha : <time dateTime={evento.fecha}>{fecha}</time>}
+    </p>
+  )
+
   const masInfo = {
     'aria-label': `${a.moreAbout} ${evento.nombre}`,
     className:
@@ -41,22 +48,19 @@ export function TarjetaEvento({ evento }: { evento: EventoPublicado }) {
 
   return (
     <article className="flex h-full flex-col border border-calido/15 bg-calido/4">
-      <div className="relative aspect-video">
-        {evento.imagen ? (
+      {conImagen && evento.imagen && (
+        <div className="relative aspect-video">
           <FillImage
             spec={evento.imagen}
             tone="huito"
             alt={evento.imageAlt ?? ''}
             sizes="(min-width: 768px) 552px, 100vw"
           />
-        ) : (
-          <ImagePlaceholder tone="huito" />
-        )}
-        <p aria-hidden={varios || undefined} className="absolute left-5 top-5 w-21 bg-ocre py-3 text-center text-huito">
-          {varios ? fecha : <time dateTime={evento.fecha}>{fecha}</time>}
-        </p>
-      </div>
+          {insigniaFecha('absolute left-5 top-5')}
+        </div>
+      )}
       <div className="flex flex-1 flex-col p-6 md:p-8">
+        {!conImagen && insigniaFecha('mb-6 self-start')}
         <p className="self-start border border-ocre/70 px-2.5 py-1 text-caption uppercase tracking-[0.15em] text-ocre">
           {evento.tipo}
         </p>
@@ -80,8 +84,15 @@ export function TarjetaEvento({ evento }: { evento: EventoPublicado }) {
         </p>
         {varios && evento.fechaFin && (
           <p className="mt-2 text-ui text-calido/90">
-            {a.range.from} <time dateTime={evento.fecha}>{fechaCompleta(evento.fecha, lang)}</time> {a.range.to}{' '}
-            <time dateTime={evento.fechaFin}>{fechaCompleta(evento.fechaFin, lang)}</time>
+            {intervalo(evento.fecha, evento.fechaFin, lang).map((trozo) =>
+              trozo.iso ? (
+                <time key={trozo.iso} dateTime={trozo.iso}>
+                  {trozo.texto}
+                </time>
+              ) : (
+                trozo.texto
+              ),
+            )}
           </p>
         )}
         <p className="mt-3.5 text-body-sm text-calido/90">{evento.descripcion}</p>
