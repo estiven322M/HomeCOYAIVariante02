@@ -3,7 +3,7 @@ import { useLang } from '@/shared/i18n'
 import { BackgroundVideo } from '@/shared/ui/BackgroundVideo'
 import { ImagePlaceholder } from '@/shared/ui/ImagePlaceholder'
 import { VideoToggle } from '@/shared/ui/VideoToggle'
-import { HERO_MEDIA, type HeroMedia } from '@/features/eventos/media'
+import { HERO_MEDIA, MARCA_TIGRE, type HeroMedia } from '@/features/eventos/media'
 
 /**
  * Hero de Eventos: el texto nunca va sobre las bailarinas. Hasta `xl`, el video arriba y el texto debajo sobre fondo
@@ -13,7 +13,7 @@ import { HERO_MEDIA, type HeroMedia } from '@/features/eventos/media'
  * bailarinas ocupan del 6 % al 89 % del ancho del video, así que la caja debe enseñar al menos el 83 %. Por eso su
  * proporción nunca baja de ~3:2 (en móvil, `aspect-[3/2]`; desde `xl`, la altura sale del ancho de la ventana).
  */
-export function EventosHero({ media = HERO_MEDIA }: { media?: HeroMedia }) {
+export function EventosHero({ media = HERO_MEDIA, tigre = MARCA_TIGRE }: { media?: HeroMedia; tigre?: boolean }) {
   const { t } = useLang()
   const h = t.eventos.hero
 
@@ -22,6 +22,8 @@ export function EventosHero({ media = HERO_MEDIA }: { media?: HeroMedia }) {
       aria-labelledby="eventos-titulo"
       className="hero-scope relative overflow-hidden bg-huito pt-(--header-h) xl:h-[clamp(31rem,39.3vw,42.5rem)] xl:pt-0"
     >
+      {/* Antes de la textura: los rombos quedan por encima del tigre. */}
+      {tigre && <div aria-hidden className="eventos-tigre" />}
       <div aria-hidden className="eventos-textura" />
       <div className="relative aspect-[3/2] md:aspect-video xl:absolute xl:inset-y-0 xl:right-0 xl:left-[42%] xl:aspect-auto">
         {media.video ? <HeroVideo media={media} /> : <HeroFijo media={media} />}

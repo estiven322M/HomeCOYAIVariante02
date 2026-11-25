@@ -479,6 +479,44 @@ describe('Eventos · encuadre del hero', () => {
   })
 })
 
+// Marca de agua del tigre: solo desde 1440 px (por debajo ni se ve ni se descarga), decorativa y sin tocar el texto.
+describe('Eventos · marca de agua del tigre', () => {
+  it.each([
+    [390, false],
+    [1280, false],
+    [1439, false],
+    [1440, true],
+    [1600, true],
+    [1920, true],
+    [2560, true],
+  ])('a %i px: visible y descargada = %s', async (width, shown) => {
+    const ctx = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: 'reduce' })
+    const page = await ctx.newPage()
+    const requests: string[] = []
+    page.on('request', (r) => {
+      if (r.url().includes('tigre-marca')) requests.push(r.url())
+    })
+    await page.goto(BASE + pathFor('eventos', 'es'), { waitUntil: 'networkidle' })
+    const mark = page.locator('.eventos-tigre')
+    expect(await mark.getAttribute('aria-hidden')).toBe('true')
+    expect(await mark.isVisible()).toBe(shown)
+    // Si Vite la incrustara en el CSS no habría petición; hoy es un archivo aparte (más de 4 KB).
+    expect(requests.length).toBe(shown ? 1 : 0)
+    if (shown) {
+      const gap = await mark.evaluate((el) => {
+        const range = document.createRange()
+        const lines = [...document.querySelectorAll('main section:first-of-type :is(h1, p)')].flatMap((t) => {
+          range.selectNodeContents(t)
+          return [...range.getClientRects()]
+        })
+        return Math.min(...lines.map((l) => l.left)) - el.getBoundingClientRect().right
+      })
+      expect(gap).toBeGreaterThanOrEqual(15)
+    }
+    await ctx.close()
+  })
+})
+
 describe('encabezado y anclas', () => {
   it('transparente sobre el hero de la portada y sólido en las demás páginas', async () => {
     const page = await (await context()).newPage()

@@ -313,6 +313,26 @@
       mask-size: 60px 88.5px;
     }
   }
+  /* Marca de agua del tigre (EventosHero; interruptor MARCA_TIGRE). Solo desde 1440 px: la imagen se declara dentro de
+     la media query, así que por debajo no se pide. Se asoma por el borde izquierdo y termina 1 rem antes de la columna
+     del texto (max-w-6xl con px-6 dentro: empieza en 50 % − 34,5 rem), así que no cambia su contraste. Las medidas
+     salen del viewBox de tigre-marca.svg (ver scripts/tigre-marca.mjs): cabeza = 80,57 % del alto del hero. */
+  .eventos-tigre {
+    display: none;
+  }
+  @media (min-width: 90rem) {
+    .eventos-tigre {
+      display: block;
+      position: absolute;
+      top: calc(var(--header-h) / 2 + 9.13%);
+      right: calc(50% + 35.5rem);
+      height: 80.57%;
+      aspect-ratio: 1768 / 1928;
+      pointer-events: none;
+      opacity: 0.12;
+      background: url('./tigre-marca.svg') center / contain no-repeat;
+    }
+  }
   .hero-scope :focus-visible {
     outline: 2px solid var(--turquesa);
     outline-offset: 3px;

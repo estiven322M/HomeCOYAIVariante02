@@ -4,7 +4,7 @@ import { renderAt } from '@test/render'
 import { dict } from '@/content'
 import { EventosHero } from './components/EventosHero'
 import { Introduccion } from './components/Introduccion'
-import { HERO_MEDIA } from './media'
+import { HERO_MEDIA, MARCA_TIGRE } from './media'
 
 const sources = () => [...document.querySelectorAll('video source')].map((s) => s.getAttribute('src'))
 
@@ -12,6 +12,18 @@ describe('Eventos · hero', () => {
   it('la textura de rombos es decorativa', () => {
     renderAt(<EventosHero />, '/eventos/')
     expect(document.querySelector('.eventos-textura')).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('el tigre es decorativo, va detrás de los rombos y su interruptor no los toca', () => {
+    expect(MARCA_TIGRE).toBe(true)
+    const { unmount } = renderAt(<EventosHero />, '/eventos/')
+    const tigre = document.querySelector('.eventos-tigre')
+    expect(tigre).toHaveAttribute('aria-hidden', 'true')
+    expect(tigre?.nextElementSibling).toHaveClass('eventos-textura')
+    unmount()
+    renderAt(<EventosHero tigre={false} />, '/eventos/')
+    expect(document.querySelector('.eventos-tigre')).toBeNull()
+    expect(document.querySelector('.eventos-textura')).not.toBeNull()
   })
 
   it('el video está activado por defecto', () => {

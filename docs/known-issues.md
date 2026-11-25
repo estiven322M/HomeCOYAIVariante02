@@ -95,6 +95,11 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
 
 ## Estilos y diseño
 
+- **Eventos: marca de agua del tigre PENDIENTE DE APROBACIÓN de la organización.** El hero muestra desde 1440 px una
+  versión **monocroma (ocre al 12 %) y recortada** del tigre de ÉCOYAI: altera la marca. Se apaga con
+  `MARCA_TIGRE = false` en `features/eventos/media.ts` (los rombos no cambian y la imagen deja de pedirse; el archivo
+  `shared/styles/tigre-marca.svg` sigue en el repositorio). _Requiere respuesta antes de publicar._
+
 - **Texto justificado (ajuste general de los stakeholders).** Solo en párrafos de texto corrido, desde `md` (en móvil,
   a la izquierda), con la clase `justificado` (ver ARCHITECTURE). Las tarjetas estrechas (Valores, junta, texto del Taita)
   y los textos centrados quedan sin justificar a propósito. Pendiente de confirmar con los stakeholders: si lo quieren
