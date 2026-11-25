@@ -2,9 +2,9 @@
 // `pnpm verify:build` falla si un «[EJEMPLO]» llega al build publicado. No son eventos reales.
 import type { Content, Lang } from '@/content'
 import { useLang } from '@/shared/i18n'
-import type { EventoPublicado } from './fuente'
+import type { AnioPublicado, EventoPublicado, FotoPublicada } from './fuente'
 
-export type { EventoPublicado }
+export type { AnioPublicado, EventoPublicado, FotoPublicada }
 
 const TEXTOS = {
   es: {
@@ -45,6 +45,39 @@ export function eventosDeEjemplo(lang: Lang): EventoPublicado[] {
 
 export function useEventos(): EventoPublicado[] {
   return eventosDeEjemplo(useLang().lang)
+}
+
+/**
+ * Dos años, desordenados: uno con 8 fotos (para ver el límite de 6 y 4) y otro con 3. La primera de cada año usa una foto
+ * de paisaje del sitio, para revisar el texto alternativo; las demás son marcadores.
+ */
+export function memoriaDeEjemplo(lang: Lang): AnioPublicado[] {
+  const marca = lang === 'es' ? '[EJEMPLO]' : '[EXAMPLE]'
+  const foto = (anio: number, i: number): FotoPublicada => ({
+    id: `${anio}-${i}`,
+    pie: `${marca} ${lang === 'es' ? 'Nombre del evento' : 'Event name'} ${i}`,
+    alt: `${marca} ${lang === 'es' ? 'Texto alternativo de la foto' : 'Photo alternative text'} ${i}`,
+    imagen: { available: i === 1, base: '/nosotros/rio-putumayo', widths: [640, 1280], width: 1280, height: 960 },
+  })
+  const fotos = (anio: number, n: number) => Array.from({ length: n }, (_, i) => foto(anio, i + 1))
+  return [
+    { anio: 2025, fotos: fotos(2025, 3) },
+    { anio: 2026, fotos: fotos(2026, 8) },
+    { anio: 2024, fotos: [] },
+  ]
+}
+
+export function useMemoria(): AnioPublicado[] {
+  return memoriaDeEjemplo(useLang().lang)
+}
+
+export function useLlamado(): Content['eventos']['llamado'] {
+  const { lang, t } = useLang()
+  const text =
+    lang === 'es'
+      ? '[EJEMPLO] Una frase sobre cómo se puede participar o apoyar los encuentros de la comunidad.'
+      : '[EXAMPLE] One sentence about how to take part in or support the community gatherings.'
+  return { ...t.eventos.llamado, text }
 }
 
 export function useIntroduccion(): Content['eventos']['intro'] {

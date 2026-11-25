@@ -8,7 +8,7 @@ import { useIntroduccion } from '@/features/eventos/fuente'
 /** Sin introducción, el hero y la agenda son ambos huito: esta fila de rombos marca dónde acaba uno y empieza la otra. */
 function Separador() {
   return (
-    <div aria-hidden className="eventos-separador bg-huito">
+    <div aria-hidden className="eventos-separador bg-huito pt-10 lg:pt-14">
       <div className="mx-auto max-w-6xl px-6">
         <div className="rombos-separador" />
       </div>

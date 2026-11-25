@@ -1,7 +1,8 @@
 import { Agenda } from '@/features/eventos/components/Agenda'
 import { EventosHero } from '@/features/eventos/components/EventosHero'
 import { Introduccion } from '@/features/eventos/components/Introduccion'
-import { SoonNotice } from '@/shared/ui/SoonNotice'
+import { Llamado } from '@/features/eventos/components/Llamado'
+import { Memoria } from '@/features/eventos/components/Memoria'
 
 /** /eventos/ */
 export function EventosPage() {
@@ -10,8 +11,8 @@ export function EventosPage() {
       <EventosHero />
       <Introduccion />
       <Agenda />
-      {/* Provisional hasta que lleguen la memoria y el llamado. */}
-      <SoonNotice />
+      <Memoria />
+      <Llamado />
     </>
   )
 }

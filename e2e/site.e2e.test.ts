@@ -536,6 +536,67 @@ describe.each(['es', 'en'] as const)('Eventos · agenda publicada (%s)', (lang) 
     await page.context().close()
   })
 
+  it('página completa: sin memoria ni aviso provisional; el llamado lleva a Colaborar y a Contacto', async () => {
+    const page = await (await context()).newPage()
+    await page.goto(BASE + pathFor('eventos', lang))
+    const main = page.locator('main')
+    expect(await main.getByRole('heading', { level: 2 }).allInnerTexts()).toEqual([
+      a.title,
+      T[lang].eventos.llamado.title,
+    ])
+    expect(await main.getByText(T[lang].common.soon).count()).toBe(0)
+    const cta = page.locator('section[aria-labelledby="eventos-participa"]')
+    expect(await cta.getByRole('link').evaluateAll((els) => els.map((el) => el.getAttribute('href')))).toEqual([
+      pathFor('colaborar', lang),
+      pathFor('contacto', lang),
+    ])
+    await page.context().close()
+  })
+
+  it('llamado: foco crema y, al pasar el cursor, texto con contraste AA en los dos botones', async () => {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' })
+    await ctx.addInitScript((k) => sessionStorage.setItem(k, '1'), SEEN)
+    const page = await ctx.newPage()
+    await page.goto(BASE + pathFor('eventos', lang))
+    const links = page.locator('section[aria-labelledby="eventos-participa"] a')
+    /** Contraste del texto contra el fondo ya compuesto (el del botón sobre el de la sección). */
+    const contrast = (i: number) =>
+      links.nth(i).evaluate((el) => {
+        const g = document.createElement('canvas').getContext('2d', { willReadFrequently: true })!
+        const paint = (...colors: string[]) => {
+          g.clearRect(0, 0, 1, 1)
+          for (const c of colors) {
+            g.fillStyle = c
+            g.fillRect(0, 0, 1, 1)
+          }
+          return [...g.getImageData(0, 0, 1, 1).data].slice(0, 3)
+        }
+        const lum = (c: number[]) => {
+          const f = (v: number) => ((v /= 255) <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)
+          return 0.2126 * f(c[0]!) + 0.7152 * f(c[1]!) + 0.0722 * f(c[2]!)
+        }
+        const section = getComputedStyle(el.closest('section')!).backgroundColor
+        const background = paint(section, getComputedStyle(el).backgroundColor)
+        const text = paint(getComputedStyle(el).color)
+        const [hi, lo] = [lum(text), lum(background)].sort((x, y) => y - x) as [number, number]
+        return (hi + 0.05) / (lo + 0.05)
+      })
+    for (const i of [0, 1]) {
+      expect(await contrast(i), `reposo ${i}`).toBeGreaterThanOrEqual(4.5)
+      await links.nth(i).hover()
+      await page.waitForTimeout(600)
+      expect(await contrast(i), `hover ${i}`).toBeGreaterThanOrEqual(4.5)
+      await links.nth(i).focus()
+      await page.keyboard.press('Shift+Tab')
+      await page.keyboard.press('Tab')
+      // El contorno entra con la misma transición de colores del botón (0,5 s): se espera su valor final.
+      await expect
+        .poll(() => links.nth(i).evaluate((el) => getComputedStyle(el).outlineColor))
+        .toBe('rgb(245, 239, 227)')
+    }
+    await ctx.close()
+  })
+
   it('sin introducción, una fila de rombos separa el hero de la agenda', async () => {
     const page = await (await context()).newPage()
     await page.goto(BASE + pathFor('eventos', lang))
@@ -683,13 +744,15 @@ describe('Nosotros', () => {
 
 // Patrón lateral (shared/ui/PatternZone): solo en zonas claras, desde 1280 px, sin tapar nada.
 describe('patrón lateral', () => {
-  /** Páginas con al menos una zona clara (la 404 es toda oscura y no lleva patrón). */
+  /**
+   * Páginas con al menos una zona clara. No llevan patrón la 404 (toda oscura) ni, por ahora, Eventos: su introducción y
+   * su memoria, las zonas claras, no se muestran hasta tener textos y fotos.
+   */
   const WITH_PATTERN: RouteKey[] = [
     'home',
     'nosotros',
     'proyectos',
     'salud',
-    'eventos',
     'galeria',
     'colaborar',
     'contacto',
@@ -700,6 +763,7 @@ describe('patrón lateral', () => {
     ...WITH_PATTERN.flatMap((key) =>
       LANGS.map((lang) => ({ name: `${key} ${lang}`, path: pathFor(key, lang), has: true })),
     ),
+    ...LANGS.map((lang) => ({ name: `eventos ${lang}`, path: pathFor('eventos', lang), has: false })),
     ...LANGS.map((lang) => ({
       name: `404 ${lang}`,
       path: lang === 'es' ? '/no-existe/' : '/en/no-existe/',

@@ -76,6 +76,15 @@ describe('Eventos: agenda publicada', () => {
     expect(cta?.getAttribute('href')).toBe(pathFor('contacto', lang))
   })
 
+  it.each(LANGS)('sin fotos no hay memoria ni aviso provisional; el llamado está completo (%s)', (lang) => {
+    const main = read(pathFor('eventos', lang)).querySelector('main')
+    const t = dict[lang].eventos
+    const titles = [...(main?.querySelectorAll('h2') ?? [])].map((h) => h.textContent)
+    expect(titles).toEqual([t.agenda.title, t.llamado.title])
+    expect(main?.textContent).not.toContain(dict[lang].common.soon)
+    expect(main?.querySelector('.eventos-separador')).not.toBeNull()
+  })
+
   it('ningún archivo publicado contiene datos de ejemplo (el build de demostración es solo local)', () => {
     const files = readdirSync(BUILD, { recursive: true, encoding: 'utf8' }).filter((f) =>
       /\.(html|js|data|json|css)$/.test(f),

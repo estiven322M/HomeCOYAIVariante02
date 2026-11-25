@@ -338,6 +338,11 @@
     outline: 2px solid var(--color-ocre);
     outline-offset: 3px;
   }
+  /* Sección chagra: el foco achiote (1,1:1) y el ocre (2,6:1) no llegan a 3:1; el crema tiene 5,3:1. */
+  .sobre-chagra :focus-visible {
+    outline: 2px solid var(--color-arena-clara);
+    outline-offset: 3px;
+  }
   .hero-scope :focus-visible {
     outline: 2px solid var(--turquesa);
     outline-offset: 3px;
