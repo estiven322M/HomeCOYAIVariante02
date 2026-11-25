@@ -20,8 +20,7 @@ export const HERO_MEDIA: HeroMedia = {
 }
 
 /**
- * Marca de agua del tigre en el panel de texto del hero (desde 1440 px). Es una versión monocroma y recortada de la
- * marca, PENDIENTE DE APROBACIÓN de la organización (ver docs/known-issues.md). Con `false` desaparece (y no se
- * descarga) sin tocar los rombos.
+ * Marca de agua del tigre en el panel de texto del hero (desde 1440 px): versión monocroma y recortada. Opción de
+ * diseño: con `false` desaparece (y no se descarga) sin tocar los rombos.
  */
 export const MARCA_TIGRE: boolean = true

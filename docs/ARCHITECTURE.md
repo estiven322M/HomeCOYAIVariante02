@@ -323,10 +323,10 @@ Otros ajustes aprobados desde `xl`:
   huito se veía plano y vacío, y otra foto competiría con el video. Es el motivo del patrón lateral con relleno uniforme
   (`shared/styles/patron-rombos.svg`) en ocre al 7 %, sin imagen raster, decorativa; se desvanece desde el 30 % del
   panel y termina donde empieza el video. El contraste del texto sigue muy por encima de AA.
-- **Marca de agua del tigre** (`.eventos-tigre`, no está en la maqueta; pendiente de aprobación, ver known-issues):
+- **Marca de agua del tigre** (`.eventos-tigre`, no está en la maqueta):
   desde 1440 px, detrás de los rombos, asomando por la izquierda y terminando 1 rem antes del texto (su contraste no
   cambia). SVG de 13 KB (`node scripts/tigre-marca.mjs` lo genera desde `favicon.svg`); la imagen se declara dentro de
-  la media query, así que por debajo de 1440 px no se pide. Interruptor `MARCA_TIGRE`.
+  la media query, así que por debajo de 1440 px no se pide. Interruptor `MARCA_TIGRE` (opción de diseño).
 - **Borde izquierdo del video** (`.eventos-velo`): degradado de varios pasos (6,5 rem) cuya pendiente llega a cero. El
   lineal de la maqueta dejaba una franja clara visible donde terminaba.
 

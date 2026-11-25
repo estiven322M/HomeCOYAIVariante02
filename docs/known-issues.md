@@ -99,7 +99,7 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
   (agenda vacía y llamado) llevan a `/contacto/`, que dice «disponible pronto». También «Ver la Galería» y «Colaborar»
   llevan a páginas provisionales. _Contacto es la siguiente fase: resolverlo antes de publicar eventos._
 - **Textos de la organización** (ocultos hasta tenerlos, en `content/{es,en}/eventos.ts`): título y párrafos de la
-  introducción, cita y autoría (con permiso) y frase del llamado. Se recomienda **no publicar sin la introducción**.
+  introducción, cita y autoría y frase del llamado. Se recomienda **no publicar sin la introducción**.
 - **Eventos y fotos:** las listas de `content/agenda.ts` están vacías. Cada foto necesita año, derivados (`pnpm images`),
   pie y texto alternativo en los dos idiomas.
 - **SEO:** se mantienen el título y la descripción actuales hasta que exista memoria. Propuesta pendiente: «Eventos y
@@ -112,11 +112,6 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
   medianoche en Colombia (p. ej. con una GitHub Action programada). La URL del hook es un secreto.
 
 ## Estilos y diseño
-
-- **Eventos: marca de agua del tigre PENDIENTE DE APROBACIÓN de la organización.** El hero muestra desde 1440 px una
-  versión **monocroma (ocre al 12 %) y recortada** del tigre de ÉCOYAI: altera la marca. Se apaga con
-  `MARCA_TIGRE = false` en `features/eventos/media.ts` (los rombos no cambian y la imagen deja de pedirse; el archivo
-  `shared/styles/tigre-marca.svg` sigue en el repositorio). _Requiere respuesta antes de publicar._
 
 - **Texto justificado (ajuste general de los stakeholders).** Solo en párrafos de texto corrido, desde `md` (en móvil,
   a la izquierda), con la clase `justificado` (ver ARCHITECTURE). Las tarjetas estrechas (Valores, junta, texto del Taita)
