@@ -333,6 +333,11 @@
       background: url('./tigre-marca.svg') center / contain no-repeat;
     }
   }
+  /* Secciones huito: el foco achiote global apenas se ve sobre este fondo; el ocre tiene 6,9:1. */
+  .sobre-huito :focus-visible {
+    outline: 2px solid var(--color-ocre);
+    outline-offset: 3px;
+  }
   .hero-scope :focus-visible {
     outline: 2px solid var(--turquesa);
     outline-offset: 3px;

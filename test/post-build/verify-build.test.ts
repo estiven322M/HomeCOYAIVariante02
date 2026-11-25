@@ -1,6 +1,6 @@
 // Verificación POSTERIOR AL BUILD: comprueba el HTML estático realmente generado en build/client.
 // Se ejecuta con `pnpm run verify:build` (después de `pnpm run build`); no forma parte de `pnpm test`.
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { dict } from '@/content'
@@ -64,6 +64,25 @@ describe('Eventos: video del hero', () => {
     expect(readFileSync(fileFor(pathFor('eventos', lang)), 'utf8')).not.toMatch(
       /\[(EJEMPLO|PENDIENTE|EXAMPLE|PENDING)/i,
     )
+  })
+})
+
+describe('Eventos: agenda publicada', () => {
+  it.each(LANGS)('hoy no hay eventos: el HTML trae el estado vacío con enlace a Contacto (%s)', (lang) => {
+    const doc = read(pathFor('eventos', lang))
+    const empty = dict[lang].eventos.agenda.empty
+    expect(doc.querySelector('main')?.textContent).toContain(empty.title)
+    const cta = [...doc.querySelectorAll('main a')].find((a) => a.textContent?.includes(empty.cta))
+    expect(cta?.getAttribute('href')).toBe(pathFor('contacto', lang))
+  })
+
+  it('ningún archivo publicado contiene datos de ejemplo (el build de demostración es solo local)', () => {
+    const files = readdirSync(BUILD, { recursive: true, encoding: 'utf8' }).filter((f) =>
+      /\.(html|js|data|json|css)$/.test(f),
+    )
+    expect(files.length).toBeGreaterThan(20)
+    const dirty = files.filter((f) => /\[(EJEMPLO|EXAMPLE)\]/.test(readFileSync(join(BUILD, f), 'utf8')))
+    expect(dirty).toEqual([])
   })
 })
 

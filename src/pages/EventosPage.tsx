@@ -1,3 +1,4 @@
+import { Agenda } from '@/features/eventos/components/Agenda'
 import { EventosHero } from '@/features/eventos/components/EventosHero'
 import { Introduccion } from '@/features/eventos/components/Introduccion'
 import { SoonNotice } from '@/shared/ui/SoonNotice'
@@ -8,7 +9,8 @@ export function EventosPage() {
     <>
       <EventosHero />
       <Introduccion />
-      {/* Provisional hasta que lleguen la agenda, la memoria y el llamado. */}
+      <Agenda />
+      {/* Provisional hasta que lleguen la memoria y el llamado. */}
       <SoonNotice />
     </>
   )

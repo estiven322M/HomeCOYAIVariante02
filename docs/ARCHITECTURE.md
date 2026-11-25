@@ -337,6 +337,23 @@ conservar la altura. Por eso la caja del video nunca es más estrecha que ~3:2 (
 una bailarina en móvil. La e2e «Eventos · encuadre del hero» lo comprueba de 320 a 1920 px. **Si cambia el fragmento
 del video, hay que volver a medir esa franja** y ajustar `.eventos-encuadre` y la prueba.
 
+### Agenda (próximos eventos)
+
+- **Datos:** `content/agenda.ts` (id, `fecha` ISO con año, `fechaFin`, `imagen`, `enlace`) y, por idioma,
+  `agenda.items[id]` en `content/{es,en}/eventos.ts`; el typecheck exige los textos en los dos. Para publicar un evento:
+  añadirlo en esos tres archivos.
+- **Columna:** todas las secciones usan la del texto del hero (`max-w-6xl` con el `px-6` dentro).
+- **Vencidos:** un evento es «próximo» hasta que termina su último día en `America/Bogota`. El prerender filtra con la
+  fecha del build (`__FECHA_BUILD__`, definida en `vite.config.ts`), el cliente usa esa misma en su primer render y
+  justo después recalcula con el día real (`useHoy`), también al navegar. No hay script en `<head>`: sin JavaScript,
+  o hasta que hidrata, un evento vencido desde el último despliegue sigue visible (la insignia lleva el año).
+- **Fechas:** la insignia es visual; la fecha completa va para lectores de pantalla dentro del mismo `<time datetime>`.
+  En eventos de varios días la insignia (primer día) es decorativa y el intervalo se ve entero en la tarjeta.
+- **«Más información»:** el `enlace` del evento o, si no tiene, Contacto.
+- **Build de demostración, solo local:** `EVENTOS_DEMO=1 pnpm build` (en PowerShell, `$env:EVENTOS_DEMO='1'`) sustituye
+  `features/eventos/fuente.ts` por `fuente.demo.ts` (ejemplos marcados `[EJEMPLO]`). Después hay que volver a
+  construir sin la variable. `verify:build` falla si un ejemplo llega al build.
+
 ## Estado y datos
 
 No hace falta librería de estado global.

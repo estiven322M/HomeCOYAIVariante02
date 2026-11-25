@@ -93,6 +93,13 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
   pocas diferencias de render (< 0,02 % de los píxeles) en esa página, aceptadas. (7) Sin revisión con lector de pantalla real
   (solo axe y pruebas automáticas).
 
+## Eventos: pendientes
+
+- **Reconstrucción diaria en Netlify (mejora pendiente).** El HTML estático se filtra con la fecha del último build: sin
+  JavaScript, o antes de hidratar, un evento ya terminado sigue apareciendo hasta el siguiente despliegue (al hidratar
+  se quita, y la página se desplaza un poco). Solución: un _build hook_ de Netlify disparado cada día después de
+  medianoche en Colombia (p. ej. con una GitHub Action programada). La URL del hook es un secreto.
+
 ## Estilos y diseño
 
 - **Eventos: marca de agua del tigre PENDIENTE DE APROBACIÓN de la organización.** El hero muestra desde 1440 px una

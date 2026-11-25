@@ -517,6 +517,40 @@ describe('Eventos · marca de agua del tigre', () => {
   })
 })
 
+describe.each(['es', 'en'] as const)('Eventos · agenda publicada (%s)', (lang) => {
+  const a = T[lang].eventos.agenda
+
+  it('estado vacío, sin errores de hidratación aunque el día no sea el del build', async () => {
+    const page = await (await context()).newPage()
+    const errors: string[] = []
+    page.on('pageerror', (err) => errors.push(err.message))
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') errors.push(msg.text())
+    })
+    await page.clock.setFixedTime(new Date('2031-06-01T12:00:00Z'))
+    await page.goto(BASE + pathFor('eventos', lang), { waitUntil: 'networkidle' })
+    await page.getByRole('heading', { level: 2, name: a.title }).waitFor()
+    expect(await page.getByText(a.empty.title).isVisible()).toBe(true)
+    expect(await page.locator('main article').count()).toBe(0)
+    expect(errors).toEqual([])
+    await page.context().close()
+  })
+
+  it.each([320, 390, 1024, 1440, 1920])(
+    'a %i px los textos de la agenda empiezan en la columna del hero y no hay scroll horizontal',
+    async (width) => {
+      const ctx = await browser.newContext({ viewport: { width, height: 800 }, reducedMotion: 'reduce' })
+      const page = await ctx.newPage()
+      await page.goto(BASE + pathFor('eventos', lang), { waitUntil: 'networkidle' })
+      const left = (selector: string) => page.locator(selector).evaluate((el) => el.getBoundingClientRect().left)
+      const hero = await left('main h1')
+      expect(Math.abs((await left('#eventos-proximos')) - hero)).toBeLessThanOrEqual(1)
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0)
+      await ctx.close()
+    },
+  )
+})
+
 describe('encabezado y anclas', () => {
   it('transparente sobre el hero de la portada y sólido en las demás páginas', async () => {
     const page = await (await context()).newPage()
