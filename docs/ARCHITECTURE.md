@@ -303,6 +303,27 @@ una zona clara con `Resguardos` + `Compromiso` y `Llamado`. Contenido: `t.proyec
   texto largo hace crecer el hero en vez de quedar bajo el encabezado fijo.
 - **Llamado a la acción:** el botón va a `pathFor('colaborar')` (Donaciones / Alianzas).
 
+## Página Eventos
+
+Maqueta: «Variante B · Tarjetas y memoria por año». `features/eventos/` y textos en `content/{es,en}/eventos.ts`; los datos
+sin idioma (fechas, imágenes, enlaces) en `content/agenda.ts`. Un bloque sin texto aprobado no se muestra.
+
+### Hero: cambios frente a la maqueta (aprobados)
+
+|                                    | Maqueta                                     | Sitio                                                           |
+| ---------------------------------- | ------------------------------------------- | --------------------------------------------------------------- |
+| Altura en escritorio               | 680 px fijos                                | sigue al ancho: `clamp(31rem, 39.3vw, 42.5rem)` (566 px a 1440) |
+| Video a la derecha (desde el 42 %) | desde 900 px                                | desde `xl` (1280 px); antes, video arriba y texto debajo        |
+| Encuadre (`object-position`)       | `72% 35%` en escritorio, `70% 30%` en móvil | `33% center` en todos los anchos                                |
+| Botón de pausa en móvil            | sobre el video                              | debajo del video, hasta `xl`                                    |
+
+**Por qué.** La cámara se desplaza: en el bucle, las tres bailarinas ocupan del 6 % al 89 % del ancho del video. Con
+680 px de alto a 1440 solo se veía el 69 % y siempre quedaba cortada alguna. La organización prefiere verlas completas a
+conservar la altura. Por eso la caja del video nunca es más estrecha que ~3:2 (`aspect-[3/2]` en móvil, 16:9 desde
+`md`). Además, con la maqueta a todo el ancho el `72%` horizontal no tenía efecto, y dentro del video el botón tapaba a
+una bailarina en móvil. La e2e «Eventos · encuadre del hero» lo comprueba de 320 a 1920 px. **Si cambia el fragmento
+del video, hay que volver a medir esa franja** y ajustar `.eventos-encuadre` y la prueba.
+
 ## Estado y datos
 
 No hace falta librería de estado global.
