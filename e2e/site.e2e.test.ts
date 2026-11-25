@@ -321,8 +321,11 @@ describe('intro: solo si la sesión empieza en la portada', () => {
 // (64×36, 10 s; `ffmpeg -f lavfi -i testsrc=size=64x36:rate=5:duration=10 -c:v libvpx-vp9 -crf 55`).
 const VIDEO_PRUEBA = readFileSync(new URL('./fixtures/video-prueba.webm', import.meta.url))
 
-describe('video de fondo de la portada', () => {
-  async function home(
+describe.each([
+  ['la portada', pathFor('home', 'es')],
+  ['Eventos', pathFor('eventos', 'es')],
+])('video de fondo de %s', (_page, path) => {
+  async function open(
     opts: { width?: number; height?: number; reducedMotion?: boolean; connection?: object; js?: boolean } = {},
   ) {
     const ctx = await browser.newContext({
@@ -343,18 +346,18 @@ describe('video de fondo de la portada', () => {
     page.on('request', (r) => {
       if (/\.(webm|mp4)$/.test(r.url())) requests.push(r.url())
     })
-    await page.goto(BASE + '/', { waitUntil: 'networkidle' })
+    await page.goto(BASE + path, { waitUntil: 'networkidle' })
     const state = () =>
-      page.locator('#inicio video').evaluate((v: HTMLVideoElement) => ({ paused: v.paused, time: v.currentTime }))
+      page.locator('main video').evaluate((v: HTMLVideoElement) => ({ paused: v.paused, time: v.currentTime }))
     return { ctx, page, requests, state }
   }
   const names = T.es.common.video
 
   it('se reproduce solo y el botón lo pausa y lo reanuda', async () => {
-    const { ctx, page, state } = await home()
+    const { ctx, page, state } = await open()
     await expect.poll(async () => (await state()).time).toBeGreaterThan(0)
     // Es el video de prueba: si la intercepción dejara de aplicarse, en local pasaría con el real y en CI fallaría.
-    expect(await page.locator('#inicio video').evaluate((v: HTMLVideoElement) => v.videoWidth)).toBe(64)
+    expect(await page.locator('main video').evaluate((v: HTMLVideoElement) => v.videoWidth)).toBe(64)
     await page.getByRole('button', { name: names.pauseAria }).click()
     expect((await state()).paused).toBe(true)
     const { time } = await state()
@@ -371,7 +374,7 @@ describe('video de fondo de la portada', () => {
     ['conexión 2g', { connection: { effectiveType: '2g' } }],
     ['conexión 3g', { connection: { effectiveType: '3g' } }],
   ])('con %s no descarga el video hasta que se pide', async (_name, opts) => {
-    const { ctx, page, requests, state } = await home(opts)
+    const { ctx, page, requests, state } = await open(opts)
     expect(requests).toEqual([])
     await page.getByRole('button', { name: names.playAria }).click()
     await expect.poll(async () => (await state()).time).toBeGreaterThan(0)
@@ -380,10 +383,10 @@ describe('video de fondo de la portada', () => {
   })
 
   it('sin JavaScript queda el póster: no descarga el video ni muestra el botón', async () => {
-    const { ctx, page, requests } = await home({ js: false })
+    const { ctx, page, requests } = await open({ js: false })
     expect(requests).toEqual([])
-    expect(await page.locator('#inicio video').getAttribute('poster')).toBeTruthy()
-    expect(await page.locator('#inicio button').count()).toBe(0)
+    expect(await page.locator('main video').getAttribute('poster')).toBeTruthy()
+    expect(await page.locator('.video-toggle').count()).toBe(0)
     await ctx.close()
   })
 
@@ -397,13 +400,13 @@ describe('video de fondo de la portada', () => {
     [1280, 720],
     [1440, 900],
   ])('a %i×%i el botón mide al menos 44 px y no choca con nada, pausado o reproduciendo', async (width, height) => {
-    const { ctx, page } = await home({ width, height })
+    const { ctx, page } = await open({ width, height })
     const check = async (name: string) => {
       const button = page.getByRole('button', { name })
       await button.waitFor()
       const result = await button.evaluate((b) => {
         const box = b.getBoundingClientRect()
-        const overlaps = [...document.querySelectorAll('#inicio h1, #inicio p, #inicio a, header a, header button')]
+        const overlaps = [...document.querySelectorAll('main h1, main p, main a, header a, header button')]
           .filter((el) => {
             const r = el.getBoundingClientRect()
             return r.width > 0 && box.left < r.right && box.right > r.left && box.top < r.bottom && box.bottom > r.top
@@ -422,6 +425,56 @@ describe('video de fondo de la portada', () => {
     await check(names.pauseAria)
     await page.getByRole('button', { name: names.pauseAria }).click()
     await check(names.playAria)
+    await ctx.close()
+  })
+})
+
+// La cámara se mueve: durante el bucle, las bailarinas ocupan del 6 % al 89 % del ancho del video de Eventos (medido
+// cada 0,5 s). La caja debe enseñar esa franja en cualquier ancho (con 1 punto de margen) y ningún texto va encima.
+describe('Eventos · encuadre del hero', () => {
+  it.each([
+    [320, 640],
+    [390, 844],
+    [768, 1024],
+    [1024, 768],
+    [1280, 800],
+    [1440, 900],
+    [1920, 1080],
+  ])('a %i×%i se ven las bailarinas y el texto no pisa el video', async (width, height) => {
+    const ctx = await browser.newContext({ viewport: { width, height }, reducedMotion: 'reduce' })
+    const page = await ctx.newPage()
+    await page.goto(BASE + pathFor('eventos', 'es'), { waitUntil: 'networkidle' })
+    const r = await page.locator('main video').evaluate((v) => {
+      const box = v.getBoundingClientRect()
+      const x = parseFloat(getComputedStyle(v).objectPosition) / 100
+      // object-fit: cover de un video 16:9.
+      const shown = Math.min(1, box.width / box.height / (16 / 9))
+      const hero = v.closest('section')!
+      const texts = [...hero.querySelectorAll('h1, p')]
+        .filter((el) => {
+          const t = el.getBoundingClientRect()
+          return t.left < box.right && t.right > box.left && t.top < box.bottom && t.bottom > box.top
+        })
+        .map((el) => el.textContent)
+      const button = hero.querySelector('.video-toggle')!.getBoundingClientRect()
+      return {
+        buttonTop: button.top,
+        videoBottom: box.bottom,
+        left: x * (1 - shown),
+        right: x * (1 - shown) + shown,
+        texts,
+        scroll: document.documentElement.scrollWidth - window.innerWidth,
+        heroBottom: hero.getBoundingClientRect().bottom,
+        subtitleBottom: hero.querySelector('h1 + p')!.getBoundingClientRect().bottom,
+      }
+    })
+    expect(r.left).toBeLessThanOrEqual(0.07)
+    expect(r.right).toBeGreaterThanOrEqual(0.88)
+    expect(r.texts).toEqual([])
+    // Hasta xl, el botón tampoco va sobre el video.
+    if (width < 1280) expect(r.buttonTop).toBeGreaterThanOrEqual(r.videoBottom)
+    expect(r.scroll).toBeLessThanOrEqual(0)
+    expect(r.subtitleBottom).toBeLessThan(r.heroBottom)
     await ctx.close()
   })
 })

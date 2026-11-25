@@ -27,6 +27,46 @@ const h1Of = (key: RouteKey, lang: 'es' | 'en') => {
   return t.common.nav[(NAV_KEYS as readonly RouteKey[]).indexOf(key)]?.label
 }
 
+/**
+ * Peso real de un medio. CI no descarga Git LFS: allí el archivo es el puntero, que declara el tamaño en su línea
+ * `size`; en local es el archivo real.
+ */
+function mediaSize(file: string) {
+  const data = readFileSync(file)
+  const pointer = /^version https:\/\/git-lfs[^\n]*\noid sha256:[0-9a-f]{64}\nsize (\d+)\n/.exec(
+    data.subarray(0, 200).toString(),
+  )
+  return pointer ? Number(pointer[1]) : data.length
+}
+
+describe('Eventos: video del hero', () => {
+  const media = ['video/eventos-hero.webm', 'video/eventos-hero.mp4', 'video/eventos-poster.jpg']
+
+  it('los tres medios existen y juntos pesan menos de 3 000 000 bytes', () => {
+    const sizes = media.map((f) => mediaSize(join(BUILD, f)))
+    for (const size of sizes) expect(size).toBeGreaterThan(10_000)
+    expect(sizes.reduce((a, b) => a + b, 0)).toBeLessThan(3_000_000)
+  })
+
+  it.each(LANGS)('el HTML lleva solo el póster: sin fuentes, autoplay ni botón (%s)', (lang) => {
+    const doc = read(pathFor('eventos', lang))
+    const video = doc.querySelector('main video')
+    expect(video?.getAttribute('poster')).toBe('/video/eventos-poster.jpg')
+    expect(video?.getAttribute('preload')).toBe('none')
+    expect(video?.hasAttribute('autoplay')).toBe(false)
+    expect(video?.querySelector('source')).toBeNull()
+    expect(doc.querySelector('.video-toggle')).toBeNull()
+    const preloads = [...doc.head.querySelectorAll('link[rel="preload"][as="image"]')]
+    expect(preloads.map((l) => l.getAttribute('href'))).toContain('/video/eventos-poster.jpg')
+  })
+
+  it.each(LANGS)('la página publicada no tiene marcadores de ejemplo (%s)', (lang) => {
+    expect(readFileSync(fileFor(pathFor('eventos', lang)), 'utf8')).not.toMatch(
+      /\[(EJEMPLO|PENDIENTE|EXAMPLE|PENDING)/i,
+    )
+  })
+})
+
 describe('build/client', () => {
   it('existe el build (ejecuta pnpm run build antes)', () => {
     expect(existsSync(BUILD)).toBe(true)

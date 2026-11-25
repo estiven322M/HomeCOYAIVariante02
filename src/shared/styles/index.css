@@ -248,6 +248,29 @@
       color-mix(in srgb, var(--color-noche) 70%, transparent) 100%
     );
   }
+  /* Hero de Eventos: encuadre común a todos los anchos (ver EventosHero) y velos de la caja del video. */
+  .eventos-encuadre video,
+  .eventos-encuadre-img {
+    object-position: 33% center;
+  }
+  /* Hasta xl: solo el borde inferior se funde con el texto (los pies de las bailarinas quedan por encima). */
+  .eventos-velo {
+    background: linear-gradient(to bottom, transparent 90%, var(--color-huito) 100%);
+  }
+  /* Desde xl: además, el borde izquierdo se funde con el panel del texto. */
+  @media (min-width: 80rem) {
+    .eventos-velo {
+      background:
+        linear-gradient(to right, var(--color-huito) 0, transparent 4.5rem),
+        linear-gradient(
+          to bottom,
+          color-mix(in srgb, var(--color-huito) 35%, transparent) 0%,
+          transparent 22%,
+          transparent 88%,
+          color-mix(in srgb, var(--color-huito) 80%, transparent) 100%
+        );
+    }
+  }
   .hero-scope :focus-visible {
     outline: 2px solid var(--turquesa);
     outline-offset: 3px;
