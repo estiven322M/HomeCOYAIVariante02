@@ -372,6 +372,29 @@ velos y fuera de la capa del video (en la portada, esa capa se escala y se desva
   LFS. Para reproducir CI en local: tras el build, sustituye el archivo en `build/client` por su puntero
   (`git cat-file blob HEAD:public/video/video-hero.webm > build/client/video/video-hero.webm`).
 
+#### Origen de los medios de Eventos (`pnpm video`)
+
+`public/video/eventos-hero.{webm,mp4}` y `eventos-poster.jpg` son derivados de un original que **no se versiona** (ni en
+LFS): muestra personas identificables, posibles menores, y tiene audio. La organización entregó el material y autorizó
+su uso. Hoy está en el equipo de desarrollo:
+
+```
+C:\Users\jhons\OneDrive\Documents\Freelance\Seguimiento\Imágenes\videos\eventos-hero-original.mp4
+```
+
+(36 s, 1024×576, H.264 + AAC; SHA-256 `90a242c0775b2f3f…`). Para regenerarlos (`scripts/video.mjs`):
+
+```
+pnpm video "C:\Users\jhons\OneDrive\Documents\Freelance\Seguimiento\Imágenes\videos\eventos-hero-original.mp4"
+# o con la variable de entorno EVENTOS_VIDEO_ORIGINAL y `pnpm video`
+```
+
+Toma de 16,0 a 24,0 s (bucle de 8 s con corte seco: un fundido superponía dos encuadres, porque la cámara se desplaza),
+sin audio ni metadatos, sin ajuste de color y sin ampliar los 1024×576.
+VP9 CRF 40 y H.264 CRF 29; el póster es el primer fotograma del bucle. El script falla si algún archivo tiene audio o si
+los tres pesan 3 000 000 bytes o más. Necesita ffmpeg (PATH, `FFMPEG_DIR` o la instalación de Shutter Encoder). No
+forma parte del build; si cambian los medios, cámbiales el nombre (`/video/*` se cachea 30 días).
+
 ## Variables de entorno
 
 Se leen en un solo lugar, `src/env.ts` (tipadas en `src/vite-env.d.ts`); ver `.env.example`.
