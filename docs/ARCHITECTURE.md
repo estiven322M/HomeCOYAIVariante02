@@ -23,7 +23,7 @@ src/
     ErrorBoundary.tsx pantalla de respaldo accesible
     layout/           RootLayout (<main id="contenido">), Intro (overlay), SideNav, Footer (global), FocusOnNavigate
   pages/            un componente por página; solo ensambla secciones
-  features/         un dominio por carpeta (hoy: home, nosotros, proyectos, salud)
+  features/         un dominio por carpeta (hoy: home, nosotros, proyectos, salud, eventos)
     <dominio>/components/  componentes propios del dominio
   shared/
     ui/             componentes genéricos sin lógica de negocio (Button, Eyebrow, Reveal…)
@@ -44,7 +44,7 @@ test/               render con router, preparación común y verificación poste
 e2e/                pruebas de extremo a extremo con Playwright (menú, idioma, 404, intro)
 ```
 
-Solo existen las features que tienen contenido propio. `eventos`, `galeria`, `colaborar` y `contacto` no tienen feature:
+Solo existen las features que tienen contenido propio. `galeria`, `colaborar` y `contacto` no tienen feature:
 sus páginas reutilizan secciones existentes (`Colaborar` de `home`, con `asPage`) o componentes de `shared/ui`.
 No se crean carpetas vacías.
 
@@ -114,7 +114,7 @@ cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">
 - **Pie global** (`app/layout/Footer.tsx`): enlaces reales a todas las páginas, así que sin JavaScript basta para
   recorrer el sitio. «Aviso legal» y «Política de privacidad» no se muestran hasta que exista su contenido; las redes
   (`common.footer.socials`, lista `{name, url}`) tampoco mientras la lista esté vacía.
-- **Páginas con contenido por llegar** (`colaborar`; y `eventos`, `galeria` y `contacto`, que solo
+- **Páginas con contenido por llegar** (`colaborar`; y `galeria` y `contacto`, que solo
   tienen `ProvisionalPage`: su nombre y descripción de `common.nav` como título y entradilla): título, el texto que ya
   existe y `SoonNotice` («Esta sección estará disponible pronto» + enlace a la portada). Ningún botón apunta a la página en la
   que está (un test lo comprueba).
@@ -144,7 +144,7 @@ cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">
 Ejemplo real: la página **Contacto** (`/contacto/` · `/en/contact/`).
 
 1. Si tiene contenido propio, crea la feature (ver abajo); `contacto` no la tiene todavía.
-2. `src/pages/ContactoPage.tsx`: ensambla secciones de `features/*` y `shared/*` (aquí `ProvisionalPage`, que es `PageIntro` + `SoonNotice`; Salud, Eventos y Galería son iguales).
+2. `src/pages/ContactoPage.tsx`: ensambla secciones de `features/*` y `shared/*` (aquí `ProvisionalPage`, que es `PageIntro` + `SoonNotice`; Galería es igual).
    La página no pone `<main>` (lo pone `RootLayout`) y su único `<h1>` es el título.
 3. `src/app/routes/contacto.tsx`: el módulo de ruta, que renderiza la página.
 4. Fila en `ROUTES` (`src/shared/i18n/routes.ts`) con el slug en español y en inglés (con barra final), la clave en
@@ -217,8 +217,8 @@ puntero y oculto al imprimir. Queda por debajo de la barra interna fija (`z-20`)
 Una e2e («patrón lateral») lo comprueba en todas las páginas a 1280, 1440 y 1920 px.
 
 Dónde está hoy: Nosotros (Historia–Misión–Valores), Inicio («¿Qué es ÉCOYAI?» y «Explora»),
-y el aviso `SoonNotice` de Proyectos, Salud, Eventos, Galería, Colaborar y Contacto. La 404 es toda oscura y no
-lleva patrón.
+la introducción y la memoria de Eventos, y el aviso `SoonNotice` de Proyectos, Galería, Colaborar y Contacto. La 404
+es toda oscura y no lleva patrón; Eventos tampoco mientras no tenga introducción ni fotos.
 
 ## Texto justificado (`justificado`)
 
@@ -348,11 +348,23 @@ del video, hay que volver a medir esa franja** y ajustar `.eventos-encuadre` y l
   justo después recalcula con el día real (`useHoy`), también al navegar. No hay script en `<head>`: sin JavaScript,
   o hasta que hidrata, un evento vencido desde el último despliegue sigue visible (la insignia lleva el año).
 - **Fechas:** la insignia es visual; la fecha completa va para lectores de pantalla dentro del mismo `<time datetime>`.
-  En eventos de varios días la insignia (primer día) es decorativa y el intervalo se ve entero en la tarjeta.
+  En eventos de varios días la insignia (primer día) es decorativa y el intervalo se ve en la tarjeta en formato
+  compacto (`intervalo` en `features/eventos/agenda.ts`), con un `<time>` por extremo.
+- **Imagen opcional:** sin ella (o con `available: false`) no hay bloque de imagen y la insignia encabeza el texto.
 - **«Más información»:** el `enlace` del evento o, si no tiene, Contacto.
 - **Build de demostración, solo local:** `EVENTOS_DEMO=1 pnpm build` (en PowerShell, `$env:EVENTOS_DEMO='1'`) sustituye
   `features/eventos/fuente.ts` por `fuente.demo.ts` (ejemplos marcados `[EJEMPLO]`). Después hay que volver a
   construir sin la variable. `verify:build` falla si un ejemplo llega al build.
+
+### Memoria, llamado y separador
+
+- **Memoria** (`content/agenda.ts` → `MEMORIA`; pie y texto alternativo en `memoria.fotos[id]`): del año más reciente al
+  más antiguo, hasta 6 fotos por año (4 en móvil, en 2 columnas, sin carrusel). Las fotos no son enlaces; hay un solo
+  enlace a la Galería. Sin fotos, la sección entera no se muestra. Las fotos **no** salen solas de los eventos pasados.
+- **Llamado** (verde chagra): todo el texto en crema al 100 % (`SubTitle light="full"`), botón `sobreChagra` con borde
+  pleno y un hover que oscurece, y foco crema (`.sobre-chagra`): el 70 % de opacidad, el hover de `ghost` y los focos
+  achiote u ocre no llegan a AA sobre chagra. La frase se oculta mientras no esté aprobada.
+- **Sin introducción**, una fila de rombos (`.eventos-separador`) separa el hero de la agenda, ambos huito.
 
 ## Estado y datos
 
