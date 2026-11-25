@@ -53,7 +53,7 @@ describe('feature nosotros', () => {
     expect(hero?.getAttribute('alt')).toBe('')
     expect(hero?.getAttribute('fetchpriority')).toBe('high')
     expect(hero?.getAttribute('loading')).toBeNull()
-    expect(container.textContent).not.toMatch(/[[^]]+]/)
+    expect(container.textContent).not.toMatch(/\[[^\]]+\]/)
   })
 
   it.each(['es', 'en'] as const)('la frase del pie de foto reutiliza home.queEs.quote (%s)', (lang) => {

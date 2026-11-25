@@ -225,7 +225,7 @@ describe('build/client', () => {
         expect(img.getAttribute('alt')?.length).toBeGreaterThan(0)
       }
       const text = doc.querySelector('main')?.textContent ?? ''
-      expect(text).not.toMatch(/[[^]]+]/)
+      expect(text).not.toMatch(/\[[^\]]+\]/)
       expect(text).not.toContain('PDF')
     })
 
