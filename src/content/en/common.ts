@@ -1,4 +1,4 @@
-import type { common as esCommon, Social } from '@/content/es/common'
+import type { common as esCommon } from '@/content/es/common'
 
 // Contenido en inglés: debe satisfacer exactamente el tipo del español.
 export const common = {
@@ -33,8 +33,6 @@ export const common = {
     social: 'Social media',
     language: 'Language',
     rights: 'All rights reserved.',
-    // Redes: {name, url}. Mientras la lista esté vacía el bloque no se muestra (sin marcadores entre corchetes).
-    socials: [] as Social[],
   },
   privacy: { title: 'Privacy policy', description: 'ÉCOYAI’s personal data processing policy.' },
   soon: 'This section will be available soon',

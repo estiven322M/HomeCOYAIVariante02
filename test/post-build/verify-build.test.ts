@@ -4,7 +4,16 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { dict } from '@/content'
-import { LANGS, NAV_KEYS, NOINDEX_ROUTES, NOT_FOUND, ROUTES, pathFor, type RouteKey } from '@/shared/i18n/routes'
+import {
+  LANGS,
+  NAV_KEYS,
+  NOINDEX_ROUTES,
+  NOT_FOUND,
+  PRIVACIDAD_EN_PIE,
+  ROUTES,
+  pathFor,
+  type RouteKey,
+} from '@/shared/i18n/routes'
 
 const BUILD = join(import.meta.dirname, '..', '..', 'build', 'client')
 
@@ -268,7 +277,8 @@ describe('build/client', () => {
       const home = read(pathFor('home', lang))
       const hrefs = [...home.querySelectorAll('footer a, nav a')].map((a) => a.getAttribute('href'))
       expect(hrefs).not.toContain(pathFor('gracias', lang))
-      expect(hrefs).not.toContain(pathFor('privacidad', lang))
+      // Con PRIVACIDAD_EN_PIE apagado (política provisional), ni el menú ni el pie pueden enlazarla.
+      expect(hrefs.includes(pathFor('privacidad', lang))).toBe(PRIVACIDAD_EN_PIE)
     })
 
     it('la política de privacidad provisional existe y lleva noindex', () => {

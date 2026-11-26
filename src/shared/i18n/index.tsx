@@ -38,6 +38,9 @@ export function useNav() {
   return NAV_KEYS.map((key, i) => ({ key, href: pathFor(key, lang), ...t.common.nav[i] }))
 }
 
+/** Nombre de cada idioma en su propio idioma: no se traduce. */
+export const LANG_NAMES: Record<Lang, string> = { es: 'Español', en: 'English' }
+
 /**
  * La página actual en cada idioma, conservando el #ancla, y cuál es el activo. Es la lógica de todo selector de
  * idioma (encabezado y pie). En la 404 el destino es la portada de cada idioma (ver `alternatePath`).

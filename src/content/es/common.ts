@@ -1,7 +1,4 @@
 // Contenido en español (fuente de verdad: define el tipo que debe cumplir el inglés).
-/** Una red social del pie. Sin URL real no se agrega a la lista. */
-export type Social = { name: string; url: string }
-
 export const common = {
   skip: 'Saltar al contenido',
   switchLabel: 'Cambiar idioma a inglés',
@@ -32,8 +29,6 @@ export const common = {
     social: 'Redes sociales',
     language: 'Idioma',
     rights: 'Todos los derechos reservados.',
-    // Redes: {name, url}. Mientras la lista esté vacía el bloque no se muestra (sin marcadores entre corchetes).
-    socials: [] as Social[],
   },
   /** Página provisional de la política de datos (/privacidad/) hasta que exista la política real. */
   privacy: { title: 'Política de privacidad', description: 'Política de tratamiento de datos personales de ÉCOYAI.' },
