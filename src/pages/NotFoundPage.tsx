@@ -1,15 +1,17 @@
 import { Link, useLocation } from 'react-router'
-import { useLang, useNav, usePathFor } from '@/shared/i18n'
+import { useLang, usePathFor } from '@/shared/i18n'
 import { alternatePath } from '@/shared/i18n/routes'
 import { PageIntro } from '@/shared/ui/PageIntro'
 import { TextLink } from '@/shared/ui/TextLink'
 
-/** 404: se prerenderiza en /404/ y /en/404/ (el build las publica como 404.html) y sale en cualquier URL desconocida. */
+/**
+ * 404: se prerenderiza en /404/ y /en/404/ (el build las publica como 404.html) y sale en cualquier URL desconocida.
+ * No lista las páginas: el pie, justo debajo, ya lleva esa navegación («Explora»).
+ */
 export function NotFoundPage() {
   const { lang, t } = useLang()
   const n = t.common.notFound
   const { pathname } = useLocation()
-  const NAV = useNav()
   const pathFor = usePathFor()
   const other = lang === 'es' ? 'en' : 'es'
   return (
@@ -27,18 +29,6 @@ export function NotFoundPage() {
           {n.otherLang}
         </Link>
       </div>
-      <nav aria-label={n.pages} className="mt-16">
-        <p className="text-[11px] uppercase tracking-[0.3em] text-calido/60">{n.pages}</p>
-        <ul className="mt-4 space-y-2 text-[17px]">
-          {NAV.map((i) => (
-            <li key={i.key}>
-              <Link to={i.href} className="text-calido/85 hover:text-calido">
-                {i.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
     </PageIntro>
   )
 }

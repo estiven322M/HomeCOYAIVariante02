@@ -892,8 +892,8 @@ describe('patrón lateral', () => {
 // prueba, y Nosotros no tiene ninguna propia. Al corregir una, quítala de aquí.
 type Known = { rule: string; page?: RouteKey | 'notFound'; html?: RegExp }
 const KNOWN: Known[] = [
-  { rule: 'label-content-name-mismatch', html: /hreflang=/ }, // selector de idioma del encabezado (aria-label sin el texto visible)
-  { rule: 'color-contrast', html: /©/ }, // texto de derechos del pie (3,9:1)
+  // Selector de idioma del encabezado (aria-label sin el texto visible). El del pie no lleva aria-label: no queda exento.
+  { rule: 'label-content-name-mismatch', html: /^(?=.*aria-label=)(?=.*hreflang=)/ },
   { rule: 'color-contrast', page: 'home', html: /text-carbon\/60|text-\[11px\]/ }, // eyebrow y descripciones de «Explora»
   { rule: 'list', page: 'home' }, // la lista de «Explora» contiene <div> (Reveal) entre <ul> y <li>
   { rule: 'listitem', page: 'home' },

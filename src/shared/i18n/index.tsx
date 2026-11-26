@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, type ReactNode } from 'react'
 import { Link, useLocation } from 'react-router'
 import { dict, type Content, type Lang } from '@/content'
-import { alternatePath, langFromPath, NAV_KEYS, pathFor, type RouteKey } from './routes'
+import { alternatePath, langFromPath, LANGS, NAV_KEYS, pathFor, type RouteKey } from './routes'
 
 export type { Lang }
 
@@ -38,21 +38,33 @@ export function useNav() {
   return NAV_KEYS.map((key, i) => ({ key, href: pathFor(key, lang), ...t.common.nav[i] }))
 }
 
+/** Nombre de cada idioma en su propio idioma: no se traduce. */
+export const LANG_NAMES: Record<Lang, string> = { es: 'Español', en: 'English' }
+
 /**
- * Selector de idioma: un enlace (<a>) a la misma página en el otro idioma. Visualmente sigue siendo el interruptor
+ * La página actual en cada idioma, conservando el #ancla, y cuál es el activo. Es la lógica de todo selector de
+ * idioma (encabezado y pie). En la 404 el destino es la portada de cada idioma (ver `alternatePath`).
+ */
+export function useLangLinks() {
+  const { lang } = useLang()
+  const { pathname, hash } = useLocation()
+  return LANGS.map((code) => ({ lang: code, current: code === lang, href: alternatePath(pathname, code, hash) }))
+}
+
+/**
+ * Selector de idioma del encabezado: un enlace (<a>) a la misma página en el otro idioma. Visualmente sigue siendo el interruptor
  * ES | EN (la ficha se desliza al navegar porque el componente no se remonta). `preventScrollReset` conserva el
  * punto de lectura, como hacía el botón anterior.
  */
 export function LangSwitch({ className = 'relative inline-flex' }: { className?: string }) {
   const { lang, t } = useLang()
-  const { pathname, hash } = useLocation()
+  const other = useLangLinks().find((l) => !l.current)!
   const isEn = lang === 'en'
-  const other: Lang = isEn ? 'es' : 'en'
   return (
     <Link
-      to={alternatePath(pathname, other, hash)}
-      lang={other}
-      hrefLang={other}
+      to={other.href}
+      lang={other.lang}
+      hrefLang={other.lang}
       preventScrollReset
       aria-label={t.common.switchLabel}
       className={`h-8 w-[4.5rem] shrink-0 items-center rounded-full border border-calido/40 bg-selva/50 text-[11px] font-medium tracking-[0.15em] backdrop-blur-[6px] transition-colors duration-500 hover:border-calido ${className}`}

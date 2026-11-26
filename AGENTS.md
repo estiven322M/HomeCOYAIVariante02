@@ -14,6 +14,7 @@ Node >= 22.22 (`.node-version`) and pnpm 10 (`packageManager`). If `pnpm` is not
 - `pnpm dev` — `react-router dev` on `$PORT` (default 8443). It does not prerender.
 - `pnpm build` — static output in `build/client` (one `index.html` per route and language). `pnpm preview` serves it.
 - `pnpm video <original>` — derivados del video de Eventos; el original no se versiona (ver ARCHITECTURE). `EVENTOS_DEMO=1 pnpm build` = demo con ejemplos, solo local.
+- `FOOTER_DEMO=1 pnpm build` (o `=parcial`) = pie con contacto y redes ficticios, solo local (ver «Pie global» en ARCHITECTURE).
 - `pnpm images` — genera los derivados `.webp` (sharp) a partir de `assets-src/` o `public/`; ver README.
 - `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm test`, `pnpm verify:build` and `pnpm test:e2e` (both after a build; e2e needs Chromium), `pnpm check` (all).
 - Conventional Commits; husky + lint-staged run oxfmt and ESLint on staged files.
@@ -23,7 +24,8 @@ Node >= 22.22 (`.node-version`) and pnpm 10 (`packageManager`). If `pnpm` is not
 - `react-router.config.ts` — `appDirectory: 'src/app'`, `ssr: false`, `prerender` (paths come from the route table).
 - `src/app/` — `root.tsx` (HTML document + providers), `routes.ts` (generated from the route table, plus the `*` 404 route), `routes/` (one
   module per page), `DocumentHead.tsx` (title, description, robots, canonical, hreflang, Open Graph), `ErrorBoundary.tsx`,
-  `layout/` (`RootLayout` with `<main id="contenido">`, `SideNav`, global `Footer`, `FocusOnNavigate`, `Intro`).
+  `layout/` (`RootLayout` with `<main id="contenido">`, `SideNav`, global `Footer` with its `FooterPaisaje` SVG,
+  `FocusOnNavigate`, `Intro`). Footer contact and social links come from `content/contacto.ts`; empty blocks are hidden.
 - `src/pages/` — one component per page; only assembles sections.
 - `src/features/<domain>/components/` — domain code (`home`, `nosotros`, `proyectos`, `salud`, `eventos`). ESLint reads the folders to enforce layer rules. A feature never imports another feature.
 - `src/shared/` — `ui/`, `hooks/`, `lib/`, `i18n/` (language context, `LangSwitch`, **route table `routes.ts`**: pages, `NAV_KEYS`, 404), `intro/`, `styles/`.

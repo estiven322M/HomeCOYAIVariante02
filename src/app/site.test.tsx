@@ -93,6 +93,23 @@ describe('prueba de humo por página e idioma', () => {
   })
 })
 
+describe('404', () => {
+  it.each(LANGS)(
+    'ofrece volver al inicio y el otro idioma, sin repetir la navegación que ya está en el pie (%s)',
+    (lang) => {
+      renderPage({ name: '404', path: NOT_FOUND[lang], Page: NotFoundPage, h1: '' })
+      const main = document.querySelector('main')!
+      const other = lang === 'es' ? 'en' : 'es'
+      expect(main).toHaveTextContent(dict[lang].common.notFound.text)
+      expect([...main.querySelectorAll('a')].map((a) => a.getAttribute('href'))).toEqual([
+        pathFor('home', lang),
+        pathFor('home', other),
+      ])
+      expect(main.querySelector('nav, ul')).toBeNull()
+    },
+  )
+})
+
 describe('enlaces internos', () => {
   type Link = { href: string; inMain: boolean }
   // Se renderiza cada página una vez y se recogen sus id y sus enlaces.

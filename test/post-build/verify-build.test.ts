@@ -4,7 +4,16 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { dict } from '@/content'
-import { LANGS, NAV_KEYS, NOINDEX_ROUTES, NOT_FOUND, ROUTES, pathFor, type RouteKey } from '@/shared/i18n/routes'
+import {
+  LANGS,
+  NAV_KEYS,
+  NOINDEX_ROUTES,
+  NOT_FOUND,
+  PRIVACIDAD_EN_PIE,
+  ROUTES,
+  pathFor,
+  type RouteKey,
+} from '@/shared/i18n/routes'
 
 const BUILD = join(import.meta.dirname, '..', '..', 'build', 'client')
 
@@ -135,6 +144,13 @@ describe('build/client', () => {
       expect(attr('meta[property="og:locale"]', 'content')).toBe(c.meta.ogLocale)
     })
 
+    it('el pie no lleva datos de demostración ni marcadores pendientes', () => {
+      const pie = doc.querySelector('footer')?.outerHTML ?? ''
+      expect(pie).not.toBe('')
+      // Los de content/contacto.demo*.ts (FOOTER_DEMO, solo local).
+      expect(pie).not.toMatch(/example\.org|000 000 0000|57000000|PENDIENTE|PENDING/i)
+    })
+
     it('una sola <main id="contenido"> (destino del salto de contenido) y un pie con la navegación', () => {
       expect(doc.querySelectorAll('main')).toHaveLength(1)
       expect(doc.querySelector('main')?.getAttribute('id')).toBe('contenido')
@@ -162,6 +178,32 @@ describe('build/client', () => {
     })
   })
 
+  // El pie prerenderizado, en cada página y en las dos 404: el paisaje viene ya en el HTML (alto reservado, sin saltos).
+  describe('pie en el HTML estático', () => {
+    const archivos = [
+      ...pages.map(({ key, lang }) => fileFor(pathFor(key, lang))),
+      join(BUILD, '404.html'),
+      join(BUILD, 'en/404.html'),
+    ]
+
+    it.each(archivos)('%s: un solo pie, con el paisaje decorativo de menos de 15 KB', (file) => {
+      const doc = parse(file)
+      expect(doc.querySelectorAll('footer')).toHaveLength(1)
+      expect(doc.querySelector('footer')?.closest('main, [inert], [aria-hidden="true"]')).toBeNull()
+      const paisaje = doc.querySelector('footer')!.firstElementChild!
+      expect(paisaje.getAttribute('aria-hidden')).toBe('true')
+      expect(paisaje.getAttribute('class')).toContain('h-[120px]')
+      expect(paisaje.querySelectorAll('pattern')).toHaveLength(3)
+      expect(paisaje.querySelector('a, button, title, [tabindex]')).toBeNull()
+      // Lo que ocupa de verdad en el archivo: desde su etiqueta hasta la rejilla del pie.
+      const html = readFileSync(file, 'utf8')
+      const inicio = html.indexOf('>', html.indexOf('<footer')) + 1
+      const fin = html.indexOf('<div class="mx-auto grid', inicio)
+      expect(fin).toBeGreaterThan(inicio)
+      expect(Buffer.byteLength(html.slice(inicio, fin))).toBeLessThan(15 * 1024)
+    })
+  })
+
   describe.each(LANGS)('404 · %s', (lang) => {
     // 404.html y en/404.html (la regla de Netlify /en/* → en/404.html las sirve con estado 404).
     const file = join(BUILD, lang === 'es' ? '404.html' : 'en/404.html')
@@ -183,13 +225,14 @@ describe('build/client', () => {
       expect(doc?.querySelector('link[hreflang]')).toBeNull()
     })
 
-    it('enlaza a la portada, a las páginas principales y a la versión en el otro idioma', () => {
+    it('su contenido enlaza solo a la portada y a la versión en el otro idioma; las páginas van en el pie', () => {
       const hrefs = [...(doc?.querySelectorAll('main a') ?? [])].map((a) => a.getAttribute('href'))
       const other = lang === 'es' ? 'en' : 'es'
-      expect(hrefs).toContain(pathFor('home', lang))
-      expect(hrefs).toContain(pathFor('nosotros', lang))
       // El enlace al otro idioma lleva a su portada, no a su 404.
-      expect(hrefs).toContain(pathFor('home', other))
+      expect(hrefs).toEqual([pathFor('home', lang), pathFor('home', other)])
+      expect(doc?.querySelector('main nav')).toBeNull()
+      const footer = [...(doc?.querySelectorAll('footer nav a') ?? [])].map((a) => a.getAttribute('href'))
+      expect(footer).toEqual(NAV_KEYS.map((key) => pathFor(key, lang)))
     })
   })
 
@@ -268,7 +311,8 @@ describe('build/client', () => {
       const home = read(pathFor('home', lang))
       const hrefs = [...home.querySelectorAll('footer a, nav a')].map((a) => a.getAttribute('href'))
       expect(hrefs).not.toContain(pathFor('gracias', lang))
-      expect(hrefs).not.toContain(pathFor('privacidad', lang))
+      // Con PRIVACIDAD_EN_PIE apagado (política provisional), ni el menú ni el pie pueden enlazarla.
+      expect(hrefs.includes(pathFor('privacidad', lang))).toBe(PRIVACIDAD_EN_PIE)
     })
 
     it('la política de privacidad provisional existe y lleva noindex', () => {

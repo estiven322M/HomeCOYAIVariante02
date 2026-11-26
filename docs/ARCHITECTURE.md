@@ -21,7 +21,8 @@ src/
     routes/           un módulo por página (home, nosotros, proyectos, salud, eventos, galeria, colaborar, contacto, not-found)
     DocumentHead.tsx  <title>, descripción, robots, canonical, hreflang, Open Graph
     ErrorBoundary.tsx pantalla de respaldo accesible
-    layout/           RootLayout (<main id="contenido">), Intro (overlay), SideNav, Footer (global), FocusOnNavigate
+    layout/           RootLayout (<main id="contenido">), Intro (overlay), SideNav, Footer + FooterPaisaje (pie global),
+                      FocusOnNavigate
   pages/            un componente por página; solo ensambla secciones
   features/         un dominio por carpeta (hoy: home, nosotros, proyectos, salud, eventos)
     <dominio>/components/  componentes propios del dominio
@@ -36,12 +37,12 @@ src/
   env.ts            variables de entorno tipadas (VITE_*)
 react-router.config.ts   modo framework: appDirectory, ssr: false, prerender
 config/             plugins de Vite: robots.txt y plugins de Figma (aislados)
-scripts/            preview.mjs (sirve build/client como Netlify), finalize-build.mjs (404.html), capture.mjs (capturas),
-                    measure-intro.mjs (mide la duración del intro) e images.mjs (`pnpm images`: derivados optimizados)
+scripts/            preview.mjs (sirve build/client como Netlify), finalize-build.mjs (404.html), capture.mjs y
+                    capture-footer.mjs (capturas), measure-intro.mjs (mide la duración del intro) e images.mjs (`pnpm images`: derivados optimizados)
 assets-src/         originales de las imágenes que no están ya en `public/` (entrada de `pnpm images`)
 docs/               esta documentación, ADR y problemas conocidos
 test/               render con router, preparación común y verificación posterior al build (post-build/)
-e2e/                pruebas de extremo a extremo con Playwright (menú, idioma, 404, intro)
+e2e/                pruebas de extremo a extremo con Playwright (menú, idioma, 404, intro; el pie en footer.e2e.test.ts)
 ```
 
 Solo existen las features que tienen contenido propio. `galeria`, `colaborar` y `contacto` no tienen feature:
@@ -112,8 +113,7 @@ cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">
 - **Encabezado.** Transparente solo sobre el hero de la portada; en las demás páginas tiene el mismo fondo sólido
   que aparece al hacer scroll.
 - **Pie global** (`app/layout/Footer.tsx`): enlaces reales a todas las páginas, así que sin JavaScript basta para
-  recorrer el sitio. «Aviso legal» y «Política de privacidad» no se muestran hasta que exista su contenido; las redes
-  (`common.footer.socials`, lista `{name, url}`) tampoco mientras la lista esté vacía.
+  recorrer el sitio. Ver «Pie global».
 - **Páginas con contenido por llegar** (`colaborar`; y `galeria` y `contacto`, que solo
   tienen `ProvisionalPage`: su nombre y descripción de `common.nav` como título y entradilla): título, el texto que ya
   existe y `SoonNotice` («Esta sección estará disponible pronto» + enlace a la portada). Ningún botón apunta a la página en la
@@ -138,6 +138,47 @@ cubre «Donaciones / Alianzas». Ningún enlace interno es un `<a href="#ancla">
 - `content/{es,en}/meta.ts` contiene los metadatos del documento por página (`meta.pages.<clave>`) y el título de la 404. Las descripciones **se derivan de textos que ya existen** (mismas claves, sin copiarlos); las dos que se recortan
   para no pasar de 160 caracteres usan `cut`. `DocumentHead` indexa con `RouteKey`: añadir una ruta sin sus metadatos
   rompe el typecheck. Una URL que no es una página es la 404: `noindex`, sin canonical ni hreflang.
+
+## Pie global
+
+Uno solo, igual en todas las páginas (también la 404, Privacidad y Gracias): `Footer` lo monta `RootLayout` después de
+`<main>`. Diseño «Dosel al atardecer».
+
+- **Contenido:** marca y lema; la ubicación es `common.sideNav.place` (la misma del menú); «Explora» sale de
+  `useNav()` (`NAV_KEYS`) y desde `md` se llena por columnas (4 filas), así que el orden visible es el del DOM.
+- **Idioma:** `useLangLinks()` (`shared/i18n`), la misma lógica que el selector del encabezado. El activo es un
+  `<span aria-current="true">` y el otro un enlace con `lang` y `hrefLang`. A diferencia del encabezado, no conserva el
+  desplazamiento: la página destino abre arriba (o en el ancla), donde queda el foco.
+- **Contacto y redes** (`content/contacto.ts`, una sola vez para los dos idiomas): `correo`, `whatsapp` y `redes`, todos
+  opcionales. **Sin dato, el bloque no existe** (nunca un «pendiente»); hoy no hay ninguno. El correo es `mailto:` y
+  puede partirse (antes de la «@» y, si hace falta, por donde sea). WhatsApp (`https://wa.me/<dígitos>`) y las redes
+  abren en pestaña nueva con `rel="noopener noreferrer"`, y cada icono se llama como su red.
+- **Demo local de esos datos:** `FOOTER_DEMO=1 pnpm build` (todos) o `FOOTER_DEMO=parcial pnpm build` (en PowerShell,
+  `$env:FOOTER_DEMO='1'`) cambian `content/contacto.ts` por datos ficticios. Después hay que volver a construir sin la
+  variable; `verify:build` falla si llegan al build. `node scripts/capture-footer.mjs --label <nombre>` captura el pie
+  del build actual y mide áreas táctiles, desbordes, líneas del contacto y axe.
+- **Política de privacidad:** el enlace está implementado y **oculto** con `PRIVACIDAD_EN_PIE`
+  (`shared/i18n/routes.ts`) mientras la política sea provisional. Con el interruptor apagado, `verify:build` y las e2e
+  prohíben el enlace.
+- **Encabezados y foco:** los rótulos de columna son `<h2>`; el pie lleva `.sobre-huito` (foco ocre, 6,9:1).
+
+### Paisaje (`FooterPaisaje`)
+
+SVG inline decorativo (`aria-hidden`). Trae su propio cielo (tierra suave), así que el pie se ve igual tenga encima una
+sección clara, oscura o verde. Alto reservado por CSS: 120 px en móvil y 200 desde `md`, sin saltos ni JavaScript. Pesa
+unos 6 KB y las pruebas lo limitan a 15 (va en cada HTML prerenderizado).
+
+- **Dosel:** tres capas de `<pattern>` **sin `viewBox`**: la tesela se repite a tamaño real y `x="50%"` la centra, así
+  que al cambiar el ancho se recorta por los lados y nunca se estira. Cada tesela empieza y termina a la misma altura y
+  sus lomas suman su ancho (una prueba lo comprueba: si se edita un trazado y no cuadra, se ve un salto). En móvil la
+  capa se escala a 0,6 y se ensancha 4 px (sin ellos, el redondeo deja una línea de cielo a la derecha).
+- **Figuras** (sol, aves, palmas, ceiba, maloca): un `<svg>` cada una, de tamaño fijo, anclado abajo y colocado en
+  porcentaje dentro de una caja centrada de 72 rem. Solo hay dos tamaños; el sol nunca crece (34 / 68 px). En móvil van
+  a 0,6 salvo el sol, la palma y la ceiba (108 px de caja, para que no domine a 320). El orden del DOM es el apilado.
+- **Maloca:** el techo es la silueta (cono ojival de costados llenos, sin pared ni entrada) con trazos cortos en
+  hileras desfasadas; si convergieran en la punta se leería como una carpa. Se dibuja después del dosel frontal y lleva
+  una loma en cada esquina para unirse igual a cualquier ancho. **En un mismo `<path>`, todos los contornos van en el
+  mismo sentido**: uno invertido deja un hueco donde se solapan.
 
 ## Cómo añadir una página
 
@@ -499,8 +540,8 @@ nofollow">`, ambos gobernados por `VITE_SITE_INDEXABLE` ([ADR 0007](./adr/0007-i
    `build/client/en/404.html` y borra las carpetas `404/`: `/404/` tampoco debe responder 200.
 4. `netlify.toml` añade `/en/* → /en/404.html` con estado 404 (según la documentación de Netlify, un archivo existente
    tiene prioridad, así que no afecta a `/en/` ni a `/en/about/`). Verificado en Netlify con `curl -I` (2026-11-22); `pnpm preview` la imita.
-5. La 404 lleva `noindex`, sin canonical ni hreflang, y enlaza a la portada, a las páginas principales y a la 404
-   del otro idioma.
+5. La 404 lleva `noindex`, sin canonical ni hreflang. Su contenido enlaza a la portada y a la portada del otro
+   idioma; las páginas principales no se listan ahí porque ya están en el pie, justo debajo.
 
 **No** se añade la regla `/* → /__spa-fallback.html`: respondería 200 a URL inexistentes (soft-404).
 
@@ -526,7 +567,7 @@ Los plugins exclusivos de Figma están en `config/vite-plugins/figma.ts` y se ca
 | oxfmt                             | Formato (`.oxfmtrc.json`: comillas simples, sin `;`, 120 cols)               |
 | Vitest + Testing Library          | Humo por página e idioma, enlaces y anclas (`src/app/site.test.tsx`), intro  |
 | `pnpm verify:build`               | HTML generado: lang, h1, title, canonical, hreflang de cada ruta y la 404    |
-| `pnpm test:e2e`                   | Playwright: menú ES/EN, idioma, 404 con estado real, intro (`e2e/`)          |
+| `pnpm test:e2e`                   | Playwright: menú ES/EN, idioma, 404 con estado real, intro, pie (`e2e/`)     |
 | husky + lint-staged               | Formato y ESLint sobre lo que se va a commitear                              |
 | GitHub Actions                    | typecheck, lint, formato, pruebas, build, verify:build y e2e en cada PR      |
 | Playwright                        | `e2e/` (suite corta) y `scripts/capture.mjs` / `measure-intro.mjs`           |

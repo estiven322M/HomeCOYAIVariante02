@@ -51,6 +51,12 @@ export const NAV_KEYS = [
 export const NOINDEX_ROUTES: readonly RouteKey[] = ['gracias', 'privacidad']
 
 /**
+ * Enlace «Política de privacidad» en el pie. APAGADO mientras /privacidad/ sea provisional: encenderlo cuando exista la
+ * política real (ver docs/known-issues.md). Con él apagado, `verify:build` prohíbe el enlace en el menú y en el pie.
+ */
+export const PRIVACIDAD_EN_PIE: boolean = false
+
+/**
  * Página 404. No está en `ROUTES` (no es una página del sitio: no lleva canonical ni hreflang y es noindex).
  * Se prerenderiza en estas URL y el build la copia a `404.html` / `en/404.html`, que Netlify sirve con estado 404.
  * La ruta comodín `*` de app/routes.ts la muestra también para cualquier URL desconocida.

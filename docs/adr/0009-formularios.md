@@ -45,5 +45,6 @@ de tratamiento de datos (Ley 1581 de 2012) que la organización aún no ha entre
 - Hay que activar la detección de formularios y las notificaciones por correo en el panel de Netlify (no se configuran en
   el repositorio).
 - Los envíos quedan en Netlify; el plan gratuito tiene un límite mensual de envíos.
-- Para activar en producción: política real en `/privacidad/`, quitar `privacidad` de `NOINDEX_ROUTES` (y mostrar el enlace
-  en el pie) y poner `VITE_FORMS_ENABLED = "true"` en `[context.production.environment]`.
+- Para activar en producción: política real en `/privacidad/`, quitar `privacidad` de `NOINDEX_ROUTES`, encender
+  `PRIVACIDAD_EN_PIE` (el enlace del pie, en `shared/i18n/routes.ts`) y poner `VITE_FORMS_ENABLED = "true"` en
+  `[context.production.environment]`.
