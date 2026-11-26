@@ -178,6 +178,32 @@ describe('build/client', () => {
     })
   })
 
+  // El pie prerenderizado, en cada página y en las dos 404: el paisaje viene ya en el HTML (alto reservado, sin saltos).
+  describe('pie en el HTML estático', () => {
+    const archivos = [
+      ...pages.map(({ key, lang }) => fileFor(pathFor(key, lang))),
+      join(BUILD, '404.html'),
+      join(BUILD, 'en/404.html'),
+    ]
+
+    it.each(archivos)('%s: un solo pie, con el paisaje decorativo de menos de 15 KB', (file) => {
+      const doc = parse(file)
+      expect(doc.querySelectorAll('footer')).toHaveLength(1)
+      expect(doc.querySelector('footer')?.closest('main, [inert], [aria-hidden="true"]')).toBeNull()
+      const paisaje = doc.querySelector('footer')!.firstElementChild!
+      expect(paisaje.getAttribute('aria-hidden')).toBe('true')
+      expect(paisaje.getAttribute('class')).toContain('h-[120px]')
+      expect(paisaje.querySelectorAll('pattern')).toHaveLength(3)
+      expect(paisaje.querySelector('a, button, title, [tabindex]')).toBeNull()
+      // Lo que ocupa de verdad en el archivo: desde su etiqueta hasta la rejilla del pie.
+      const html = readFileSync(file, 'utf8')
+      const inicio = html.indexOf('>', html.indexOf('<footer')) + 1
+      const fin = html.indexOf('<div class="mx-auto grid', inicio)
+      expect(fin).toBeGreaterThan(inicio)
+      expect(Buffer.byteLength(html.slice(inicio, fin))).toBeLessThan(15 * 1024)
+    })
+  })
+
   describe.each(LANGS)('404 · %s', (lang) => {
     // 404.html y en/404.html (la regla de Netlify /en/* → en/404.html las sirve con estado 404).
     const file = join(BUILD, lang === 'es' ? '404.html' : 'en/404.html')
