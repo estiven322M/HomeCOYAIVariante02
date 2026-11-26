@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 /**
  * Paisaje del pie («Dosel al atardecer»): decorativo, en SVG inline. Alto reservado por CSS (120 px en móvil, 200 desde
- * md); en móvil todo es el dibujo de escritorio a 0,6 (menos el sol, a 34 px).
+ * md); en móvil el dibujo de escritorio va a 0,6, salvo el sol (34 px), la palma y la ceiba (un poco menores).
  *
  * - Dosel: tres capas de <pattern> SIN viewBox: la tesela se repite a tamaño real y nunca se estira. x="50%" la centra.
  * - Figuras: un <svg> por figura, de tamaño fijo, anclado abajo y colocado en % dentro de una caja centrada de 72 rem.
@@ -73,9 +73,11 @@ function Palma({ className }: { className: string }) {
  */
 function Ceiba() {
   return (
+    // En móvil va por debajo de la escala del resto (caja de 108 px) para no dominar a 320; sube 3 px para que las raíces
+    // sigan asomando sobre el dosel frontal, que tapa ese hueco.
     <svg
       viewBox="0 -8 220 172"
-      className={`${FIGURA} left-[21%] h-[103.2px] w-[132px] md:left-[16.2%] md:h-[172px] md:w-[220px]`}
+      className="absolute bottom-[3px] left-[20.4%] h-[84.4px] w-[108px] -translate-x-1/2 md:bottom-0 md:left-[16.2%] md:h-[172px] md:w-[220px]"
     >
       {/* Capa trasera de la copa */}
       <path
@@ -108,35 +110,30 @@ function Ceiba() {
 }
 
 /**
- * Maloca: techo de palma con hileras de hojas, alero y, desde md, la entrada. La pared baja hasta el borde inferior, por
- * debajo del valle más hondo del dosel frontal (sin huecos en la base). Se dibuja DESPUÉS del dosel frontal: pared y
- * dosel son del mismo color y así la entrada queda entera a cualquier ancho.
+ * Maloca: el techo de palma ES la silueta, un cono ojival de costados llenos que baja sin pared hasta el borde inferior.
+ * Textura: capas de hoja superpuestas, es decir, trazos cortos en hileras desfasadas que apenas se abren hacia los
+ * costados (si convergieran en la punta se leería como una carpa); desde md, una hilera más.
+ * Se dibuja DESPUÉS del dosel frontal (son del mismo color) y trae una loma de follaje en cada esquina de la base: el
+ * cruce con el dosel cambia con el ancho, y la loma hace que la unión sea siempre igual, sin escalones. Los extremos de
+ * las lomas quedan bajo el valle más hondo del dosel.
  */
 function Maloca() {
   return (
     <svg
-      viewBox="0 0 170 116"
-      className={`${FIGURA} left-[64%] h-[69.6px] w-[102px] md:left-[62.3%] md:h-[116px] md:w-[170px]`}
+      viewBox="0 -8 170 124"
+      className={`${FIGURA} left-[64%] h-[74.4px] w-[102px] md:left-[62.3%] md:h-[124px] md:w-[170px]`}
     >
-      <path className="fill-huito" d="M83.8 2h2.4l.3 10q47 29 76 66q-8 2-15 2v36H22V80q-7 0-15-2q29-37 76-66Z" />
-      {/* Hileras de palma: cada una es un fleco de hojas cortas (lomas pequeñas), no una línea lisa. */}
-      <g className="fill-none stroke-verde-hoja" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M65 31q3 6 7 1q3 6 6 1q3 6 7 1q3 5 7-1q3 5 6-1q3 5 7-1" />
-        <path d="M45 48q4 7 8 2q4 7 8 2q4 7 8 1q4 7 8 1q4 6 8 0q4 6 8 0q4 6 8-1q4 6 8-1q4 5 8-2q4 5 8-2" />
-        <path
-          className="max-md:hidden"
-          d="M26.5 65q4 7 9 3q4 7 9 2q4 7 9 2q4 7 9 1q4 7 9 1q4 6 9 0q4 6 9 0q4 6 9 0q4 6 9-1q4 5 9-1q4 5 9-2q4 5 9-2q4 4 9-3"
-        />
-      </g>
-      {/* Alero: el borde del techo sobresale de la pared */}
+      {/* Los tres contornos van en el mismo sentido: si una loma se invierte, su solape con el cono queda hueco. */}
       <path
-        className="fill-none stroke-tierra-suave opacity-70"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        d="M8 78q77 10 154 0"
+        className="fill-huito"
+        d="M83.8-6h2.4l.3 12C113 22 150 56 164 112v4H6v-4C20 56 57 22 83.5 6ZM0 116v-8q12-18 30-6v14ZM140 116v-14q18-12 30 6v8Z"
       />
-      {/* Entrada */}
-      <path className="fill-ocre opacity-80 max-md:hidden" d="M78 101V90q7-9 14 0v11Z" />
+      <g className="fill-none stroke-verde-hoja" strokeWidth="1.4" strokeLinecap="round">
+        <path d="M77 28q0 6-2 11M93 28q0 6 2 11" />
+        <path d="M65 50q-1 6-3 12M85 46v12M105 50q1 6 3 12" />
+        <path d="M51 70q-1 6-4 12M74 66q0 6-2 12M96 66q0 6 2 12M119 70q1 6 4 12" />
+        <path className="max-md:hidden" d="M37 89q-2 5-5 11M61 85q-1 6-3 12M85 83v12M109 85q1 6 3 12M133 89q2 5 5 11" />
+      </g>
     </svg>
   )
 }
