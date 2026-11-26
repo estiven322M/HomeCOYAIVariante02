@@ -28,7 +28,10 @@ export const common = {
   footer: {
     tagline: 'From the territory, toward the future.',
     navAria: 'Footer',
+    explore: 'Explore',
+    contact: 'Contact',
     social: 'Social media',
+    language: 'Language',
     rights: 'All rights reserved.',
     // Redes: {name, url}. Mientras la lista esté vacía el bloque no se muestra (sin marcadores entre corchetes).
     socials: [] as Social[],

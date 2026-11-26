@@ -26,7 +26,11 @@ export const common = {
   footer: {
     tagline: 'Desde el territorio, hacia el futuro.',
     navAria: 'Pie de página',
+    // Rótulos de las columnas. Los datos de contacto y redes están en content/contacto.ts.
+    explore: 'Explora',
+    contact: 'Contacto',
     social: 'Redes sociales',
+    language: 'Idioma',
     rights: 'Todos los derechos reservados.',
     // Redes: {name, url}. Mientras la lista esté vacía el bloque no se muestra (sin marcadores entre corchetes).
     socials: [] as Social[],
