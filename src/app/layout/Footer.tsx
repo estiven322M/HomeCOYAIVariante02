@@ -77,14 +77,15 @@ export function Footer({
 
         <nav aria-label={f.navAria}>
           <h2 className={ROTULO}>{f.explore}</h2>
-          {/* Desde md se llena por columnas (4 filas): el orden que se ve es el del DOM y el del tabulador. */}
-          <ul className="mt-3 divide-y divide-calido/15 md:grid md:grid-flow-col md:grid-cols-2 md:grid-rows-4 md:gap-x-6 md:divide-y-0">
+          {/* Desde md se llena por columnas (4 filas): el orden que se ve es el del DOM y el del tabulador. Cada fila mide
+              lo que pida su texto más largo y los textos se alinean arriba, aunque uno ocupe dos líneas. */}
+          <ul className="mt-3 divide-y divide-calido/15 md:grid md:grid-flow-col md:grid-cols-2 md:grid-rows-[repeat(4,auto)] md:gap-x-6 md:divide-y-0">
             {NAV.map((i) => (
               <li key={i.key}>
                 <Link
                   to={i.href}
                   aria-current={i.key === actual ? 'page' : undefined}
-                  className="flex min-h-12 items-center py-1 text-body-sm leading-snug text-calido/85 transition-colors duration-300 hover:text-calido md:min-h-11 lg:min-h-10"
+                  className="flex min-h-12 items-center py-1 text-body-sm leading-snug text-calido/85 transition-colors duration-300 hover:text-calido md:min-h-11 md:items-start md:py-3 lg:min-h-10 lg:py-2.5"
                 >
                   {i.label}
                 </Link>
