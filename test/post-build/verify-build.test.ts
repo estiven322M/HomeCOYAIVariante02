@@ -144,6 +144,13 @@ describe('build/client', () => {
       expect(attr('meta[property="og:locale"]', 'content')).toBe(c.meta.ogLocale)
     })
 
+    it('el pie no lleva datos de demostración ni marcadores pendientes', () => {
+      const pie = doc.querySelector('footer')?.outerHTML ?? ''
+      expect(pie).not.toBe('')
+      // Los de content/contacto.demo*.ts (FOOTER_DEMO, solo local).
+      expect(pie).not.toMatch(/example\.org|000 000 0000|57000000|PENDIENTE|PENDING/i)
+    })
+
     it('una sola <main id="contenido"> (destino del salto de contenido) y un pie con la navegación', () => {
       expect(doc.querySelectorAll('main')).toHaveLength(1)
       expect(doc.querySelector('main')?.getAttribute('id')).toBe('contenido')

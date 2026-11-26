@@ -19,6 +19,12 @@ process.env.ECOYAI_FECHA_BUILD ??= new Intl.DateTimeFormat('en-CA', { timeZone: 
  */
 const demoEventos = process.env.EVENTOS_DEMO === '1'
 
+/** Igual para el contacto y las redes del pie: `FOOTER_DEMO=1` (todos los datos) o `FOOTER_DEMO=parcial`. */
+const demoPie = new Map([
+  ['1', 'contacto.demo.ts'],
+  ['parcial', 'contacto.demo-parcial.ts'],
+]).get(process.env.FOOTER_DEMO ?? '')
+
 // Vite config — https://vitejs.dev/config/
 // El plugin de React Router sustituye a @vitejs/plugin-react en la app (este último solo queda en vitest.config.ts).
 export default defineConfig(({ mode }) => {
@@ -42,6 +48,14 @@ export default defineConfig(({ mode }) => {
               {
                 find: /^@\/features\/eventos\/fuente$/,
                 replacement: path.resolve(import.meta.dirname, './src/features/eventos/fuente.demo.ts'),
+              },
+            ]
+          : []),
+        ...(demoPie
+          ? [
+              {
+                find: /^@\/content\/contacto$/,
+                replacement: path.resolve(import.meta.dirname, './src/content', demoPie),
               },
             ]
           : []),

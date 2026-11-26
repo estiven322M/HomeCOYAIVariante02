@@ -49,7 +49,7 @@ export default tseslint.config(
   },
   {
     // La captura visual y la medición del intro ejecutan funciones dentro de la página (document, sessionStorage…).
-    files: ['scripts/capture.mjs', 'scripts/measure-intro.mjs'],
+    files: ['scripts/capture.mjs', 'scripts/capture-footer.mjs', 'scripts/measure-intro.mjs'],
     languageOptions: { globals: { ...globals.node, ...globals.browser } },
   },
 
