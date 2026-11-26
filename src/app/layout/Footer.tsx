@@ -30,6 +30,24 @@ const REDES: Record<RedSocial, { nombre: string; icono: ReactNode }> = {
   facebook: { nombre: 'Facebook', icono: <path d="M16 3h-2.500A3.500 3.500 0 0 0 10 6.500V21M7 12h8" /> },
 }
 
+/** WhatsApp y las redes salen del sitio: pestaña nueva, sin acceso de vuelta a esta. */
+const EXTERNO = { target: '_blank', rel: 'noopener noreferrer' }
+
+/**
+ * El correo en una columna estrecha: si no cabe, corta antes de la «@» y, solo si aún no cabe, por donde haga falta
+ * (`wrap-anywhere` en el enlace). Va en un <span>: el enlace es flex y trataría cada trozo como una caja aparte.
+ */
+function Correo({ direccion }: { direccion: string }) {
+  const arroba = direccion.indexOf('@')
+  return (
+    <span className="min-w-0">
+      {direccion.slice(0, arroba)}
+      <wbr />
+      {direccion.slice(arroba)}
+    </span>
+  )
+}
+
 /** Rótulo de columna: es el <h2> de su bloque (el pie va fuera de <main>, a la altura de sus secciones). */
 const ROTULO = 'text-caption font-medium uppercase tracking-[0.3em] text-ocre'
 /** Enlace suelto: área táctil de 44 px. */
@@ -101,18 +119,14 @@ export function Footer({
               <ul className="mt-2 text-ui text-calido/85">
                 {correo && (
                   <li>
-                    <a href={`mailto:${correo}`} className={`${ENLACE} break-all`}>
-                      {correo}
+                    <a href={`mailto:${correo}`} className={`${ENLACE} wrap-anywhere`}>
+                      <Correo direccion={correo} />
                     </a>
                   </li>
                 )}
                 {whatsapp && (
                   <li>
-                    <a
-                      href={`https://wa.me/${whatsapp.replace(/\D/g, '')}`}
-                      rel="noopener noreferrer"
-                      className={ENLACE}
-                    >
+                    <a href={`https://wa.me/${whatsapp.replace(/\D/g, '')}`} {...EXTERNO} className={ENLACE}>
                       WhatsApp {whatsapp}
                     </a>
                   </li>
@@ -128,7 +142,7 @@ export function Footer({
                   <li key={r.nombre}>
                     <a
                       href={r.url}
-                      rel="noopener noreferrer"
+                      {...EXTERNO}
                       aria-label={r.nombre}
                       className="flex size-11 items-center justify-center border border-calido/40 text-calido transition-colors duration-300 hover:border-calido hover:bg-calido/10"
                     >

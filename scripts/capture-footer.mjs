@@ -50,10 +50,24 @@ try {
             .map((a) => ({ a, r: a.getBoundingClientRect() }))
             .filter(({ r }) => r.height < minimo || r.width < 44)
             .map(({ a, r }) => `${a.textContent || a.ariaLabel} ${Math.round(r.width)}x${Math.round(r.height)}`),
-          // Un enlace de texto partido en dos líneas o más ancho que su columna.
-          partidos: [...f.querySelectorAll('a[href^="mailto:"], a[href^="https://wa.me"]')]
-            .filter((a) => a.getBoundingClientRect().height > 46)
-            .map((a) => a.textContent),
+          // Correo y WhatsApp: líneas que ocupa cada uno y si se sale de su columna.
+          contacto: [...f.querySelectorAll('a[href^="mailto:"], a[href^="https://wa.me"]')].map((a) => {
+            // Solo las cajas del texto: las de los elementos intermedios falsearían la cuenta de líneas.
+            const nodos = document.createTreeWalker(a, NodeFilter.SHOW_TEXT)
+            const trozos = []
+            for (let nodo = nodos.nextNode(); nodo; nodo = nodos.nextNode()) {
+              const rango = document.createRange()
+              rango.selectNodeContents(nodo)
+              trozos.push(...rango.getClientRects())
+            }
+            const columna = a.closest('ul').getBoundingClientRect()
+            return {
+              texto: a.textContent,
+              lineas: new Set(trozos.map((r) => Math.round(r.top))).size,
+              sale: trozos.some((r) => r.right > columna.right + 0.5),
+              columna: Math.round(columna.width),
+            }
+          }),
           rotulos: [...f.querySelectorAll('h2')].map((h) => h.textContent).join(' / '),
         }
       })

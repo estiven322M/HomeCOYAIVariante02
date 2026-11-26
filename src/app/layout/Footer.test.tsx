@@ -76,17 +76,24 @@ describe.each(LANGS)('pie · %s', (lang) => {
     expect(rotulos()).toEqual(
       [t.footer.explore, t.footer.contact, t.footer.social, t.footer.language].map((r) => `H2 ${r}`),
     )
-    expect(screen.getByRole('link', { name: COMPLETO.correo })).toHaveAttribute('href', `mailto:${COMPLETO.correo}`)
-    expect(screen.getByRole('link', { name: `WhatsApp ${COMPLETO.whatsapp}` })).toHaveAttribute(
-      'href',
-      'https://wa.me/573000000000',
-    )
-    for (const [nombre, red] of [
-      ['Instagram', 'instagram'],
-      ['YouTube', 'youtube'],
-      ['Facebook', 'facebook'],
-    ] as const) {
-      expect(screen.getByRole('link', { name: nombre })).toHaveAttribute('href', COMPLETO.redes![red])
+    const correo = screen.getByRole('link', { name: COMPLETO.correo })
+    expect(correo).toHaveAttribute('href', `mailto:${COMPLETO.correo}`)
+    expect(correo).not.toHaveAttribute('target')
+    // Un correo largo no puede ensanchar la columna: corta antes de la «@» y, si hace falta, por donde sea.
+    expect(correo.className).toContain('wrap-anywhere')
+    expect(correo.querySelector('wbr')?.nextSibling?.textContent).toMatch(/^@/)
+
+    const externos = [
+      [`WhatsApp ${COMPLETO.whatsapp}`, 'https://wa.me/573000000000'],
+      ['Instagram', COMPLETO.redes!.instagram!],
+      ['YouTube', COMPLETO.redes!.youtube!],
+      ['Facebook', COMPLETO.redes!.facebook!],
+    ] as const
+    for (const [nombre, href] of externos) {
+      const enlace = screen.getByRole('link', { name: nombre })
+      expect(enlace).toHaveAttribute('href', href)
+      expect(enlace).toHaveAttribute('target', '_blank')
+      expect(enlace.getAttribute('rel')?.split(' ')).toContain('noopener')
     }
   })
 
