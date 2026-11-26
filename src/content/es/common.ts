@@ -45,7 +45,6 @@ export const common = {
     title: 'Página no encontrada',
     text: 'La dirección no existe o fue movida.',
     otherLang: 'Read in English',
-    pages: 'Páginas principales',
   },
   errorBoundary: {
     title: 'Algo salió mal',

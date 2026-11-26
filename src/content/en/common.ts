@@ -47,7 +47,6 @@ export const common = {
     title: 'Page not found',
     text: 'The address does not exist or has moved.',
     otherLang: 'Leer en español',
-    pages: 'Main pages',
   },
   errorBoundary: {
     title: 'Something went wrong',

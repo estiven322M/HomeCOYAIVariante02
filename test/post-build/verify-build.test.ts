@@ -192,13 +192,14 @@ describe('build/client', () => {
       expect(doc?.querySelector('link[hreflang]')).toBeNull()
     })
 
-    it('enlaza a la portada, a las páginas principales y a la versión en el otro idioma', () => {
+    it('su contenido enlaza solo a la portada y a la versión en el otro idioma; las páginas van en el pie', () => {
       const hrefs = [...(doc?.querySelectorAll('main a') ?? [])].map((a) => a.getAttribute('href'))
       const other = lang === 'es' ? 'en' : 'es'
-      expect(hrefs).toContain(pathFor('home', lang))
-      expect(hrefs).toContain(pathFor('nosotros', lang))
       // El enlace al otro idioma lleva a su portada, no a su 404.
-      expect(hrefs).toContain(pathFor('home', other))
+      expect(hrefs).toEqual([pathFor('home', lang), pathFor('home', other)])
+      expect(doc?.querySelector('main nav')).toBeNull()
+      const footer = [...(doc?.querySelectorAll('footer nav a') ?? [])].map((a) => a.getAttribute('href'))
+      expect(footer).toEqual(NAV_KEYS.map((key) => pathFor(key, lang)))
     })
   })
 

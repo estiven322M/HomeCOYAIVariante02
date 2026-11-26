@@ -499,8 +499,8 @@ nofollow">`, ambos gobernados por `VITE_SITE_INDEXABLE` ([ADR 0007](./adr/0007-i
    `build/client/en/404.html` y borra las carpetas `404/`: `/404/` tampoco debe responder 200.
 4. `netlify.toml` añade `/en/* → /en/404.html` con estado 404 (según la documentación de Netlify, un archivo existente
    tiene prioridad, así que no afecta a `/en/` ni a `/en/about/`). Verificado en Netlify con `curl -I` (2026-11-22); `pnpm preview` la imita.
-5. La 404 lleva `noindex`, sin canonical ni hreflang, y enlaza a la portada, a las páginas principales y a la 404
-   del otro idioma.
+5. La 404 lleva `noindex`, sin canonical ni hreflang. Su contenido enlaza a la portada y a la portada del otro
+   idioma; las páginas principales no se listan ahí porque ya están en el pie, justo debajo.
 
 **No** se añade la regla `/* → /__spa-fallback.html`: respondería 200 a URL inexistentes (soft-404).
 
