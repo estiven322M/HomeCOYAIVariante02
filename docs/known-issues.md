@@ -8,8 +8,8 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
 - **El formulario de Salud NO puede activarse en producción** (`VITE_FORMS_ENABLED`, hoy `"false"` en `netlify.toml`) hasta que
   `/privacidad/` tenga la política real (Ley 1581 de 2012; los datos se guardan en Netlify, en EE. UU.: transferencia
   internacional). Hoy `/privacidad/` (`/en/privacy/`) es una página provisional `noindex` que solo evita que el enlace del
-  consentimiento esté roto. Al activarlo: política real, quitar `privacidad` de `NOINDEX_ROUTES`, mostrar el enlace en el
-  pie y poner `"true"` en producción (ver ADR 0009).
+  consentimiento esté roto. Al activarlo: política real, quitar `privacidad` de `NOINDEX_ROUTES`, encender
+  `PRIVACIDAD_EN_PIE` (el enlace del pie, hoy oculto) y poner `"true"` en producción (ver ADR 0009).
 - **Política de tratamiento de datos personales (Ley 1581 de 2012).** Antes de publicar **cualquier formulario**
   (contacto) **o canal de donación** debe existir la política de tratamiento de datos, **redactada por la organización
   con asesoría legal**, publicada en `/privacidad/` (ruta nueva en la tabla de rutas, con su enlace en el pie). No se
@@ -28,9 +28,15 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
 - **Páginas con contenido por llegar.** `/colaborar/` reutiliza el texto de «Colaborar» más el aviso «Esta sección estará disponible
   pronto» (`/proyectos/`, `/salud-y-medicina-tradicional/` y `/eventos/` ya tienen su diseño); `/galeria/` y `/contacto/` solo
   tienen título, descripción y el aviso (`ProvisionalPage`).
-- **Pie de página incompleto a propósito.** «Aviso legal» y «Política de privacidad» están ocultos hasta que exista su
-  contenido (ver el bloqueante de arriba). Las redes (`common.footer.socials`, lista `{name, url}`) están vacías y el
-  bloque no se muestra: faltan las URL reales. Antes había marcadores `[Instagram] [Facebook] [YouTube]`.
+- **Pie sin contacto, redes ni enlaces legales, a propósito.** Faltan el correo, el WhatsApp y las URL de las redes: al
+  completar `content/contacto.ts` aparecen sus bloques. «Política de privacidad» está oculta (`PRIVACIDAD_EN_PIE`, ver el
+  bloqueante de arriba); «Aviso legal» no existe todavía.
+- **Uniones del pie.** Sobre las secciones claras (Galería, Colaborar, Contacto, Privacidad y Gracias) el paso al cielo
+  del paisaje es suave (1,3–1,4:1) y el patrón lateral se corta en el borde; se aprobó sin excepciones por página. La de
+  Inicio hay que volver a mirarla cuando «Colaborar» tenga su fotografía.
+- **Salud a 320 px desborda 12 px (en español).** En el título «Seguridad, ética y acompañamiento», la palabra
+  «acompañamiento» no cabe a ese tamaño y la página se desplaza en horizontal. Es anterior al pie nuevo (se detectó con
+  sus e2e, que por eso miden el desborde del pie y no el de la página). _Corregir en una tarea de Salud._
 - **Duración del intro.** Ver la sección «Accesibilidad y comportamiento» (mediciones de la 2B).
 
 ## Despliegue y SEO (por verificar en el primer despliegue)
@@ -124,7 +130,7 @@ Cada punto indica la fase en la que conviene resolverlo (según el plan de 6 fas
   variables del hero/intro, que siguen conviviendo). _Fase 4._
 - **Tamaños de texto pequeños (parcial).** Ya existe una escala tipográfica en tokens (`--text-*` en `@theme`, mínimo
   12 px) y `Eyebrow`/`SubTitle` la usan; la página Nosotros solo usa la escala. Siguen con `text-[10px]`/`text-[11px]`
-  fuera de la escala: pie, menú, selector de idioma, intro, portada (`Hero`, `Sections`) y 404.
+  fuera de la escala: menú, selector de idioma, intro y portada (`Hero`, `Sections`).
   _Fase 4._
 - **Contraste del acento.** Un comentario en `index.css` ya anota que el ámbar no alcanza 3:1 sobre el fotograma
   más claro del hero. _Fase 4._
@@ -158,7 +164,6 @@ ninguna propia**; lo que sigue ya existía y está fuera del alcance de la Fase 
 
 - **Selector de idioma (encabezado, todas las páginas)** — `label-content-name-mismatch` (WCAG 2.5.3, A): el `aria-label`
   («Cambiar idioma a inglés») no contiene el texto visible («ES»/«EN»). _Fase 4/5._
-- **Texto de derechos del pie (todas las páginas)** — `color-contrast`: 3,9:1 (#7e7e82 sobre #1c2233, 12 px). _Fase 4._
 - **Portada** — `color-contrast`: las descripciones de
   «Explora» (`text-carbon/60`, 14 px; 4,0:1). Además `list` y `listitem`: la lista de «Explora» tiene un `<div>` (el `Reveal`)
   entre `<ul>` y cada `<li>`. _Fase 4 y rediseño de Inicio._
